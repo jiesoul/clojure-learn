@@ -1,4 +1,4 @@
-(ns clojurelearning.programingclojure.mocros.bench-1)
+(ns programingclojure.mocros.bench-1)
 
 (defmacro bench [expr]
   `(let [start# (System/nanoTime)

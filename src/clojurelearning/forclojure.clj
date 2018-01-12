@@ -175,6 +175,42 @@
         f1
         f2)))
 
+;;53 参考网上的答案
+(defn last-sub-seq [coll]
+  (let [a (reduce #(if (< (count %1) (count %2)) %2 %1)
+                  []
+                  (filter
+                    (fn [[[x1 x2]]] (< x1 x2))
+                    (partition-by
+                      #(apply < %)
+                      (partition 2 1 coll))))]
+    (concat (first a) (rest (map second a)))))
+
+;;54
+(fn [n coll]
+  (loop [coll coll
+         r []]
+    (if (> n (count coll))
+      r
+      (recur (drop n coll) (conj r (take n coll))))))
+
+;;55
+(defn count-occ [coll]
+  (map #(assoc % (% :key) (count (% :val))) (group-by identity coll)))
+
+;;56
+(defn find-dis [arg]
+  (reduce (fn [s e]
+            (if (some #(= % e) s)
+              s
+              (conj s e)))
+          [] arg))
+
+;;58 reduce
+(defn comp- [& funs]
+  (fn [& args]
+    (first (reduce #(vector (apply %2 %1)) args (reverse funs)))))
+
 ;; 69  别人的 自己想不出来
 (fn [f & maps]
   (reduce (fn [m1 m2]
@@ -185,8 +221,4 @@
                     m1 m2))
           maps))
 
-;;58 reduce 我的理解还差很远
-(fn comp- [& funs]
-  (fn [& args]
-    (first
-      (reduce #(vector (apply %1 %2)) args (reverse funs)))))
+
