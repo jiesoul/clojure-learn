@@ -1,4 +1,5 @@
-(ns clojurelearning.forclojure)
+(ns clojurelearning.forclojure
+  (:require [clojure.string :as str]))
 
 ; #19 last Element
 (defn last-element [coll]
@@ -196,7 +197,11 @@
 
 ;;55
 (defn count-occ [coll]
-  (map #(assoc % (% :key) (count (% :val))) (group-by identity coll)))
+  (let [m (group-by identity coll)]
+    (reduce (fn [m1 [k v]]
+           (assoc m1 k (count v)))
+            {}
+            m)))
 
 ;;56
 (defn find-dis [arg]
@@ -211,6 +216,81 @@
   (fn [& args]
     (first (reduce #(vector (apply %2 %1)) args (reverse funs)))))
 
+;;59
+(defn juxt- [& funcs]
+  (fn [& args]
+    (reduce #(conj %1 (apply %2 args)) [] funcs)))
+
+;;60
+(defn reductions-
+  ([f coll]
+    (reductions- f (first coll) (rest coll)))
+  ([f r coll]
+   (lazy-seq (if (empty? coll)
+               (list r)
+               (cons r (reductions- f
+                                    (f r (first coll))
+                                    (rest coll)))))))
+
+;;61
+(defn zipmap- [keys vals]
+  (loop [m {}
+         ks (seq keys)
+         vs (seq vals)]
+    (if (and ks vs)
+      (recur (assoc m (first ks) (first vs))
+             (next ks)
+             (next vs))
+      m)))
+
+;;62
+(defn re-impl-iter [f a]
+  (lazy-seq
+    (cons a (re-impl-iter f (f a)))))
+
+;;65
+(defn type- [coll]
+  (let [s (first (str coll))]
+    (case s
+      \{ :map
+      \[ :vector
+      \# :set
+      :list)))
+
+;;66
+(defn gcd [a b]
+  (if (zero? b)
+    a
+    (recur b (mod a b))))
+
+;;67
+(defn primes? [a]
+  (not-any? #(zero? (rem a %)) (range 2 (inc (Math/sqrt a)))))
+
+(defn take-primes [n]
+  (take n
+        (filter (fn primes? [a]
+                  (if (= a 2)
+                    true
+                    (not-any?
+                      #(zero? (rem a %))
+                      (range 2 (inc (Math/sqrt a))))))
+                (range 2 1000))))
+
+(def primes
+  (concat
+    [2 3 5 7]
+    (lazy-seq
+      (let [primes-form (fn primes-form [n [f & r]]
+                          (if (some #(zero? (rem n %))
+                                    (take-while #(<= (* % %) n) primes))
+                            (recur (+ n f) r)
+                            (lazy-seq (cons n (primes-form (+ n f) r)))))
+            wheel (cycle [2])]
+        primes-form 11 wheel))))
+
+
+
 ;; 69  别人的 自己想不出来
 (fn [f & maps]
   (reduce (fn [m1 m2]
@@ -220,5 +300,15 @@
                         (assoc m k v)))
                     m1 m2))
           maps))
+
+;;70
+(defn word-sort [s]
+  (vec (sort-by clojure.string/lower-case
+                (clojure.string/split
+                  (clojure.string/replace s #"[.|!]" "") #"\s+"))))
+
+;;72
+(fn [coll]
+  (reduce + coll))
 
 
