@@ -23,9 +23,9 @@
 
 (defn numMove [n index]
   (let [s (str n)]
-    (str (subs s 0 index) (subs s (inc index) (count s)) (subs s index (inc index)))
-    )
-  )
+    (str (subs s 0 index) (subs s (inc index) (count s)) (subs s index (inc index)))))
+
+
 
 (defn gps [s x]
   (if (<= (count x) 1)
@@ -40,9 +40,9 @@
 (defn gps [s x]
   (if (<= (count x) 1)
     0
-    (int (apply max (map #(/ (* % 3600) (float s)) (map - (rest x) x))))
-    )
-  )
+    (int (apply max (map #(/ (* % 3600) (float s)) (map - (rest x) x))))))
+
+
 
 
 (defn filter-rem [n coll]
@@ -134,9 +134,9 @@
 (defn round [s n]
   (.setScale (bigdec n) s java.math.RoundingMode/HALF_EVEN))
 
-(defn iterPi [epsilon]
+(defn iterPi [epsilon])
 
-  )
+
 
 (defn compSame [a b]
   (cond

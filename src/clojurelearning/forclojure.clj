@@ -1,5 +1,4 @@
-(ns clojurelearning.forclojure
-  (:require [clojure.string :as str]))
+(ns clojurelearning.forclojure)
 
 ; #19 last Element
 (defn last-element [coll]
@@ -158,8 +157,15 @@
     (concat (drop i coll) (take i coll))))
 
 ;; 46
-(fn [f]
-  #(f %2 %1))
+(fn [f])
+(fn [f & maps]
+  (reduce (fn [m1 m2]
+            (reduce (fn [m [k v]]
+                      (if-let [vv (m k)]
+                        (assoc m k (f vv v))
+                        (assoc m k v)))
+                    m1 m2))
+          maps)  #(f %2 %1))
 
 
 ;;49
@@ -310,5 +316,58 @@
 ;;72
 (fn [coll]
   (reduce + coll))
+
+;;73
+(defn filter-perfect-square [s]
+  (clojure.string/join ","
+    (filter (fn [x]
+              (let [xi (Integer/parseInt x)
+                    sq (int (Math/sqrt xi))]
+                (= xi (* sq sq))))
+            (clojure.string/split s #","))))
+
+;;75
+(defn euler-func [n]
+  (if (= 1 n)
+    1
+    (count (filter #(= 1 ((fn gcd [a b]
+                      (if (zero? b)
+                        a
+                        (recur b (mod a b)))) % n)) (range 1 n)))))
+
+;;77
+(defn anagram-finder [coll]
+  (set (map (comp set val) (filter #(> (count (val %)) 1) (group-by (fn [s]
+                                                                      (set s))
+                                                                    coll)))))
+;;78
+(defn trampoline-
+  ([f]
+    (let [r (f)]
+      (if (fn? r)
+        (recur r)
+        r)))
+  ([f & args]
+    (trampoline- #(apply f args))))
+
+;;79
+(defn min-path [coll]
+  (reduce #(loop [r []
+                     c1 %1
+                     c2 %2]
+                (if (<= (count c2) 1)
+                  r
+                  (recur
+                    (conj r (+ (first c1) (first c2)) (+ (first c1) (second c2)))
+                    (rest c1)
+                    (rest c2))))
+             (first coll) (rest coll)))
+
+;;83
+(defn half-truth [& args]
+  (let [g (group-by identity args)]
+    (if (> (count (keys g)) 1)
+      true
+      false)))
 
 
