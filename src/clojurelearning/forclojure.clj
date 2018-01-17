@@ -400,6 +400,25 @@
         ))
     false))
 
+;;96 Beauty is Symmetry
+(defn beauty-is-symmetry? [[k l r]]
+  (letfn [(comapre-ss [[k1 l1 r1] [k2 l2 r2]]
+            (cond
+              (or (not= k1 k2)
+                  (not= (type l1) (type r2))
+                  (not= (type l2) (type r1))) false
+              (and (nil? l1) (nil? r1)) true
+              (and (coll? l1) (coll? r1)) (and (comapre-ss l1 r2) (comapre-ss l2 r1))
+              (and (nil? l1) (not (nil? l2))) (comapre-ss l2 r1)
+              (and (not (nil? l1)) (nil? l2)) (comapre-ss l1 r2)
+              :else
+              true))]
+    (cond
+      (and (coll? l) (coll? r)) (comapre-ss l r)
+      (and (nil? l) (nil? r)) true
+      :else
+      false)))
+
 ;;97Pascal's Triangle
 (defn pascal-triangle [n]
   (if (= 1 n)
@@ -415,6 +434,14 @@
        (if (zero? x)
          r
          (recur (quot x 10) (conj r (rem x 10))))))
+
+;;100 Least Common Multiple
+(defn least-com-mul [& args]
+  (letfn [(gcd [a b]
+            (if (zero? b)
+              a
+              (recur b (mod a b))))]
+    (reduce #(/ (* %1 %2) (gcd %1 %2)) args)))
 
 ;;107
 (defn simple-closures [n]
@@ -450,6 +477,13 @@
 ;;Through the Looking Class
 (defn thr-look-class [])
 
+
+;; 128 Recognize Playing Cards
+(defn rec-play-cards [s]
+  (let [suit (zipmap [\D \H \C \S] [:diamond :heart :club :spade])
+        rank (zipmap [\2 \3 \4 \5 \6 \7 \8 \9 \T \J \Q \K \A] (range 13))]
+    {:suit (suit (first s)) :rank (rank (second s))}))
+
 ;;134
 (defn nil-map? [key map]
   (if (contains? map key)
@@ -472,6 +506,28 @@
        r
        (recur (conj r (* (first v1) (first v2))) (rest v1) (rest v2))))))
 
+;;146 Trees into tables 这个我脑子抽了
+(defn tree-into-tab
+  [m]
+  (into
+    {}
+    (for [[k v] m
+          [vk vv] v]
+      (vec [[k vk] vv]))))
+
+;;147 Pascal's Trapezoid
+(defn pascal-trap [coll]
+  (lazy-seq (iterate (fn [c]
+                       (map #(+' (first %) (second %))
+                            (partition 2 1 (concat [] [0] c [0])))) coll)))
+
+
+;;153 Pairwise Disjoint Sets
+(defn pair-dis-sets
+  [sets]
+  (= (count (reduce #(into %1 %2) #{} sets))
+     (reduce #(+ %1 (count %2)) 0 sets)))
+
 ;;156
 (defn map-default [v coll]
   (zipmap coll (repeat (count coll) v)))
@@ -491,4 +547,7 @@
     (op a b) :lt
     (op b a) :gt
     :else :eq))
+
+;;173 Intro to Destructuring 2
+(defn intro-to-dest )
 
