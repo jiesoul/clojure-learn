@@ -357,6 +357,11 @@
                      ])) %1 %2)
           [[(first coll)] [(first coll)]] (rest coll)))
 
+;;80 Perfect Numbers
+(defn perfect-num
+  [n]
+  (= n (reduce + (filter #(zero? (rem n %)) (range 1 (inc (quot n 2)))))))
+
 ;;81
 (defn intersection- [a b]
   (set (filter #(contains? b %) a)))
@@ -373,6 +378,35 @@
     (if (> (count (keys g)) 1)
       true
       false)))
+
+
+(defn sum- [nv]
+  (loop [r 0
+         nv nv]
+    (if (zero? nv)
+      r
+      (let [rv (rem nv 10)
+            qv (quot nv 10)]
+        (recur (+ r (* rv rv)) qv)))))
+
+;;86Happy numbers
+(defn happy-num
+  [n]
+  (letfn [(sum- [nv]
+            (loop [r 0
+                   nv nv]
+              (if (zero? nv)
+                r
+                (let [rv (rem nv 10)
+                      qv (quot nv 10)]
+                  (recur (+ r (* rv rv)) qv)))))]
+    (loop [r (conj #{} n)
+           n (sum- n)]
+      (cond
+        (= n 1) true
+        (some #{n} r) false
+        :else
+        (recur (conj r n) (sum- n))))))
 
 ;;88 Symmetric Difference
 (defn sym-diff [s1 s2]
@@ -443,10 +477,29 @@
               (recur b (mod a b))))]
     (reduce #(/ (* %1 %2) (gcd %1 %2)) args)))
 
+;;102 intoCamelCase
+(defn into-came-case
+  [s]
+  (let [s (clojure.string/split s #"-")]
+    (if (= 1 (count s))
+      (apply str s)
+      (apply str (first s) (map #(apply str (clojure.string/upper-case (first %)) (rest %)) (rest s))))))
+
 ;;107
 (defn simple-closures [n]
   (fn [i]
     (reduce * (repeat n i))))
+
+;;115The Balance of N
+(defn blance-of-n
+  [n]
+  (let [coll (map (comp #(Integer/parseInt %) str) (str n))
+        c (count coll)
+        m (+ (quot c 2) (rem c 2))
+        f (take m coll)
+        l (take m (reverse coll))
+        ]
+    (= (reduce + f) (reduce + l))))
 
 ;;118 Re-implement Map
 (defn reimpl-map [f coll]
