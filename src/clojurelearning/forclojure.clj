@@ -352,16 +352,20 @@
 
 ;;79
 (defn min-path [coll]
-  (reduce #(loop [r []
-                     c1 %1
-                     c2 %2]
-                (if (<= (count c2) 1)
-                  r
-                  (recur
-                    (conj r (+ (first c1) (first c2)) (+ (first c1) (second c2)))
-                    (rest c1)
-                    (rest c2))))
-             (first coll) (rest coll)))
+  (reduce #((fn [c1 c2]
+              (loop [r []
+                     ])) %1 %2)
+          [[(first coll)] [(first coll)]] (rest coll)))
+
+;;81
+(defn intersection- [a b]
+  (set (filter #(contains? b %) a)))
+
+;;82
+(defn word-chain [st]
+  (let [coll (map set (sort-by str st))]
+    (letfn [(match? [ff coll]
+              )])))
 
 ;;83
 (defn half-truth [& args]
@@ -370,4 +374,121 @@
       true
       false)))
 
+;;88 Symmetric Difference
+(defn sym-diff [s1 s2]
+  (letfn [(diff [a b]
+            (set (filter #(not (contains? b %)) a)))]
+    (set (concat (diff s1 s2) (diff s2 s1)))))
+
+;;90 Cartesian Product
+(defn cart-pro [s1 s2]
+  (set (for [x s1
+             y s2]
+         [x y])))
+
+;;95 To Tree, or not to Tree
+(defn tree? [s]
+  (if (and (seq s) (= 3 (count s)))
+    (let [[v l r] s]
+      (cond
+        (nil? v)  false
+        (and (nil? r) (nil? l)) true
+        (coll? l) (tree? l)
+        (coll? r) (tree? r)
+        :else
+        false
+        ))
+    false))
+
+;;97Pascal's Triangle
+(defn pascal-triangle [n]
+  (if (= 1 n)
+    [1]
+    (map #(+ (first %) (second %))
+         (partition 2 1
+                    (concat [] [0] (pascal-triangle (- n 1)) [0])))))
+
+;;99 Product Digits
+(defn pro-digits [a b]
+  (loop [x (* a b)
+            r ()]
+       (if (zero? x)
+         r
+         (recur (quot x 10) (conj r (rem x 10))))))
+
+;;107
+(defn simple-closures [n]
+  (fn [i]
+    (reduce * (repeat n i))))
+
+;;118 Re-implement Map
+(defn reimpl-map [f coll]
+  (lazy-seq (reduce #(lazy-seq (conj %1 (f %2))) [] coll)))
+
+(defn re-impl-map [f coll]
+  (lazy-seq (when (seq coll)
+              (cons (f (first coll)) (re-impl-map f (rest coll))))))
+
+;;120 Sum of square of digits
+(defn sum-of-squ-dig [coll]
+  (letfn [(sum-of-squ [n]
+            (loop [r 0
+                   n n]
+              (if (zero? n)
+                r
+                (recur (+ r (* (rem n 10) (rem n 10))) (quot n 10)))))]
+    (count (filter #(< % (sum-of-squ %)) coll))))
+
+;;122 Read a binary number
+(defn read-bin-num [s]
+  (loop [x (map (comp #(Integer/parseInt %) str) (seq s))
+         r 0]
+    (if (empty? x)
+      r
+      (recur (rest x) (+ r (reduce * (first x) (repeat (dec (count x)) 2)))))))
+
+;;Through the Looking Class
+(defn thr-look-class [])
+
+;;134
+(defn nil-map? [key map]
+  (if (contains? map key)
+    (nil? (key map))
+    false))
+
+;;135 Infix Calculator
+(defn infix-cal [& args]
+  (reduce (fn [a [op b]]
+            (op a b))
+          (first args)
+          (partition 2 (rest args))))
+
+;;143 dot product
+(defn dot-pro [v1 v2]
+  (reduce + (loop [r []
+          v1 v1
+          v2 v2]
+     (if (empty? v1)
+       r
+       (recur (conj r (* (first v1) (first v2))) (rest v1) (rest v2))))))
+
+;;156
+(defn map-default [v coll]
+  (zipmap coll (repeat (count coll) v)))
+
+;;157 Indexing Sequences
+(defn index-seq [coll]
+  (loop [r []
+         coll coll
+         i 0]
+    (if (empty? coll)
+      r
+      (recur (conj r [(first coll) i]) (rest coll) (inc i)))))
+
+;;166
+(fn [op a b]
+  (cond
+    (op a b) :lt
+    (op b a) :gt
+    :else :eq))
 
