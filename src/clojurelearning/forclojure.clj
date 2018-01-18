@@ -379,6 +379,14 @@
       true
       false)))
 
+;;85Power Set
+(defn power-set
+  [sets]
+  (if (empty? sets)
+    #{#{}}
+    (let [v (first sets)
+          ps (power-set (rest sets))]
+      (set (concat (map #(conj % v) ps) ps)))))
 
 (defn sum- [nv]
   (loop [r 0
@@ -461,6 +469,11 @@
          (partition 2 1
                     (concat [] [0] (pascal-triangle (- n 1)) [0])))))
 
+;;98Equivalence Classes
+(defn equ-class
+  [f sets]
+  (set (map set (vals (group-by f sets)))))
+
 ;;99 Product Digits
 (defn pro-digits [a b]
   (loop [x (* a b)
@@ -484,6 +497,18 @@
     (if (= 1 (count s))
       (apply str s)
       (apply str (first s) (map #(apply str (clojure.string/upper-case (first %)) (rest %)) (rest s))))))
+
+
+;;105Identify keys and values  本地测试没有问题  网站上过不了
+(defn iden-keys-vals
+  [coll]
+  (reduce (fn [m a]
+            (if (keyword? a)
+              (assoc m a [])
+              (let [[k v] (last m)]
+                (assoc m k (conj v a)))))
+          {}
+          coll))
 
 ;;107
 (defn simple-closures [n]
@@ -550,6 +575,14 @@
           (first args)
           (partition 2 (rest args))))
 
+;;137Digits and bases
+(defn dig-base
+  [dig d]
+   (lazy-seq
+       (if (< dig d)
+         [dig]
+         (concat (dig-base (quot dig d) d) [(rem dig d)]))))
+
 ;;143 dot product
 (defn dot-pro [v1 v2]
   (reduce + (loop [r []
@@ -558,6 +591,12 @@
      (if (empty? v1)
        r
        (recur (conj r (* (first v1) (first v2))) (rest v1) (rest v2))))))
+
+;;144Oscilrate
+(defn oscilrate
+  [d & fs]
+  (lazy-seq (reduce (fn [v f]
+                      (conj v (f (last v)))) [d] fs)))
 
 ;;146 Trees into tables 这个我脑子抽了
 (defn tree-into-tab
