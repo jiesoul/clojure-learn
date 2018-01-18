@@ -428,6 +428,11 @@
              y s2]
          [x y])))
 
+;; 93 Partially Flatten a Sequence
+(defn partil-flatten-seq
+  [sq]
+  )
+
 ;;95 To Tree, or not to Tree
 (defn tree? [s]
   (if (and (seq s) (= 3 (count s)))
@@ -515,6 +520,31 @@
   (fn [i]
     (reduce * (repeat n i))))
 
+
+;;108 Lazy Searching
+(defn lazy-search
+  [& coll]
+  (loop [xss coll]
+    (let [c (map first xss)
+          ma (apply max c)
+          mi (apply min c)]
+      (letfn [(filter-min [n xs]
+                (filter #(>= % n) xs))]
+        (if (= ma mi)
+          ma
+          (recur (map #(filter-min ma %) xss)))))))
+
+(= 4 (lazy-search [1 2 3 4 5 6 7] [0.5 3/2 4 19]))
+
+;;110Sequence of pronunciations
+(defn seq-of-pro
+  [coll]
+  (lazy-seq
+    (let [next-coll (flatten (map #(vector (count %) (first %)) (partition-by identity coll)))]
+      (cons next-coll (seq-of-pro next-coll)))))
+
+
+
 ;;115The Balance of N
 (defn blance-of-n
   [n]
@@ -595,8 +625,21 @@
 ;;144Oscilrate
 (defn oscilrate
   [d & fs]
-  (lazy-seq (reduce (fn [v f]
-                      (conj v (f (last v)))) [d] fs)))
+  (reductions #(%2 %1) d (cycle fs)))
+
+(defn osclirate1
+  [d & fs]
+  (lazy-seq
+    (loop [r [d]
+           d d
+           xs fs]
+      (if (empty? xs)
+        r
+        (let [f (first xs)
+              v (f d)]
+          (recur (lazy-seq (conj r v))
+                 v
+                 (rest xs)))))))
 
 ;;146 Trees into tables 这个我脑子抽了
 (defn tree-into-tab
@@ -632,6 +675,12 @@
     (if (empty? coll)
       r
       (recur (conj r [(first coll) i]) (rest coll) (inc i)))))
+
+;;158 Decurry 还没有理解 TODO
+(defn decurry
+  [f]
+  (fn [& args]
+    (reduce #(%1 %2) f args)))
 
 ;;166
 (fn [op a b]
