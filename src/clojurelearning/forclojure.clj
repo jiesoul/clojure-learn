@@ -430,8 +430,10 @@
 
 ;; 93 Partially Flatten a Sequence
 (defn partil-flatten-seq
-  [sq]
-  )
+  [root]
+  (filter #(and (sequential? %)
+                (every? (complement sequential?) %))
+          (tree-seq sequential? identity root)))
 
 ;;95 To Tree, or not to Tree
 (defn tree? [s]
@@ -544,8 +546,24 @@
       (cons next-coll (seq-of-pro next-coll)))))
 
 
+;; 114 Global take-while
+(defn global-take-while
+  [n pred coll]
+  (lazy-seq (letfn [(take0 [pred coll]
+                      (loop [r []
+                             [fe & me] coll]
+                        (if (pred fe)
+                          r
+                          (recur (conj r fe) me))))]
+              (let [fe (take0 pred coll)
+                    co (count fe)]
+                (if (= 1 n)
+                  fe
+                  (lazy-seq (concat fe [(nth coll co)]
+                                    (global-take-while (dec n) pred (drop (inc co) coll)))))))))
 
-;;115The Balance of N
+
+;;115 The Balance of N
 (defn blance-of-n
   [n]
   (let [coll (map (comp #(Integer/parseInt %) str) (str n))
@@ -592,6 +610,29 @@
         rank (zipmap [\2 \3 \4 \5 \6 \7 \8 \9 \T \J \Q \K \A] (range 13))]
     {:suit (suit (first s)) :rank (rank (second s))}))
 
+
+;;132 Insert between two items
+(defn in-be-two-items
+  [p v c]
+  (if (<= (count c) 1)
+    c
+    (let [xs (map #(let [fe (first %)
+                        se (second %)]
+                    (if (p fe se) [fe v se] [fe se]))
+                 (partition 2 1 c))]
+     (flatten (concat (first xs) (map rest (rest xs)))))))
+
+(defn insert-items
+  [p v c]
+  (lazy-seq
+            (reduce (fn in [s ne]
+                      (let [le (last s)]
+                        (if (p le ne)
+                          (conj s v ne)
+                          (conj s ne))))
+                    [(first c)]
+                    (rest c))))
+
 ;;134
 (defn nil-map? [key map]
   (if (contains? map key)
@@ -605,7 +646,7 @@
           (first args)
           (partition 2 (rest args))))
 
-;;137Digits and bases
+;;137 Digits and bases
 (defn dig-base
   [dig d]
    (lazy-seq
