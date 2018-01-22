@@ -618,20 +618,31 @@
     c
     (let [xs (map #(let [fe (first %)
                         se (second %)]
-                    (if (p fe se) [fe v se] [fe se]))
+                    (if (apply p fe se) [fe v se] [fe se]))
                  (partition 2 1 c))]
-     (flatten (concat (first xs) (map rest (rest xs)))))))
+     (flatten (lazy-cat (first xs) (map rest (rest xs)))))))
 
 (defn insert-items
   [p v c]
-  (lazy-seq
-            (reduce (fn in [s ne]
-                      (let [le (last s)]
-                        (if (p le ne)
-                          (conj s v ne)
-                          (conj s ne))))
-                    [(first c)]
-                    (rest c))))
+  (take 1 (reverse
+            (if (empty? c)
+              c
+              (reductions (fn in [s ne]
+                            (let [le (last s)]
+                              (if (apply p le ne)
+                                (cons [v ne] s)
+                                (cons [ne] s))))
+                          [(first c)]
+                          (rest c))))))
+
+
+(defn in [pred k coll]
+  (if (seq coll)
+    (let [temp-result (map #(if (apply pred %) [(first %) k (last %)] %) (partition 2 1 coll))]
+      (letfn [(step [coll]
+                (if (seq coll)
+                  (lazy-cat (drop-last (first coll)) (step (next coll)))))]
+        (lazy-cat (step temp-result) [(last coll)])))))
 
 ;;134
 (defn nil-map? [key map]
