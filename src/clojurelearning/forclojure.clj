@@ -281,7 +281,7 @@
                     (not-any?
                       #(zero? (rem a %))
                       (range 2 (inc (Math/sqrt a))))))
-                (range 2 1000))))
+                (range 2 Long/MAX_VALUE))))
 
 (def primes
   (concat
@@ -507,13 +507,14 @@
 
 ;;103 Generating k-combinations
 (defn gen-k-comb
-  )
+  [n coll]
+  (set (filter #(= n (count %)) (reduce #(concat %1 (map (fn [i] (conj i %2)) %1)) #{#{}} coll))))
 
 
 ;;104 Write Roman Numerals
 (defn write-roman-num
   [n]
-  (let [dict {1000 "M", 900 "CM", 500 "D", 400 "CD", 100 "C",90 "XC", 50 "L", 40 "XL", 10 "X", 9 "IX", 5 "V", 4 "IV", 1 "I"}
+  (let [dict {1000 "M", 900 "CM", 500 "D", 400 "CD", 100 "C", 90 "XC", 50 "L", 40 "XL", 10 "X", 9 "IX", 5 "V", 4 "IV", 1 "I"}
         qs (reverse (sort (keys dict)))]
     (letfn [(quot-roman [n q]
               (if (seq q)
@@ -521,16 +522,13 @@
                   (lazy-cat [[fe (quot n fe)]] (quot-roman (rem n fe) (rest q))))))]
       (apply str (flatten (map #(repeat (last %) (dict (first %))) (quot-roman n qs)))))))
 
-;;105Identify keys and values  本地测试没有问题  网站上过不了
+;;105 Identify keys and values  本地测试没有问题  网站上过不了
 (defn iden-keys-vals
   [coll]
-  (reduce (fn [m a]
-            (if (keyword? a)
-              (assoc m a [])
-              (let [[k v] (last m)]
-                (assoc m k (conj v a)))))
-          {}
-          coll))
+   (reduce #(let [k (ffirst %2)]
+                (assoc %1 k (vec (filter (complement keyword?) (last %2)))))
+             {}
+           (filter #(keyword? (ffirst %)) (partition 2 1 (partition-by keyword coll)))))
 
 ;;107
 (defn simple-closures [n]
@@ -589,6 +587,27 @@
         ]
     (= (reduce + f) (reduce + l))))
 
+;; 116 Prime Sandwich
+(defn primes-san
+  [n]
+  (letfn [(primes []
+            (letfn [(step-primes [coll]
+                      (let [head (first coll)]
+                        (lazy-seq (cons head (step-primes (filter #(pos? (mod % head)) coll))))))]
+              (step-primes (range 2 Long/MAX_VALUE))))
+          (blance-primes []
+            (map #(second %) (filter #(= (second %) (/ (+ (first %) (last %)) 2)) (partition 3 1 (primes)))))]
+    (= n (last (take-while #(<= % n) (blance-primes))))))
+
+
+;; 埃拉托斯特尼筛法
+(defn prime []
+       (letfn [(step [coll]
+                 (let [head (first coll)]
+                   (lazy-seq (cons head (step (filter #(pos? (mod % head)) coll))))))]
+         (step (range 2 Long/MAX_VALUE))))
+
+
 ;;118 Re-implement Map
 (defn reimpl-map [f coll]
   (lazy-seq (reduce #(lazy-seq (conj %1 (f %2))) [] coll)))
@@ -606,6 +625,19 @@
                 r
                 (recur (+ r (* (rem n 10) (rem n 10))) (quot n 10)))))]
     (count (filter #(< % (sum-of-squ %)) coll))))
+
+
+;;121 Universal Computation Engine
+(defn uce
+  [[op & args]]
+  (let [operator ({'/ / '* * '+ + '- -} op)]
+    (fn [m]
+      (let [eval- (fn [exp]
+                   (if (seq? exp)
+                     ((uce exp) m)
+                     (or (m exp) exp)))]
+        (apply operator (map eval- args))))))
+
 
 ;;122 Read a binary number
 (defn read-bin-num [s]
