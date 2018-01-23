@@ -505,6 +505,21 @@
       (apply str s)
       (apply str (first s) (map #(apply str (clojure.string/upper-case (first %)) (rest %)) (rest s))))))
 
+;;103 Generating k-combinations
+(defn gen-k-comb
+  )
+
+
+;;104 Write Roman Numerals
+(defn write-roman-num
+  [n]
+  (let [dict {1000 "M", 900 "CM", 500 "D", 400 "CD", 100 "C",90 "XC", 50 "L", 40 "XL", 10 "X", 9 "IX", 5 "V", 4 "IV", 1 "I"}
+        qs (reverse (sort (keys dict)))]
+    (letfn [(quot-roman [n q]
+              (if (seq q)
+                (let [fe (first q)]
+                  (lazy-cat [[fe (quot n fe)]] (quot-roman (rem n fe) (rest q))))))]
+      (apply str (flatten (map #(repeat (last %) (dict (first %))) (quot-roman n qs)))))))
 
 ;;105Identify keys and values  本地测试没有问题  网站上过不了
 (defn iden-keys-vals
@@ -614,13 +629,12 @@
 ;;132 Insert between two items
 (defn in-be-two-items
   [p v c]
-  (if (<= (count c) 1)
-    c
-    (let [xs (map #(let [fe (first %)
-                        se (second %)]
-                    (if (apply p fe se) [fe v se] [fe se]))
-                 (partition 2 1 c))]
-     (flatten (lazy-cat (first xs) (map rest (rest xs)))))))
+  (if (seq c)
+    (let [xs (map #(if (apply p %) [(first %) v (last %)] %) (partition 2 1 c))]
+      (letfn [(step [coll]
+                (if (seq coll)
+                  (lazy-cat (drop-last (first coll)) (step (rest coll)))))]
+        (lazy-cat (step xs) [(last c)])))))
 
 (defn insert-items
   [p v c]
