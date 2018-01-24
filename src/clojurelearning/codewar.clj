@@ -66,11 +66,12 @@
       (recur (filter-rem (first coll) coll) (conj endcoll (first coll))))))
 
 (defn primes-n [n]
-  (loop [coll (range 2 n)
-         result []]
-    (if (> (first coll) (int (Math/sqrt (last coll))))
-      (concat result coll)
-      (recur (filter #(not= 0 (rem % (first coll))) coll) (conj result (first coll))))))
+  (loop [result []
+         coll (range 2 n)]
+    (let [head (first coll)]
+      (if (> head (int (Math/sqrt (last coll))))
+        (concat result coll)
+        (recur (conj result head) (filter #(pos? (rem % head)) coll))))))
 
 (def m-primes-n
   (memoize primes-n))
@@ -184,3 +185,78 @@
         sum
         (recur (* i 5) (+ sum (count (filter #(zero? (rem % 5)) coll))))))))
 
+;;Weight for weight
+(defn order-weight
+  [strng]
+  (letfn [(sum-of-str
+            [s]
+            (reduce + (map (comp #(Long/parseLong %) str) (seq s))))]
+    (let [first-sort (sort-by #(sum-of-str %) (clojure.string/split strng #" "))
+          group-coll (partition-by #(sum-of-str %) first-sort)
+          result-seq (reduce concat [] (map #(sort-by str %) group-coll))
+          fe (first result-seq)
+          coll (rest result-seq)]
+      (reduce #(apply str % " " %2) (str fe) coll))))
+
+
+;;Triangle type
+(defn triangle-type
+  [a b c]
+  (if (and (pos? a) (pos? b) (pos? c))
+    (letfn [(lows-of-socsins [a b c]
+              (/ (- (+ (* b b) (* c c)) (* a a)) (* 2 b c)))]
+      (let [x (lows-of-socsins a b c)
+            y (lows-of-socsins c a b)
+            z (lows-of-socsins b c a)
+            coll (conj [x y z])]
+        (cond
+          (some #(or (>= % 1) (<= % -1)) coll) 0
+          (every? pos? coll) 1
+          (some zero? coll) 2
+          :else 3)))
+    0))
+
+(defn triangle-type
+  [a b c]
+  (let [[a b c] (sort [a b c])
+        ab (+ (* a a) (* b b))
+        cc (* c c)]
+    (cond
+      (>= c (+ a b)) 0
+      (< cc ab) 1
+      (= cc ab) 2
+      :else 3)))
+
+(assert (== (triangle-type 7 3 2) 0))                           ; Not triangle
+(is (== (triangle-type 2 4 6) 0))                           ; Not triangle
+(is (== (triangle-type 8 5 7) 1))                           ; Acute
+(is (== (triangle-type 3 4 5) 2))                           ; Right
+(is (== (triangle-type 7 12 8) 3))
+
+(triangle-type 7 3 2) ; Not triangle
+(triangle-type 2 4 6) ; Not triangle
+(triangle-type 8 5 7) ; Acute
+(triangle-type 3 4 5) ; Right
+(triangle-type 7 12 8)
+
+(defn primess
+  []
+  )
+
+;;Emirps
+(defn find-emirp
+  [n]
+  (letfn [(primes []
+            (lazy-seq (letfn [(step [coll]
+                       (let [head (first coll)]
+                         (lazy-cat [] [head] (step (filter #(pos? (mod % head)) coll)))))]
+               (step (range 2 Long/MAX_VALUE)))))
+          (primes? [n]
+            (let [coll (range 2 (inc (Math/sqrt n)))]
+              (not-any? #(zero? (rem n %)) coll)))
+          (primes2? [n]
+            (= n (last (take-while #(<= % n) (primes)))))
+          (reverse-num [d]
+            (Integer/parseInt (apply str (reverse (seq (str d))))))]
+    (let [xs (primes-n n)]
+      [(count xs), (apply max xs), (reduce + xs)])))

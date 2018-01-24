@@ -293,7 +293,7 @@
                             (recur (+ n f) r)
                             (lazy-seq (cons n (primes-form (+ n f) r)))))
             wheel (cycle [2])]
-        primes-form 11 wheel))))
+        primes-form 11 wheel []))))
 
 
 
@@ -604,7 +604,7 @@
 (defn prime []
        (letfn [(step [coll]
                  (let [head (first coll)]
-                   (lazy-seq (cons head (step (filter #(pos? (mod % head)) coll))))))]
+                   (lazy-cat (cons head (step (filter #(pos? (mod % head)) coll))))))]
          (step (range 2 Long/MAX_VALUE))))
 
 
