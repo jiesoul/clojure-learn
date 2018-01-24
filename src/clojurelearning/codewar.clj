@@ -260,3 +260,37 @@
             (Integer/parseInt (apply str (reverse (seq (str d))))))]
     (let [xs (primes-n n)]
       [(count xs), (apply max xs), (reduce + xs)])))
+
+
+;;up AND down
+
+;;Scramblies
+(defn scramble
+  [s1 s2]
+  (letfn [(group-iden [coll]
+            (reduce (fn [m [k v]] (assoc m k (count v)))
+                    {}
+                    (group-by identity (seq coll))))]
+    (let [s2 (group-iden s2)
+          s1 (reduce (fn [m [k v]]
+                       (if (>= v (s2 k))
+                         (assoc m k v)))
+                     {}
+                     (select-keys (group-iden s1) (keys s2)))]
+      (= (count s1) (count s2)))))
+
+
+(defn scramble-
+  [s1 s2]
+  (let [f1 (frequencies s1)
+        f2 (frequencies s2)]
+    (every? (fn [[k v]] (<= v (get f1 k 0))) f2)))
+
+
+;;k-Primes
+(defn count-kprimes [k start nd]
+  ; your code
+  )
+(defn puzzle [s]
+  ; your code
+  )
