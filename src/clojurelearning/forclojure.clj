@@ -559,6 +559,32 @@
       (cons next-coll (seq-of-pro next-coll)))))
 
 
+;;112 Sequs Horribilis
+(defn seq-horr
+  [n [x & xs]]
+  (println n)
+  (println x)
+  (println xs)
+  (println (flatten x))
+  (println)
+  (if (nil? x)
+    []
+    (if (sequential? x)
+      (concat [(seq-horr n x)])
+      (if (< n x)
+        []
+        (concat [x] (seq-horr (- n x) xs))))))
+
+(defn sequs [sum [x & xs]]
+  (if (nil? x) []
+               (if (sequential? x)
+                 (concat [(sequs sum x)] (sequs (- sum (reduce + (flatten x))) xs))
+                 (if (< sum x)
+                   []
+                   (concat [x] (sequs (- sum x) xs))))))
+
+
+
 ;; 114 Global take-while
 (defn global-take-while
   [n pred coll]
@@ -658,6 +684,12 @@
     {:suit (suit (first s)) :rank (rank (second s))}))
 
 
+;;131 Sum Some Set Subsets
+(defn sum-some-set-sub
+  )
+
+
+
 ;;132 Insert between two items
 (defn in-be-two-items
   [p v c]
@@ -755,6 +787,13 @@
                             (partition 2 1 (concat [] [0] c [0])))) coll)))
 
 
+;; 148 The Big Divide
+(defn big-div
+  [n a b]
+  )
+
+
+
 ;;153 Pairwise Disjoint Sets
 (defn pair-dis-sets
   [sets]
@@ -787,6 +826,16 @@
     (op b a) :gt
     :else :eq))
 
+;;171 Intervals
+(defn intervals
+  [])
+
 ;;173 Intro to Destructuring 2
 (defn intro-to-dest )
+
+
+;;177 Balancing Brackets
+(defn balancing-brackets
+  [s]
+  )
 
