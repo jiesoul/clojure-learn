@@ -470,11 +470,10 @@
 
 ;;97Pascal's Triangle
 (defn pascal-triangle [n]
-  (if (= 1 n)
-    [1]
-    (map #(+ (first %) (second %))
-         (partition 2 1
-                    (concat [] [0] (pascal-triangle (- n 1)) [0])))))
+  (lazy-seq (if (= 1 n)
+              [1]
+              (map #(+ (first %) (second %))
+                   (partition 2 1  (concat [] [0] (pascal-triangle (- n 1)) [0]))))))
 
 ;;98Equivalence Classes
 (defn equ-class
