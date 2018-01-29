@@ -157,7 +157,6 @@
     (concat (drop i coll) (take i coll))))
 
 ;; 46
-(fn [f])
 (fn [f & maps]
   (reduce (fn [m1 m2]
             (reduce (fn [m [k v]]
@@ -561,18 +560,14 @@
 ;;112 Sequs Horribilis
 (defn seq-horr
   [n [x & xs]]
-  (println n)
-  (println x)
-  (println xs)
-  (println (flatten x))
-  (println)
   (if (nil? x)
     []
     (if (sequential? x)
       (concat [(seq-horr n x)])
       (if (< n x)
         []
-        (concat [x] (seq-horr (- n x) xs))))))
+        (concat [x] (seq-horr (- n x) xs)))))
+
 
 (defn sequs [sum [x & xs]]
   (if (nil? x) []
@@ -685,7 +680,24 @@
 
 ;;131 Sum Some Set Subsets
 (defn sum-some-set-sub
-  )
+  [& sets]
+  (letfn [(power-set [sets]
+            (if (empty? sets)
+              #{#{}}
+              (let [fv (first sets)
+                    rv (power-set (rest sets))]
+                (set (concat (map #(conj % fv) rv) rv)))))
+          (rm-empty [coll]
+            (filter #(not-empty %) coll))
+          (sum-sub-set [coll]
+            (map #(reduce + %) coll))]
+    (let [sets (map (comp #(set %) #(sum-sub-set %) #(rm-empty %) #(power-set %)) sets)
+          c1 (reduce #(+ %1 (count %2)) (count (first sets)) (rest sets))
+          c2 (count (flatten sets))
+          cc (count sets)]
+      (if (> cc 1)
+        ((complement empty?) (apply clojure.set/intersection sets))
+        true))))
 
 
 
@@ -789,7 +801,14 @@
 ;; 148 The Big Divide
 (defn big-div
   [n a b]
-  )
+  (letfn [(gcd [a b]
+            (if (zero? b)
+              a
+              (recur b (rem a b))))]
+    (filter #(and
+               (or (= (rem % a) b) (= (rem % b) a))
+               (= 1 (gcd % a) (gcd % b)))
+           (range (reduce +' (range (dec n)))))))
 
 
 
@@ -833,8 +852,29 @@
 (defn intro-to-dest )
 
 
+(def s "class Test {
+      public static void main(String[] args) {
+        System.out.println(\"Hello world.\");
+      }
+    }")
+
+(def sn "([]([(()){()}(()(()))(([[]]({}()))())]((((()()))))))")
+
 ;;177 Balancing Brackets
 (defn balancing-brackets
   [s]
-  )
+  (let [coll (seq (apply str (re-seq #"\(|\{|\[|\]|\}|\)" s)))]
+    (empty? (reduce (fn [stack s]
+                      (let [fv (peek stack)]
+                        (cond
+                          (nil? fv) (conj stack s)
+                          (and (= fv \{) (= s \})) (pop stack)
+                          (and (= fv \[) (= s \])) (pop stack)
+                          (and (= fv \() (= s \))) (pop stack)
+                          :else
+                          (conj stack s))))
+                    []
+                    coll))))
+
+(balancing-brackets s)
 
