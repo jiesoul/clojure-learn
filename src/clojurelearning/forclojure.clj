@@ -876,5 +876,3 @@
                     []
                     coll))))
 
-(balancing-brackets s)
-

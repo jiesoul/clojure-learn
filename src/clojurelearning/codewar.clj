@@ -331,10 +331,10 @@
   (letfn [(triangle- []
             (iterate (fn [c]
                        (map #(+' (first %) (last %)) (partition 2 1 (concat [0] c [0])))) [1]))
-          (take-coll [n p]
-            (map #(+ (nth % p) (nth % (inc p))) (filter #(> (count %) n) (take (inc n) (triangle-)))))]
-    (let [xs (take-coll n p)]
-      (first xs))))
+          (take-coll [n]
+             (nth (triangle-) n))]
+    (let [xs (take-coll n)]
+      [xs])))
 
 (diagonal 7 0)
 (diagonal 7 1)
