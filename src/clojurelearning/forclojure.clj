@@ -204,7 +204,7 @@
 (defn count-occ [coll]
   (let [m (group-by identity coll)]
     (reduce (fn [m1 [k v]]
-           (assoc m1 k (count v)))
+              (assoc m1 k (count v)))
             {}
             m)))
 
@@ -229,7 +229,7 @@
 ;;60
 (defn reductions-
   ([f coll]
-    (reductions- f (first coll) (rest coll)))
+   (reductions- f (first coll) (rest coll)))
   ([f r coll]
    (lazy-seq (if (empty? coll)
                (list r)
@@ -330,9 +330,9 @@
   (if (= 1 n)
     1
     (count (filter #(= 1 ((fn gcd [a b]
-                      (if (zero? b)
-                        a
-                        (recur b (mod a b)))) % n)) (range 1 n)))))
+                            (if (zero? b)
+                              a
+                              (recur b (mod a b)))) % n)) (range 1 n)))))
 
 ;;77
 (defn anagram-finder [coll]
@@ -342,18 +342,18 @@
 ;;78
 (defn trampoline-
   ([f]
-    (let [r (f)]
-      (if (fn? r)
-        (recur r)
-        r)))
+   (let [r (f)]
+     (if (fn? r)
+       (recur r)
+       r)))
   ([f & args]
-    (trampoline- #(apply f args))))
+   (trampoline- #(apply f args))))
 
 ;;79
 (defn min-path [coll]
   (reduce #((fn [c1 c2]
               (loop [r []
-                     ])) %1 %2)
+                      %1 %2])))
           [[(first coll)] [(first coll)]] (rest coll)))
 
 ;;80 Perfect Numbers
@@ -368,8 +368,8 @@
 ;;82
 (defn word-chain [st]
   (let [coll (map set (sort-by str st))]
-    (letfn [(match? [ff coll]
-              )])))
+    (letfn [(match? [ff coll])])))
+
 
 ;;83
 (defn half-truth [& args]
@@ -444,8 +444,8 @@
         (coll? l) (tree? l)
         (coll? r) (tree? r)
         :else
-        false
-        ))
+        false))
+
     false))
 
 ;;96 Beauty is Symmetry
@@ -482,7 +482,7 @@
 ;;99 Product Digits
 (defn pro-digits [a b]
   (loop [x (* a b)
-            r ()]
+         r ()]
        (if (zero? x)
          r
          (recur (quot x 10) (conj r (rem x 10))))))
@@ -523,10 +523,10 @@
 ;;105 Identify keys and values  本地测试没有问题  网站上过不了
 (defn iden-keys-vals
   [coll]
-   (reduce #(let [k (ffirst %2)]
-                (assoc %1 k (vec (filter (complement keyword?) (last %2)))))
-             {}
-           (filter #(keyword? (ffirst %)) (partition 2 1 (partition-by keyword coll)))))
+  (reduce #(let [k (ffirst %2)]
+             (assoc %1 k (vec (filter (complement keyword?) (last %2))))
+             {})
+          (filter #(keyword? (ffirst %)) (partition 2 1 (partition-by keyword coll)))))
 
 ;;107
 (defn simple-closures [n]
@@ -566,8 +566,7 @@
       (concat [(seq-horr n x)])
       (if (< n x)
         []
-        (concat [x] (seq-horr (- n x) xs)))))
-
+        (concat [x] (seq-horr (- n x) xs))))))
 
 (defn sequs [sum [x & xs]]
   (if (nil? x) []
@@ -579,7 +578,7 @@
 
 
 
-;; 114 Global take-while
+;; 114 global take-while
 (defn global-take-while
   [n pred coll]
   (lazy-seq (letfn [(take0 [pred coll]
@@ -596,18 +595,18 @@
                                     (global-take-while (dec n) pred (drop (inc co) coll)))))))))
 
 
-;;115 The Balance of N
+;;115 the balance of n
 (defn blance-of-n
   [n]
   (let [coll (map (comp #(Integer/parseInt %) str) (str n))
         c (count coll)
         m (+ (quot c 2) (rem c 2))
         f (take m coll)
-        l (take m (reverse coll))
-        ]
+        l (take m (reverse coll))]
+
     (= (reduce + f) (reduce + l))))
 
-;; 116 Prime Sandwich
+;; 116 prime sandwich
 (defn primes-san
   [n]
   (letfn [(primes []
@@ -628,7 +627,7 @@
          (step (range 2 Long/MAX_VALUE))))
 
 
-;;118 Re-implement Map
+;;118 re-implement map
 (defn reimpl-map [f coll]
   (lazy-seq (reduce #(lazy-seq (conj %1 (f %2))) [] coll)))
 
@@ -636,7 +635,7 @@
   (lazy-seq (when (seq coll)
               (cons (f (first coll)) (re-impl-map f (rest coll))))))
 
-;;120 Sum of square of digits
+;;120 sum of square of digits
 (defn sum-of-squ-dig [coll]
   (letfn [(sum-of-squ [n]
             (loop [r 0
@@ -647,7 +646,7 @@
     (count (filter #(< % (sum-of-squ %)) coll))))
 
 
-;;121 Universal Computation Engine
+;;121 universal computation engine
 (defn uce
   [[op & args]]
   (let [operator ({'/ / '* * '+ + '- -} op)]
@@ -659,7 +658,7 @@
         (apply operator (map eval- args))))))
 
 
-;;122 Read a binary number
+;;122 read a binary number
 (defn read-bin-num [s]
   (loop [x (map (comp #(Integer/parseInt %) str) (seq s))
          r 0]
@@ -667,18 +666,18 @@
       r
       (recur (rest x) (+ r (reduce * (first x) (repeat (dec (count x)) 2)))))))
 
-;;Through the Looking Class
+;;through the looking class
 (defn thr-look-class [])
 
 
-;; 128 Recognize Playing Cards
+;; 128 recognize playing cards
 (defn rec-play-cards [s]
-  (let [suit (zipmap [\D \H \C \S] [:diamond :heart :club :spade])
-        rank (zipmap [\2 \3 \4 \5 \6 \7 \8 \9 \T \J \Q \K \A] (range 13))]
+  (let [suit (zipmap [\d \h \c \s] [:diamond :heart :club :spade])
+        rank (zipmap [\2 \3 \4 \5 \6 \7 \8 \9 \t \j \q \k \a] (range 13))]
     {:suit (suit (first s)) :rank (rank (second s))}))
 
 
-;;131 Sum Some Set Subsets
+;;131 sum some set subsets
 (defn sum-some-set-sub
   [& sets]
   (letfn [(power-set [sets]
@@ -701,7 +700,7 @@
 
 
 
-;;132 Insert between two items
+;;132 insert between two items
 (defn in-be-two-items
   [p v c]
   (if (seq c)
@@ -739,31 +738,39 @@
     (nil? (key map))
     false))
 
-;;135 Infix Calculator
+;;135 infix calculator
 (defn infix-cal [& args]
   (reduce (fn [a [op b]]
             (op a b))
           (first args)
           (partition 2 (rest args))))
 
-;;137 Digits and bases
+;;137 digits and bases
 (defn dig-base
   [dig d]
-   (lazy-seq
-       (if (< dig d)
-         [dig]
-         (concat (dig-base (quot dig d) d) [(rem dig d)]))))
+  (lazy-seq
+    (if (< dig d)
+      [dig]
+      (concat (dig-base (quot dig d) d) [(rem dig d)]))))
 
-;;143 dot product
+;; 141 tricky card games
+(defn card-game
+  [card]
+  (fn [coll]
+    (let [card (if (nil? card) (get (first coll) :suit) card)]
+      (filter #(= (:suit %) card) coll))))
+
+
+  ;;143 dot product
 (defn dot-pro [v1 v2]
   (reduce + (loop [r []
-          v1 v1
-          v2 v2]
-     (if (empty? v1)
-       r
-       (recur (conj r (* (first v1) (first v2))) (rest v1) (rest v2))))))
+                   v1 v1
+                   v2 v2]
+              (if (empty? v1)
+                r
+                (recur (conj r (* (first v1) (first v2))) (rest v1) (rest v2))))))
 
-;;144Oscilrate
+;;144 oscilrate
 (defn oscilrate
   [d & fs]
   (reductions #(%2 %1) d (cycle fs)))
@@ -782,7 +789,7 @@
                  v
                  (rest xs)))))))
 
-;;146 Trees into tables 这个我脑子抽了
+;;146 trees into tables 这个我脑子抽了
 (defn tree-into-tab
   [m]
   (into
@@ -791,14 +798,14 @@
           [vk vv] v]
       (vec [[k vk] vv]))))
 
-;;147 Pascal's Trapezoid
+;;147 pascal's trapezoid
 (defn pascal-trap [coll]
   (lazy-seq (iterate (fn [c]
                        (map #(+' (first %) (second %))
                             (partition 2 1 (concat [] [0] c [0])))) coll)))
 
 
-;; 148 The Big Divide
+;; 148 the big divide
 (defn big-div
   [n a b]
   (letfn [(gcd [a b]
@@ -812,7 +819,7 @@
 
 
 
-;;153 Pairwise Disjoint Sets
+;;153 pairwise disjoint sets
 (defn pair-dis-sets
   [sets]
   (= (count (reduce #(into %1 %2) #{} sets))
@@ -822,7 +829,7 @@
 (defn map-default [v coll]
   (zipmap coll (repeat (count coll) v)))
 
-;;157 Indexing Sequences
+;;157 indexing sequences
 (defn index-seq [coll]
   (loop [r []
          coll coll
@@ -831,7 +838,7 @@
       r
       (recur (conj r [(first coll) i]) (rest coll) (inc i)))))
 
-;;158 Decurry 还没有理解 TODO
+;;158 decurry 还没有理解 todo
 (defn decurry
   [f]
   (fn [& args]
@@ -844,23 +851,23 @@
     (op b a) :gt
     :else :eq))
 
-;;171 Intervals
+;;171 intervals
 (defn intervals
   [])
 
-;;173 Intro to Destructuring 2
-(defn intro-to-dest )
+;;173 intro to destructuring 2
+(defn intro-to-dest [])
 
 
-(def s "class Test {
-      public static void main(String[] args) {
-        System.out.println(\"Hello world.\");
+(def s "class test {
+      public static void main(string[] args) {
+        system.out.println(\"hello world.\");
       }
     }")
 
 (def sn "([]([(()){()}(()(()))(([[]]({}()))())]((((()()))))))")
 
-;;177 Balancing Brackets
+;;177 balancing brackets
 (defn balancing-brackets
   [s]
   (let [coll (seq (apply str (re-seq #"\(|\{|\[|\]|\}|\)" s)))]
@@ -875,4 +882,3 @@
                           (conj stack s))))
                     []
                     coll))))
-
