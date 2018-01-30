@@ -37,25 +37,36 @@
 ;Note:
 ;Keep an eye on performance.
 
-(defn jo [n]
-  (cond
-    (zero? n) 0
-    :else
-    (- n (an (- n 1)))))
+(declare j a)
 
-(defn an [n]
+(defn j [n]
+  (if (zero? n)
+    0
+    (- n (a (j (dec n))))))
+
+(defn a [n]
   (if (zero? n)
     1
-    (- n (jo (dec n)))))
+    (- n (j (a (dec n))))))
+
+(def j (memoize j))
+(def a (memoize a))
 
 (defn john [n]
-  (concat [0] (ann (dec n))))
+  (take n (map j (iterate inc 0))))
 
 (defn ann [n]
-  (map #(an %) (range n)))
+  (take n (map a (iterate inc 0))))
 
 (defn sum-john [n]
-  (reduce + (john (dec n))))
+   (reduce + (john n)))
 
 (defn sum-ann [n]
-  (reduce + (ann (dec n))))
+   (reduce + (ann n)))
+
+(defn fib []
+  (map first (iterate (fn [[a b]] [b (+ a b)]) [0N 1N])))
+
+(def lots-of-fibs (take 1000000 (fib)))
+
+(def johns (take 150 (sum-john 150)))
