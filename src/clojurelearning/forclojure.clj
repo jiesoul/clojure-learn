@@ -757,8 +757,11 @@
 (defn card-game
   [card]
   (fn [coll]
-    (let [card (if (nil? card) (get (first coll) :suit) card)]
-      (filter #(= (:suit %) card) coll))))
+    (let [card (if (nil? card) (get (first coll) :suit) card)
+          xs (filter #(= (:suit %) card) coll)
+          maxr (apply max (map :rank xs))
+          xs (filter #(= maxr (:rank %)) xs)]
+      (first xs))))
 
 
   ;;143 dot product
@@ -817,7 +820,24 @@
                (= 1 (gcd % a) (gcd % b)))
            (range (reduce +' (range (dec n)))))))
 
+(defn back [n]
+  (Long/parseLong (apply str (reverse (seq (str n))))))
 
+(defn back- [n]
+  (loop [r []
+         n n]
+    (if (zero? n)
+      r
+      (recur (conj r (rem n 10)) (quot n 10)))))
+
+;;150 Palindromic Numbers
+(defn pali-nums
+  [n]
+  (letfn [(back [n]
+            (Long/parseLong (apply str (reverse (seq (str n))))))
+          (pali [coll]
+            (filter #(= % (back %)) coll))]
+    (pali (range n Long/MAX_VALUE))))
 
 ;;153 pairwise disjoint sets
 (defn pair-dis-sets
