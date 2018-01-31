@@ -824,20 +824,34 @@
   (Long/parseLong (apply str (reverse (seq (str n))))))
 
 (defn back- [n]
-  (loop [r []
+  (loop [r 0
          n n]
-    (if (zero? n)
-      r
-      (recur (conj r (rem n 10)) (quot n 10)))))
+    (let [re (rem n 10)
+          qe (quot n 10)]
+      (if (zero? qe)
+        (+ (* r 10) re)
+        (recur (+ (* r 10) re) (quot n 10))))))
 
 ;;150 Palindromic Numbers
 (defn pali-nums
   [n]
-  (letfn [(back [n]
-            (Long/parseLong (apply str (reverse (seq (str n))))))
-          (pali [coll]
-            (filter #(= % (back %)) coll))]
-    (pali (range n Long/MAX_VALUE))))
+  (letfn [(back- [n]
+            (loop [r 0
+                   n n]
+              (let [re (rem n 10)
+                    qe (quot n 10)]
+                (if (zero? qe)
+                  (+ (* r 10) re)
+                  (recur (+ (* r 10) re) (quot n 10))))))
+          (pali [n]
+            (filter #(= % (back- %)) (iterate inc n)))]
+     (pali n)))
+
+(defn back-q [[num dig]]
+  (loop [a num, r (if (= dig :even) num (quot num 10))]
+    (if (= 0 r)
+      a
+      (recur (+ (* a 10) (mod r 10)), (quot r 10)))))
 
 ;;153 pairwise disjoint sets
 (defn pair-dis-sets
@@ -870,6 +884,33 @@
     (op a b) :lt
     (op b a) :gt
     :else :eq))
+
+(defn inf-seq
+  ([]
+   (concat [] (inf-seq 0)))
+  ([n]
+    (lazy-seq (cons n (inf-seq (inc n))))))
+
+;; 168 Infinite Matrix
+(defn inf-mat
+  ([f]
+   (letfn [(inf-seq
+             ([]
+              (concat [] (inf-seq 0)))
+             ([n]
+              (lazy-seq (cons n (inf-seq (inc n))))))
+           (sub-seq [f s]
+             (map #(f s %) (inf-seq)))]
+     (map #(sub-seq f %) (inf-seq))))
+  ([f m n]
+   (letfn [(rm-n [n coll]
+             (lazy-seq (if (zero? n)
+                         coll
+                         (recur (dec n) (rest coll)))))]
+     (map #(rm-n n %) (rm-n m (inf-mat f)))))
+  ([f m n s t]
+   (take s (map #(take t %) (inf-mat f m n)))))
+
 
 ;;171 intervals
 (defn intervals
