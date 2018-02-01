@@ -835,17 +835,51 @@
 ;;150 Palindromic Numbers
 (defn pali-nums
   [n]
-  (letfn [(back- [n]
-            (loop [r 0
-                   n n]
-              (let [re (rem n 10)
-                    qe (quot n 10)]
-                (if (zero? qe)
-                  (+ (* r 10) re)
-                  (recur (+ (* r 10) re) (quot n 10))))))
+  (letfn [
           (pali [n]
             (filter #(= % (back- %)) (iterate inc n)))]
      (pali n)))
+
+
+(defn decode [n] (if (< n 10) [n] (conj (decode (quot n 10)) (rem n 10))))
+(defn encode [x] (reduce #(+ (* % 10) %2) 0 x))
+(defn next-pal [n]
+          (let [N (decode n)
+                l (count N)
+                d (quot l 2)
+                H (take d N)
+                H1 (decode (inc (encode H)))
+                Hr (reverse H)
+                h (encode Hr)
+                p (nth N d)
+                t (encode (take-last d N))]
+            (encode (cond
+                      (and (even? l) (>= h t)) (concat H Hr)
+                      (and (odd? l) (>= h t)) (concat H [p] Hr)
+                      (even? l) (concat H1 (reverse H1))
+                      (and (odd? l) (< p 9)) (concat H [(inc p)] Hr)
+                      :else (concat H1 [0] (reverse H1))))))
+
+(defn pa [n]
+  (letfn [(decode [n] (if (< n 10) [n] (conj (decode (quot n 10)) (rem n 10))))
+          (encode [x] (reduce #(+ (* % 10) %2) 0 x))
+          (next-pal [n]
+            (let [N (decode n)
+                  l (count N)
+                  d (quot l 2)
+                  H (take d N)
+                  H1 (decode (inc (encode H)))
+                  Hr (reverse H)
+                  h (encode Hr)
+                  p (nth N d)
+                  t (encode (take-last d N))]
+              (encode (cond
+                        (and (even? l) (>= h t)) (concat H Hr)
+                        (and (odd? l) (>= h t)) (concat H [p] Hr)
+                        (even? l) (concat H1 (reverse H1))
+                        (and (odd? l) (< p 9)) (concat H [(inc p)] Hr)
+                        :else (concat H1 [0] (reverse H1))))))]
+    (iterate (comp next-pal inc) (next-pal n))))
 
 (defn back-q [[num dig]]
   (loop [a num, r (if (= dig :even) num (quot num 10))]
@@ -885,31 +919,29 @@
     (op b a) :gt
     :else :eq))
 
-(defn inf-seq
-  ([]
-   (concat [] (inf-seq 0)))
-  ([n]
-    (lazy-seq (cons n (inf-seq (inc n))))))
-
 ;; 168 Infinite Matrix
-(defn inf-mat
+(defn infi-mat
   ([f]
    (letfn [(inf-seq
              ([]
-              (concat [] (inf-seq 0)))
+               (concat [] (inf-seq 0N)))
              ([n]
-              (lazy-seq (cons n (inf-seq (inc n))))))
-           (sub-seq [f s]
-             (map #(f s %) (inf-seq)))]
-     (map #(sub-seq f %) (inf-seq))))
+               (lazy-seq (cons n (inf-seq (inc n))))))
+           (sub-seq [f]
+             (map (fn [n] (map #(f n %) (inf-seq))) (inf-seq)))]
+     (sub-seq f)))
   ([f m n]
-   (letfn [(rm-n [n coll]
-             (lazy-seq (if (zero? n)
-                         coll
-                         (recur (dec n) (rest coll)))))]
-     (map #(rm-n n %) (rm-n m (inf-mat f)))))
+    (letfn [(drop- [n coll]
+              (let [step (fn [n coll]
+                           (let [s (seq coll)]
+                             (if (and (pos? n) s)
+                               (recur (dec n) (rest coll))
+                               s)))]
+                (lazy-seq (step n coll))))]
+      (map #(drop- n %) (drop- m (infi-mat f)))))
   ([f m n s t]
-   (take s (map #(take t %) (inf-mat f m n)))))
+    (take s (map #(take t %) (infi-mat f m n)))))
+
 
 
 ;;171 intervals
