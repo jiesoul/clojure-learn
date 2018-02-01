@@ -321,26 +321,5 @@
   )
 
 
-(defn triangle- []
-           (iterate (fn [c]
-                      (map #(+' (first %) (last %)) (partition 2 1 (concat [0] c [0])))) [1]))
 
-;;easy-diagonal
-(defn diagonal
-  [n p]
-  (letfn [(triangle- []
-            (iterate (fn [c]
-                       (map #(+' (first %) (last %)) (partition 2 1 (concat [0] c [0])))) [1]))
-          (take-coll [n]
-             (nth (triangle-) n))]
-    (let [xs (take-coll n)]
-      [xs])))
-
-(diagonal 7 0)
-(diagonal 7 1)
-(diagonal 7 2)
-(diagonal 7 3)
-(diagonal 7 4)
-(time (diagonal 7000 5))
-(time (diagonal 70000 7))
 

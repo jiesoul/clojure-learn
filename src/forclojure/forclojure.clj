@@ -1,5 +1,3 @@
-(ns clojurelearning.forclojure)
-
 ; #19 last Element
 (defn last-element [coll]
   (if (<= (count coll) 1)
@@ -958,7 +956,7 @@
       }
     }")
 
-(def sn "([]([(()){()}(()(()))(([[]]({}()))())]((((()()))))))")
+;(def sn "([]([(()){()}(()(()))(([[]]({}()))())]((((()()))))))")
 
 ;;177 balancing brackets
 (defn balancing-brackets
