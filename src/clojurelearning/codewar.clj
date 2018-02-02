@@ -59,11 +59,11 @@
       (recur (rest l)))))
 
 (defn primes-gen [n]
-  (loop [coll (range 2 n)
-         endcoll []]
-    (if (> (first coll) (int (Math/sqrt (last coll))))
-      (concat coll coll)
-      (recur (filter-rem (first coll) coll) (conj endcoll (first coll))))))
+  (lazy-seq (loop [coll    (range 2 n)
+                   endcoll []]
+              (if (> (first coll) (int (Math/sqrt (last coll))))
+                (concat coll coll)
+                (recur (filter-rem (first coll) coll) (conj endcoll (first coll)))))))
 
 (defn primes-n [n]
   (loop [result []
@@ -88,12 +88,6 @@
 
 (def step
   (memoize prime))
-
-(defn z-primes
-  ([] (concat (z-primes (range 2 Long/MAX_VALUE))))
-  ([coll]
-    (lazy-seq
-      (cons ))))
 
 (defn finance-1 [n]
   (loop [start 0

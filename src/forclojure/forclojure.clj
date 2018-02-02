@@ -621,7 +621,7 @@
 (defn prime []
        (letfn [(step [coll]
                  (let [head (first coll)]
-                   (lazy-cat (cons head (step (filter #(pos? (mod % head)) coll))))))]
+                   (lazy-cat (cons head (step (filter #(pos? (rem % head)) coll))))))]
          (step (range 2 Long/MAX_VALUE))))
 
 
@@ -861,7 +861,7 @@
                         (and (odd? l) (>= lv rv)) (concat ls [mp] lr)
                         (even? l) (concat ls1 (reverse ls1))
                         (and (odd? l) (< mp 9)) (concat ls [(inc mp)] lr)
-                        :else (concat ls [0] (reverse ls))))))]
+                        :else (concat ls1 [0] (reverse ls1))))))]
     (iterate #((comp next-num inc) %) (next-num n))))
 
 (defn pa [n]
@@ -890,6 +890,10 @@
     (if (= 0 r)
       a
       (recur (+ (* a 10) (mod r 10)), (quot r 10)))))
+
+;; 152 Latin Square Slicing
+
+
 
 ;;153 pairwise disjoint sets
 (defn pair-dis-sets
@@ -950,7 +954,19 @@
 
 ;;171 intervals
 (defn intervals
-  [])
+  [coll]
+  (let [coll (sort coll)
+        c (first coll)
+        l (last coll)]
+    (if (empty? coll)
+      coll
+      (partition 2 (concat [c]
+                          (flatten
+                            (filter #(> (- (second %) (first %)) 1)
+                                    (partition 2 1 coll)))
+                          [l])))))
+
+(def c [19 4 17 1 3 10 2 13 13 2 16 4 2 15 13 9 6 14 2 11])
 
 ;;173 intro to destructuring 2
 (defn intro-to-dest [])
