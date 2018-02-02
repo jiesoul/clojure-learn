@@ -818,6 +818,8 @@
                (= 1 (gcd % a) (gcd % b)))
            (range (reduce +' (range (dec n)))))))
 
+;;150 Palindromic Numbers
+
 (defn back [n]
   (Long/parseLong (apply str (reverse (seq (str n))))))
 
@@ -830,7 +832,6 @@
         (+ (* r 10) re)
         (recur (+ (* r 10) re) (quot n 10))))))
 
-;;150 Palindromic Numbers
 (defn pali-nums
   [n]
   (letfn [
@@ -838,25 +839,30 @@
             (filter #(= % (back- %)) (iterate inc n)))]
      (pali n)))
 
-
-(defn decode [n] (if (< n 10) [n] (conj (decode (quot n 10)) (rem n 10))))
-(defn encode [x] (reduce #(+ (* % 10) %2) 0 x))
-(defn next-pal [n]
-          (let [N (decode n)
-                l (count N)
-                d (quot l 2)
-                H (take d N)
-                H1 (decode (inc (encode H)))
-                Hr (reverse H)
-                h (encode Hr)
-                p (nth N d)
-                t (encode (take-last d N))]
-            (encode (cond
-                      (and (even? l) (>= h t)) (concat H Hr)
-                      (and (odd? l) (>= h t)) (concat H [p] Hr)
-                      (even? l) (concat H1 (reverse H1))
-                      (and (odd? l) (< p 9)) (concat H [(inc p)] Hr)
-                      :else (concat H1 [0] (reverse H1))))))
+(defn pal-nums [n]
+  (letfn [(decode [n]
+            (if (< n 10)
+              [n]
+              (conj (decode (quot n 10)) (rem n 10))))
+          (encode [coll]
+            (reduce #(+ (* % 10) %2) 0 coll))
+          (next-num [n]
+            (let [ns (decode n)
+                  l (count ns)
+                  m (quot l 2)
+                  ls (take m ns)
+                  lr (reverse ls)
+                  lv (encode lr)
+                  mp (nth ns m)
+                  rv (encode (take-last m ns))
+                  ls1 (decode (inc (encode ls)))]
+              (encode (cond
+                        (and (even? l) (>= lv rv)) (concat ls lr)
+                        (and (odd? l) (>= lv rv)) (concat ls [mp] lr)
+                        (even? l) (concat ls1 (reverse ls1))
+                        (and (odd? l) (< mp 9)) (concat ls [(inc mp)] lr)
+                        :else (concat ls [0] (reverse ls))))))]
+    (iterate #((comp next-num inc) %) (next-num n))))
 
 (defn pa [n]
   (letfn [(decode [n] (if (< n 10) [n] (conj (decode (quot n 10)) (rem n 10))))
