@@ -807,19 +807,22 @@
 
 
 ;; 148 the big divide
+;; Write a function which calculates the sum of all natural numbers under n (first argument) which are evenly divisible by at least one of a and b (second and third argument). Numbers a and b are guaranteed to be coprimes.
+
+; Note: Some test cases have a very large n, so the most obvious solution will exceed the time limit.
 (defn big-div
   [n a b]
-  (letfn [(gcd [a b]
-            (if (zero? b)
-              a
-              (recur b (rem a b))))]
-    (filter #(and
-               (or (= (rem % a) b) (= (rem % b) a))
-               (= 1 (gcd % a) (gcd % b)))
-           (range (reduce +' (range (dec n)))))))
+  (letfn [(sum- [n]
+            (/ (*' (inc n) n) 2))]
+    (let [n (dec n)
+          aq (sum- (quot n a))
+          bq (sum- (quot n b))
+          ab (*' a b)
+          abq (sum- (quot n ab))]
+      (- (+ (*' aq a) (*' bq b)) (*' abq ab)))))
+
 
 ;;150 Palindromic Numbers
-
 (defn back [n]
   (Long/parseLong (apply str (reverse (seq (str n))))))
 
