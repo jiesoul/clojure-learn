@@ -25,19 +25,25 @@
 
 (def m-sum- (memoize sum-))
 
+(defn gen [n p]
+  (letfn [(step [coll n p]
+            (if (zero? p)
+              coll
+              (recur (reductions +' (take n coll)) (dec n) (dec p))))]
+    (lazy-seq (step (repeat (inc n) 1) n p))))
+
 ;;easy-diagonal
 (defn diagonal
   [n p]
-  (let [n (+ n 1)
-        xs (drop (dec n) (map #(nth % p 0) (take n (triangle-))))]
-    (first xs)))
+  (let [xs (gen n p)]
+    (reduce +' xs)))
 
 
 (diagonal 7 0)
 (diagonal 7 1)
 (diagonal 7 2)
 (diagonal 20 3)
-(diagonal 2000 3)
+(diagonal 20 4)
 (time (diagonal 7000 5))
 (time (diagonal 5566 151))
 (time (diagonal 9523 228))
