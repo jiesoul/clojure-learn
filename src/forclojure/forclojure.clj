@@ -1014,3 +1014,15 @@
 ; we only consider '(' and ')', but the answer is similar if you work with only {} or only [].
 ; There is an interesting pattern in the numbers!
 
+; TODO 未完全明白
+(defn parentheses
+  ([n] (parentheses n n))
+  ([l r]
+    (if (and (zero? l) (zero? r))
+      #{""}
+      (clojure.set/union
+        (if (> l 0)
+          (set (map #(str "(" %) (parentheses (dec l) r)))
+          #{})
+        (if (> r l)
+          (set (map #(str ")" %) (parentheses l (dec r)))))))))
