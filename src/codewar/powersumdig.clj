@@ -13,16 +13,33 @@
 ;Happy coding!
 
 (defn decode [n]
-  (loop [r []
+  (loop [r 0
          n n]
     (if (zero? n)
       r
-      (recur (conj r (rem n 10)) (quot n 10)))))
+      (recur (+' r (rem n 10)) (quot n 10)))))
+
+(defn sort-parts [coll]
+  (lazy-seq
+    (loop [[part & parts] coll]
+      (if-let [[pivot & xs] (seq part)]
+        (let [smaller? #(< % pivot)]
+          (recur (list*
+                   (filter smaller? xs)
+                   pivot
+                   (remove smaller? xs)
+                   parts)))
+        (when-let [[x & parts] parts]
+          (cons x (sort-parts parts)))))))
+
+(defn qsort [xs]
+  (sort-parts (list xs)))
 
 (defn power-sum-dig-term
   [n]
-  (letfn [(step [n]
-            (loop [i 1
-                   ]
-              (if (= n i)
-                )))]))
+  (let [xs (for [x (range 2 64)
+                 y (range 2 180)]
+             [(reduce *' (repeat x y)) y])
+        ys (map first (filter #(= (decode (first %)) (second %)) xs))
+        coll (qsort ys)]
+    (drop (dec n) coll)))
