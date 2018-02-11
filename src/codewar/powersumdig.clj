@@ -12,13 +12,6 @@
 ;
 ;Happy coding!
 
-(defn decode [n]
-  (loop [r 0
-         n n]
-    (if (zero? n)
-      r
-      (recur (+' r (rem n 10)) (quot n 10)))))
-
 (defn sort-parts [coll]
   (lazy-seq
     (loop [[part & parts] coll]
@@ -35,11 +28,18 @@
 (defn qsort [xs]
   (sort-parts (list xs)))
 
+(defn decode [n]
+  (loop [r 0
+         n n]
+    (if (zero? n)
+      r
+      (recur (+' r (rem n 10)) (quot n 10)))))
+
 (defn power-sum-dig-term
   [n]
   (let [xs (for [x (range 2 64)
                  y (range 2 180)]
              [(reduce *' (repeat x y)) y])
         ys (map first (filter #(= (decode (first %)) (second %)) xs))
-        coll (qsort ys)]
-    (drop (dec n) coll)))
+        coll (sort ys)]
+    (nth coll (dec n))))
