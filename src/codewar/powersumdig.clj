@@ -38,8 +38,10 @@
 (defn power-sum-dig-term
   [n]
   (let [xs (for [x (range 2 64)
-                 y (range 2 180)]
-             [(reduce *' (repeat x y)) y])
+                 y (range 2 180)
+                 :let [v (Math/pow y x)]
+                 :when (< v (Math/pow 2 63))]
+             [(long v) y])
         ys (map first (filter #(= (decode (first %)) (second %)) xs))
         coll (sort ys)]
     (nth coll (dec n))))
