@@ -28,4 +28,4 @@
 
 (defn lookup [board pos]
   (let [[file rank] pos]
-    (board (index file rank))))up (initial-board) "a1")
+    (board (index file rank)))) (initial-board) "a1")

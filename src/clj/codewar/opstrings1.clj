@@ -1,18 +1,31 @@
 (ns codewar.opstrings1)
 
-(defn rot [strng]
-  (apply str (reverse strng)))
+(defn split-str [strng]
+  (let [xs (clojure.string/split strng #"\n")
+        step (fn [r coll]
+               (if (empty? (first coll))
+                 r
+                 (recur (conj r (map first coll)) (map rest coll))))]
+    (step [] xs)))
 
-(defn selfie-and-rot [strng]
-  (let [a (clojure.string/split strng #"\n")
-        dot (fn [s]
-              (apply str (repeat (count s) ".")))
-        b (reduce #(str %1 %2 (dot %2) "\n")
-                  (str (first a) (dot (first a)) "\n")
-                  (rest a))
-        c (apply str b)]
-    (apply str (concat c (rest (rot c))))))
+(defn join-str [coll]
+  (apply str (reduce #(concat %1 ["\n"] %2) (first coll) (rest coll))))
+
+(defn rot-90-clock [strng]
+  (->> strng
+       split-str
+       (map reverse)
+       join-str)
+  )
+(defn diag-1-sym [strng]
+  (->> strng
+       split-str
+       join-str))
+(defn selfie-and-diag1 [strng]
+  (->> strng
+       split-str
+       (map #(concat %1 ["|"] %2) (clojure.string/split strng #"\n"))
+       join-str)
+  )
 (defn oper [fct s]
   (fct s))
-
-(def s "abcd\nefgh\nijkl\nmnop")
