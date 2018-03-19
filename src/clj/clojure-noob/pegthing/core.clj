@@ -70,3 +70,13 @@
 (connect-down-left {} 15 1)
 
 (connect-down-right {} 15 3)
+
+(defn add-pos
+  [board max-pos pos]
+  (let [pegged-board (assoc-in board [pos :pegged] true)]
+    (reduce (fn [new-board connection-creation-fn]
+              (connection-creation-fn new-board max-pos pos))
+            pegged-board
+            [connect-right connect-down-left connect-down-right])))
+(add-pos {} 15 1)
+
