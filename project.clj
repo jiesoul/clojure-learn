@@ -6,7 +6,9 @@
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [org.clojure/clojurescript "1.9.946"]
                  [org.clojure/core.unify "0.5.7"]
-                 [org.clojure/core.logic "0.8.11"]]
+                 [org.clojure/core.logic "0.8.11"]
+                 [org.clojure/core.async "0.4.474"]]
+
   :source-paths ["src/clj"]
   :plugins [[lein-cljsbuild "1.1.7"]]
   :cljsbuild
