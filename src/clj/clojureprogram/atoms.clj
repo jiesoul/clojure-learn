@@ -69,11 +69,11 @@
 (swap! sarah identity)
 (swap! sarah assoc :wears-glasses? true)
 (swap! sarah update-in [:age] inc)
-(println @histor)
+(println @history)
 
 (def n (atom 1 :validator pos?))
 (swap! n + 500)
-(swap! n - 1000)
+;; (swap! n - 1000)
 
 (def sarah (atom {:name "Sarah" :age 25}))
 (set-validator! sarah :age)
@@ -82,3 +82,5 @@
                            (throw (IllegalStateException. "People must have `:age`s!"))))
 
 (swap! sarah dissoc :age)
+
+
