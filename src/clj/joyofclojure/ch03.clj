@@ -17,6 +17,12 @@
   (println "more are:" more)
   (println "all are:" all))
 
+(def date-regex #"(\d{1,2})\/(\d{1,2})\/(\d{4})")
+(let [rem (re-matcher date-regex "12/02/1975")]
+  (when (.find rem)
+    (let [[_ m d] rem]
+      {:month m :day d})))
+
 (def guys-name-map
   {:f-name "Guy" :m-name "Lewis" :l-name "Steele"})
 
@@ -32,6 +38,7 @@
   (for [x (range max-x)
         y (range max-y)]
     [x y (rem (bit-xor x y) 256)]))
+(xors 2 2)
 
 (def frame (java.awt.Frame.))
 
