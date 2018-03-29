@@ -11,8 +11,8 @@
 
 (defn tour [frnds frTwns disTable]
   (let [g (fn [[a b]] (Math/sqrt (- (* b b) (* a a))))
-        xs (filter (complement nil?) (map #(step % frTwns) friends))
-        ys (filter (complement nil?) (map #(step % distTble) xs))
+        xs (filter (complement nil?) (map #(step % frTwns) frnds))
+        ys (filter (complement nil?) (map #(step % disTable) xs))
         zs (map #(g %) (partition 2 1 ys))]
     (int (reduce + (+ (first ys) (last ys)) zs))))
 
