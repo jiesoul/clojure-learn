@@ -3,17 +3,25 @@
 (defn round [s n]
 	(.setScale (bigdec n) s java.math.RoundingMode/HALF_EVEN))
 
-(defn iterPi [epsilon]
-	(let [en (fn
-						 [n]
-						 (< (Math/abs (- n (/ Math/PI 4M))) epsilon))]
-		(loop [n 1
-					 r 1]
-			(if (en n)
-				[r n]
-				(let [r (inc r)
-							v (dec (* 2 r))
-							v (if (even? r) (- v) v)]
-					(recur (+ n (/ 1 v)) r))))))
+(defn good-enough? [guess epison]
+  (< (Math/abs (- guess Math/PI)) epison))
 
-(iterPi 0.1)
+(defn prod [n]
+  (let [m (/ 1 (dec (* 2 n)))]
+    (if (odd? n)
+      m
+      (- m))))
+
+(defn step [result n epsion]
+  (let [v (* result 4.0)]
+    (if (good-enough? v epsion)
+      [n (round 10 v)]
+      (recur (+ result (prod (inc n))) (inc n) epsion))))
+
+(defn iterPi [epsilon]
+  (step 1.0 1 epsilon))
+
+(/ Math/PI 4.0)
+(good-enough? 3.14222 0.01)
+(prod 4)
+(iterPi 0.01)

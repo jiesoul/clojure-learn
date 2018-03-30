@@ -32,3 +32,15 @@
     1
     (* n (factorial (- n 1)))))
 
+(defn- fact-iter [product counter max-count]
+  (if (> counter max-count)
+    product
+    (fact-iter (* counter product)
+               (+ counter 1)
+               max-count)))
+
+(defn factorial [n]
+  (fact-iter 1N 1N n))
+
+(factorial 1000)
+
