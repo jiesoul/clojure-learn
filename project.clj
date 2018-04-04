@@ -12,8 +12,12 @@
                  [incanter/incanter-io "1.9.2"]
                  [incanter/incanter-excel "1.9.2"]
                  [org.clojure/data.json "0.2.1"]
+                 [org.clojure/java.jdbc "0.2.3"]
                  [org.xerial/sqlite-jdbc "3.21.0.1"]
-                 [me.raynes/fs "1.4.6"]]
+                 [me.raynes/fs "1.4.6"]
+                 [enlive "1.1.6"]
+                 [edu.ucdenver.ccp/kr-sesame-core "1.4.19"]
+                 [org.slf4j/slf4j-simple "1.7.2"]]
 
   :source-paths ["src/clj"]
   :plugins [[lein-cljsbuild "1.1.7"]]
