@@ -17,8 +17,10 @@
                  [me.raynes/fs "1.4.6"]
                  [enlive "1.1.6"]
                  [edu.ucdenver.ccp/kr-sesame-core "1.4.19"]
-                 [org.slf4j/slf4j-simple "1.7.2"]]
-
+                 [org.slf4j/slf4j-simple "1.7.2"]
+                 [org.clojure/data.csv "0.1.2"]
+                 [clj-diff "1.0.0-SNAPSHOT"]
+                 [clj-time "0.14.2"]]
   :source-paths ["src/clj"]
   :plugins [[lein-cljsbuild "1.1.7"]]
   :cljsbuild
