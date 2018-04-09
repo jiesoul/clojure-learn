@@ -5,7 +5,10 @@
             [clj-time.format :refer :all]
             [clojure.java.io :as io]
             [clojure.data.csv :as csv]
-            [clojure.set :refer [union]]))
+            [clojure.set :refer [union]]
+            [protoflex.parse :as p]
+            [valip.core :refer :all]
+            [valip.predicates :refer :all]))
 
 (def ^:dynamic *default-formats*
   [:date
@@ -127,7 +130,7 @@
   (filter (fn [_] (<= (rand) k)) coll))
 
 (sample-percent 0.01 (range 1000))
-(count *1)
+;(count *1)
 
 (defn rand-replace
   [m k v]
@@ -148,7 +151,7 @@
        (sort-by first)
        (map second)))
 
-(sample-count 10 (range 1000))
+;(sample-count 10 (range 1000))
 
 (defn words
   [text]
@@ -225,3 +228,67 @@
 (correct "tranpsose")
 (correct "eidtor")
 (correct "eidtr")
+
+(defn <|
+  [l r]
+  (let [l-output (l)]
+    (r)
+    l-output))
+
+(defn nl
+  []
+  (p/chr-in #{\newline \return}))
+
+(defn define
+  []
+  (p/chr-in \>)
+  (<| #(p/read-to-re #"[\n\r]+") nl))
+
+(defn acid-code
+  []
+  (p/chr-in #{\A \B \C \D \E \F \G \H \I \K \L \M \N
+            \P \Q \R \S \T \U \V \W \X \Y \Z \- \*}))
+
+(defn acid-code-line
+  []
+  (<| #(p/multi+ acid-code) #(p/attempt nl)))
+
+(defn fasta
+  []
+  (p/ws?)
+  (let [dl (define)
+        gls (apply str (flatten (p/multi+ acid-code-line)))]
+    {:define dl, :gene-seq gls}))
+
+(defn parse-fasta
+  [input]
+  (p/parse fasta input :eof false :auto-trim false))
+
+(def user
+  {:given-name "Fox"
+   :surname "Mulder"
+   :age 51
+   :badge "JTT047101111"})
+
+(defn number-present?
+  [x]
+  (and (present? (str x))
+       (or (instance? Integer x)
+           (instance? Long x))))
+
+(defn valid-badge
+  [n]
+  (not (nil? (re-find #"[A-Z]{3}\d+" n))))
+
+(defn validate-user
+  [user]
+  (validate user
+            [:given-name present? "Given name required"]
+            [:surname present? "Surname required"]
+            [:age number-present? "Age required"]
+            [:age (over 0) "Age should be positive"]
+            [:age (under 150) "Age should be under 150."]
+            [:badge present? "The badge number is required"]
+            [:badge valid-badge "The badge number is invalid."]))
+
+(validate-user (assoc user :age -42))

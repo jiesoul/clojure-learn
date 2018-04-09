@@ -4,6 +4,17 @@
 
 (def data-file "data/all_160_in_51.P35.csv")
 
+(defn lazy-read-csv
+  [csv-file]
+  (let [in-file (io/reader csv-file)
+        csv-seq (csv/read-csv in-file)
+        lazy (fn lazy [wrapped]
+               (lazy-seq
+                 (if-let [s (seq wrapped)]
+                   (cons (first s) (lazy (rest s)))
+                   (.close in-file))))]
+    (lazy csv-seq)))
+
 (def total-hu (ref 0))
 (def total-fams (ref 0))
 
@@ -29,6 +40,13 @@
       (alter total-hu #(+ sum-hu %))
       (alter total-fams #(+ sum-fams %)))))
 
+(defn update-totals [fields items]
+  (let [mzero (mapv (constantly 0) fields)
+        [sum-hu sum-fams] (sum-items mzero fields items)]
+    (dosync
+      (commute total-hu #(+ sum-hu %))
+      (commute total-fams #(+ sum-fams %)))))
+
 (defn thunk-update-totals-for
   [fields data-chunk]
   (fn [] (update-totals fields data-chunk)))
@@ -45,3 +63,34 @@
         (map future-call)
         (map deref)))
     (float (/ @total-fams @total-hu))))
+
+(main data-file)
+
+(defn accum-sums [a b] (mapv + a b))
+
+(defn div-vec [[a b]] (float (/ a b)))
+
+(defn force-val
+  [a]
+  (await a)
+  @a)
+
+(defn main
+  ([data-file] (main data-file [:P035001 :HU100] 5 5))
+  ([data-file fields agent-count chunk-count]
+    (let [mzero (mapv (constantly 0) fields)
+          agents (map agent (take agent-count (repeat mzero)))]
+      (dorun
+        (->>
+          (lazy-read-csv data-file)
+          with-header
+          (partition-all chunk-count)
+          (map #(send %1 sum-items fields %2)
+               (cycle agents))))
+      (->>
+        agents
+        (map force-val)
+        (reduce accum-sums mzero)
+        div-vec))))
+
+(main data-file)
