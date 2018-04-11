@@ -21,11 +21,42 @@
 (def tree1 (xconj nil 5))
 (def tree1 (xconj tree1 3))
 
+(defn if-chain [x y z]
+  (if x
+    (if y
+      (if z
+        (do
+          (println "Made it!")
+          :all-truthy)))))
+
+(if-chain () 42 true)
+(if-chain true true false)
+
+(defn rec-step [[x & xs]]
+  (if x
+    [x (rec-step xs)]
+    []))
+
+(rec-step [1 2 3 4])
+;(rec-step (range 20000))
+
+(defn lz-rec-step [s]
+  (lazy-seq
+    (if (seq s)
+      [(first s) (lz-rec-step (rest s))]
+      [])))
+
+(class (lz-rec-step [1 2 3 4]))
+(lz-rec-step (range 2000))
+
 (def very-lazy (-> (iterate #(do (print \.) (inc %)) 1)
                    rest rest rest))
 
 (def less-lazy (-> (iterate #(do (print \.) (inc %)) 1)
                    next next next))
+
+(println (first very-lazy))
+(println (first less-lazy))
 
 (defn simple-range [i limit]
   (lazy-seq
@@ -34,4 +65,10 @@
 
 (simple-range 0 9)
 
+(let [r (range 1e9)]
+  (first r)
+  (last r))
 
+(let [r (range 1e9)]
+  (last r)
+  (first r))
