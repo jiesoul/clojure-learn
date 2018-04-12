@@ -5,7 +5,7 @@
   (Executors/newFixedThreadPool
     (+ 2 (.availableProcessors (Runtime/getRuntime)))))
 
-(defn dothread!
+(defn dothreads!
   [f & {thread-count :threads
         exec-count :times
         :or {thread-count 1, exec-count 1}}]
@@ -14,4 +14,4 @@
              #(dotimes [_ exec-count]
                 (f)))))
 
-(dothread! #(.print System/out "Hi ") :thread-count 2 :times 2)
+(dothreads! #(.print System/out "Hi ") :thread-count 2 :times 2)
