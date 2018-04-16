@@ -47,3 +47,31 @@
 (print-rat (add-rat one-half one-three))
 (print-rat (sub-rat one-half one-three))
 (print-rat (add-rat one-three one-three))
+
+(def one->four (list 1 2 3 4))
+(first one->four)
+
+(defn scale-list [items factor]
+  (if (empty? items)
+    nil
+    (cons (* (first items) factor)
+          (scale-list (rest items) factor))))
+
+(scale-list (list 1 2 3 4 5) 6)
+
+(defn map- [proc items]
+  (if (empty? items)
+    nil
+    (cons (proc (first items))
+          (map- proc (rest items)))))
+
+(defn abs [n]
+  (Math/abs n))
+
+(map- abs (list -10 -2 2.5))
+(map- #(* % %) (list 1 2 3 4))
+
+(defn scale-list [items factor]
+  (map- #(* % factor) items))
+
+

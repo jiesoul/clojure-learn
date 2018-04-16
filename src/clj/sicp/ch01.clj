@@ -3,6 +3,27 @@
 (defn square [x]
   (* x x))
 
+(defn sum-of-square [x y]
+  (+ (square x) (square y)))
+
+(defn abs [x]
+  (cond
+    (pos? x) x
+    (zero? x) 0
+    :else (- x)))
+
+(defn abs [x]
+  (cond
+    (neg? x) (- x)
+    :else x))
+
+(defn abs [x]
+  (if (neg? x)
+    (- x)
+    x))
+
+(abs -1)
+
 (defn average [x y]
   (/ (+ x y) 2))
 

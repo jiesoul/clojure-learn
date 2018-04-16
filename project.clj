@@ -24,7 +24,9 @@
                  [clj-time "0.14.2"]
                  [parse-ez "0.3.6"]
                  [valip "0.2.0"]
-                 [org.clojure/data.csv "0.1.4"]]
+                 [org.clojure/data.csv "0.1.4"]
+                 [org.slf4j/slf4j-simple "1.7.25"]
+                 [me.raynes/fs "1.4.6"]]
   :source-paths ["src/clj"]
   :plugins [[lein-cljsbuild "1.1.7"]]
   :cljsbuild
