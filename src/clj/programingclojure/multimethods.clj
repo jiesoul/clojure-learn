@@ -15,3 +15,16 @@
   (.write *out* "#<")
   (.write *out* (.toString s))
   (.write *out* ">"))
+
+(defn my-println [ob]
+  (my-print ob)
+  (.write *out* "\n"))
+
+
+(my-println "hello")
+
+(my-println "nil")
+
+(my-println 5)
+
+
