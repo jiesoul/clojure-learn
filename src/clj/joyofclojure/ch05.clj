@@ -1,5 +1,6 @@
 (ns joyofclojure.ch05
   (:require clojure.set))
+
 (def ds (into-array [:willie :barnabas :adam]))
 (seq ds)
 (aset ds 1 :quentin)
@@ -9,6 +10,8 @@
 (def ds1 (replace {:barnabas :quentin} ds))
 (seq ds1)
 (seq ds)
+
+(= [1 2 3] '(1 2 3))
 
 (class (hash-map :a 1))
 (seq (hash-map :a 1))

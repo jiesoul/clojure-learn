@@ -1,11 +1,31 @@
 (ns joyofclojure.ch04)
 
+(+ Long/MAX_VALUE Long/MAX_VALUE)
+(unchecked-add (Long/MAX_VALUE) (Long/MAX_VALUE))
+
 (let [approx-interval (/ 209715 2097152)
       actual-interval (/ 1 10)
       hours (* 3600 100 10)
       actual-total (double (* hours actual-interval))
       approx-total (double (* hours approx-interval))]
   (- actual-total approx-total))
+
+(def a (rationalize 1.0e50))
+(def b (rationalize -1.0e50))
+(def c (rationalize 17.0e00))
+
+(+ (+ a b) c)
+
+(def population {:zombies 2700 :humas 9})
+(get population :zombies)
+(println (/ (get population :zombies)
+           (get population :humas))
+  "zombies pre capita")
+
+(:zombies population)
+(println (/ (:zombies population)
+           (:humas population))
+  "zombies per cpita")
 
 (defn pour [lb ub]
   (cond
@@ -19,6 +39,19 @@
    (identical? x y)
    (meta x)
    (meta y)])
+
+(def a-symbol 'where-am-i)
+
+(defn best [f xs]
+  (reduce #(if (f % %2) % %2) xs))
+
+(best > [1 3 4 2 7 5 3])
+
+(class #"example")
+(java.util.regex.Pattern/compile "\\d")
+
+(re-seq #"\w+" "one-two/three")
+(re-seq #"\w*(\w)" "one-two/three")
 
 (def ds (into-array [:willie :barnabas :adam]))
 (seq ds)
