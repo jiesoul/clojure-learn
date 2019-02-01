@@ -3,8 +3,8 @@
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure "1.9.0"]
-                 [org.clojure/clojurescript "1.9.946"]
+  :dependencies [[org.clojure/clojure "1.10.0"]
+                 [org.clojure/clojurescript "1.10.516"]
                  [org.clojure/core.unify "0.5.7"]
                  [org.clojure/core.logic "0.8.11"]
                  [org.clojure/core.async "0.4.474"]
@@ -26,6 +26,7 @@
                  [org.slf4j/slf4j-simple "1.7.25"]
                  [me.raynes/fs "1.4.6"]]
   :source-paths ["src/clj"]
+  :java-source-paths ["src/java"]
   :plugins [[lein-cljsbuild "1.1.7"]]
   :cljsbuild
   {:builds
@@ -39,4 +40,5 @@
      {:output-to "prod-target/all.js"
       :optimizations :advanced
       :externs ["externs.js"]
-      :pretty-print false}}]})
+      :pretty-print false}}]}
+  :profiles {:dev {:dependencies [[org.clojure/test.check "0.9.0"]]}})

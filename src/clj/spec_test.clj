@@ -32,6 +32,12 @@
            ::pass-confirm "12345678"})
 
 (s/explain ::userReg
+          {"email" "string",
+           "password" "string",
+           "pass-confirm" "string"
+           })
+
+(s/explain ::userReg
            {::email "jiesoul@gmail.com"})
 
 (s/def ::person

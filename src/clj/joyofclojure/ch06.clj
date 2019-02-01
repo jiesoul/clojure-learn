@@ -72,7 +72,7 @@
       [])))
 
 (class (lz-rec-step [1 2 3 4]))
-(lz-rec-step (range 2000))
+(dorun (lz-rec-step (range 200000)))
 
 (def very-lazy (-> (iterate #(do (print \.) (inc %)) 1)
                    rest rest rest))
