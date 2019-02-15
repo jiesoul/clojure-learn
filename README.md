@@ -1,4 +1,4 @@
-# clj.clojurelearning
+# clj.com.jiesoul.clojurelearning
 
 A Clojure library designed to ... well, that part is up to you.
 

@@ -1,2 +1,0 @@
-(ns codewar.two-fighters)
-
