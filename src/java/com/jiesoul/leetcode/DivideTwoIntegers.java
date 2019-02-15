@@ -8,25 +8,30 @@ public class DivideTwoIntegers {
             flag = true;
         }
 
-        if (dividend == 0) {
+        if (divisor == 0) {
             throw new RuntimeException("divisor not is zero");
         }
 
         int r = 0;
-        int d = Math.abs(dividend);
-        int v = Math.abs(divisor);
-        while (d < v) {
+        int d = dividend == Integer.MIN_VALUE ? Integer.MAX_VALUE : Math.abs(dividend);
+        int v = divisor == Integer.MIN_VALUE ? Integer.MAX_VALUE : Math.abs(divisor);
+        while (v <= d) {
             r++;
             d = d - v;
         }
 
-        return flag ? r : -r;
+        if (r == Integer.MIN_VALUE) {
+            return Integer.MAX_VALUE;
+        } else {
+            return flag ? r : -r;
+        }
 
     }
 
     public static void main(String[] args) {
         System.out.println(DivideTwoIntegers.divide(10, 3));
         System.out.println(DivideTwoIntegers.divide(7, -3));
+        System.out.println(DivideTwoIntegers.divide(-7, -3));
         System.out.println(DivideTwoIntegers.divide(-2147483648, -1));
     }
 }

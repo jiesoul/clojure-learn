@@ -1,4 +1,4 @@
-(ns com.jiesoul.com.jiesoul.core)
+(ns com.jiesoul.core)
 
 (defn foo
   "I don't do a whole lot."
