@@ -1,4 +1,5 @@
 (ns com.jiesoul.clojureprogram.macros
+  (:refer-clojure :exclude [while])
   (:require [clojure.string :as str]
             [clojure.walk :as walk]))
 

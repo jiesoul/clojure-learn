@@ -30,10 +30,10 @@
     (handle [exchange]
       (respond exchange txt))))
 
-(def server
-  (new-server
-    8123
-    "/joy/hello"
-    (default-handler "hello Cleveland")))
+;(def server
+;  (new-server
+;    8123
+;    "/joy/hello"
+;    (default-handler "hello Cleveland")))
 
 

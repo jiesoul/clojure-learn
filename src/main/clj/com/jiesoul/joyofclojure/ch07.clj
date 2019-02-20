@@ -35,9 +35,9 @@
 
 (sort > [7 1 4])
 ;(sort ["z" "x" "a" "aa" 1 5 8])
-(sort [{:age 99}, {:age 13}, {:age 7}])
+;(sort [{:age 99}, {:age 13}, {:age 7}])
 (sort [[:a 7], [:c 13], [:b 21]])
-(sort second [[:a 7], [:c 13], [:b 21]])
+;(sort second [[:a 7], [:c 13], [:b 21]])
 (sort-by second [[:a 7], [:c 13], [:b 21]])
 (sort-by str ["z" "x" "a" "aa" 1 5 8])
 (sort-by :age [{:age 99}, {:age 13}, {:age 7}])

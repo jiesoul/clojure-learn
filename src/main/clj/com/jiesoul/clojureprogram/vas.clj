@@ -63,7 +63,7 @@
       (set! *res-code* res-code))
     (when (not= 404 res-code)
       (-> conn .getInputStream slurp))))
-(http-get "http://google.com")
+;(http-get "http://google.com")
 *res-code*
 (binding [*res-code* nil]
   (let [content (http-get "http://google.com/bad-url")]

@@ -7,5 +7,5 @@
 
 (deftest test-vowel-indices
   (testing "vowel-indices"
-    (test-assert(vowel-indices "super"), [2,4])
+    (test-assert (vowel-indices "super"), [2,4])
     ))

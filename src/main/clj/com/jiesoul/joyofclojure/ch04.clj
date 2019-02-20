@@ -76,7 +76,7 @@
 (into (vector-of :int) [Math/PI 2 1.3])
 ;; [3 2 1]
 (into (vector-of :char) [100 101 102])
-(into (vector-of :int) [1 2 2423402384024802482034982034823048])
+;(into (vector-of :int) [1 2 2423402384024802482034982034823048])
 
 (def a-toj (vec (map char (range 65 75))))
 (nth a-toj 4)

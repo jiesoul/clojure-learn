@@ -28,7 +28,6 @@
   :source-paths ["src/main/clj"]
   :java-source-paths ["src/main/java"]
   :test-paths ["test/main/clj" "test/main/java"]
-  ;:aot :all
   :plugins [[lein-cljsbuild "1.1.7"]]
   :cljsbuild
   {:builds

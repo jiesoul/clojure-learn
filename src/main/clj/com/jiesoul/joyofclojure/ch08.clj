@@ -120,12 +120,12 @@
       InputStreamReader.
       BufferedReader.))
 
-(let [stream (joc-www)]
-  (with-open [page stream]
-    (println (.readLine page))
-    (println "The stream will now close... "))
-  (println "but let's read from it anyway.")
-  (.readLine stream))
+;(let [stream (joc-www)]
+;  (with-open [page stream]
+;    (println (.readLine page))
+;    (println "The stream will now close... "))
+;  (println "but let's read from it anyway.")
+;  (.readLine stream))
 
 (declare collect-bodies)
 (defmacro contract [name & forms]
@@ -170,7 +170,7 @@
 (times2 9)
 
 (def times3 (partial doubler-contract #(* 3 %)))
-(times3 9)
+;(times3 9)
 
 (def doubler-contract
   (contract doubler
@@ -188,4 +188,4 @@
 
 ((partial doubler-contract #(* 2 (+ %1 %2))) 2 3)
 ((partial doubler-contract #(+ %1 %1 %2 %2)) 2 3)
-((partial doubler-contract #(* 3 (+ %1 %2))) 2 3)
+;((partial doubler-contract #(* 3 (+ %1 %2))) 2 3)
