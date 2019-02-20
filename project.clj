@@ -25,20 +25,25 @@
                  [org.clojure/data.csv "0.1.4"]
                  [org.slf4j/slf4j-simple "1.7.25"]
                  [me.raynes/fs "1.4.6"]]
-  :source-paths ["src/clj"]
-  :java-source-paths ["src/java"]
+  :source-paths ["src/main/clj"]
+  :java-source-paths ["src/main/java"]
+  :test-paths ["test/main/clj" "test/main/java"]
+  ;:aot :all
   :plugins [[lein-cljsbuild "1.1.7"]]
   :cljsbuild
   {:builds
-   [{:source-paths ["src/cljs"]
+   [{:source-paths ["src/main/cljs"]
      :compiler
      {:output-to "dev-target/all.js"
       :optimizations :whitespace
       :pretty-print true}}
-    {:source-paths ["src/cljs"]
+    {:source-paths ["src/main/cljs"]
      :compiler
      {:output-to "prod-target/all.js"
       :optimizations :advanced
       :externs ["externs.js"]
       :pretty-print false}}]}
-  :profiles {:dev {:dependencies [[org.clojure/test.check "0.9.0"]]}})
+  :profiles {:dev {:dependencies [[org.clojure/test.check "0.9.0"]
+                                  [midje "1.9.4"]]
+                   :plugins [[com.jakemccrary/lein-test-refresh "0.23.0"]
+                             [lein-midje "3.2.1"]]}})
