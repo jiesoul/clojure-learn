@@ -64,7 +64,7 @@
     (when (not= 404 res-code)
       (-> conn .getInputStream slurp))))
 ;(http-get "http://google.com")
-*res-code*
-(binding [*res-code* nil]
-  (let [content (http-get "http://google.com/bad-url")]
-    (println "Response code was:" *res-code*)))
+;*res-code*
+;(binding [*res-code* nil]
+;  (let [content (http-get "http://google.com/bad-url")]
+;    (println "Response code was:" *res-code*)))

@@ -91,22 +91,21 @@
   (/ (- (p2 1) (p1 1))
      (- (p2 0) (p1 0))))
 
-(slope1 [10 10] [10 10])
-(slope1 [10 1] '(10 10))
-(slope1 [10 1] [1 20])
+;(slope1 [10 10] [10 10])
+;(slope1 [10 1] '(10 10))
+;(slope1 [10 1] [1 20])
 (slope1 [10.0 1] [1 20])
 
 
 (defn put-things [m]
   (into m {:meat "beef" :veggie "broccoil"}))
 
-(put-things {})
-
 (defn vegan-constraints [f m]
   {:pre [(:viggie m)]
    :post [(:viggie %) (nil? (:meat %))]}
   (f m))
-(vegan-constraints put-things {:viggie "carrot"})
+
+;(vegan-constraints put-things {:viggie "carrot"})
 
 (defn balanced-diet [f m]
   {:post [(:meat %) (:veggie %)]}
@@ -118,7 +117,7 @@
   {:post [(= (:meat %) (:meat m))]}
   (f m))
 
-(finicky put-things {:meat "chicken"})
+;(finicky put-things {:meat "chicken"})
 
 (def times-two
   (let [x 2]
@@ -208,7 +207,7 @@
     (* base (pow base (dec exp)))))
 (pow 2 10)
 (pow 1.01 925)
-(pow 2 100000)
+;(pow 2 100000)
 
 (defn pow [base exp]
   (letfn [(kapow [base exp acc]
@@ -249,8 +248,8 @@
 (defn gcd [x y]
   (int
     (cond
-      (> x y) (recur (- x y) y)
-      (< x y) (recur x (- y x))
+      (> x y) (gcd (- x y) y)
+      (< x y) (gcd x (- y x))
       :else x)))
 
 (defn elevator [commands]

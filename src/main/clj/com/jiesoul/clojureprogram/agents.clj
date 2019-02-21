@@ -17,7 +17,7 @@
 (def a (agent nil))
 (send a (fn [_] (throw (Exception. "something is wrong"))))
 ;(send a identity)
-;(restart-agent a 42)
+(restart-agent a 42)
 (send a inc)
 (reduce send a (for [x (range 3)]
                  (fn [_] (throw (Exception. (str "error #" x))))))
@@ -34,4 +34,4 @@
 (def a (agent nil
               :error-mode :continue
               :error-handler (fn [the-agent exception]
-                               (. println System/out (. getMessage exception)))))
+                               (. println System/out (. exception getMessage)))))
