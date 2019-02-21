@@ -5,7 +5,5 @@
     true
     (let [f (fn [s]
               (let [c (count s)]
-                (loop [c e
-                       n 0]
-                  )))]
+                c))]
       (contains? (set arr) strng))))
