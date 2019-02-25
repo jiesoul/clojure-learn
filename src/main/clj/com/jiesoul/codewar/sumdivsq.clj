@@ -34,6 +34,6 @@
        (filter (fn [[_ b]] (zero? (rem (Math/sqrt b) 1))))))
 
 (factor 42)
-(step 42)
-(list-sq 1 250)
-(list-squared 1 250)
+;(step 42)
+;(list-sq 1 250)
+;(list-squared 1 250)
