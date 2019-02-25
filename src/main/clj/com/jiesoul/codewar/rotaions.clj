@@ -17,3 +17,4 @@
 (raotain "bsjq")
 (raotain "Ajylvpy")
 (contain-all-rots "Ajylvpy" ["Ajylvpy", "ylvpyAj", "jylvpyA", "lvpyAjy", "pyAjylv", "vpyAjyl", "ipywee"])
+(raotain "QJAhQmS")
