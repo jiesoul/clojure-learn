@@ -11,4 +11,6 @@
     (test-assert (contain-all-rots "" []) true)
     (test-assert (contain-all-rots "" ["bsjq", "qbsj"]) true)
     (test-assert (contain-all-rots "XjYABhR" ["TzYxlgfnhf", "yqVAuoLjMLy", "BhRXjYA", "YABhRXj", "hRXjYAB", "jYABhRX", "XjYABhR", "ABhRXjY"]) false)
+    (test-assert (contain-all-rots "Ajylvpy" ["Ajylvpy" "ylvpyAj" "jylvpyA" "lvpyAjy" "pyAjylv" "vpyAjyl"]) false)
+    (test-assert (contain-all-rots "UDvG" ["vGUD" "UDvG" "GUDv" "DvGU"]) true)
     ))
