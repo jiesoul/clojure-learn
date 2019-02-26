@@ -1,4 +1,5 @@
 (ns com.jiesoul.codewar.sumdivsq-test
+  (:use [midje.sweet])
   (:require [clojure.test :refer :all])
   (:require [com.jiesoul.codewar.sumdivsq :refer [list-squared]]))
 
@@ -11,3 +12,6 @@
 (deftest list-squared-test3
   (testing "test3"
     (is (= (list-squared 250 500) [[287, 84100]]))))
+
+(fact
+  (list-squared 1800 2000) => [[1880 4884100]])

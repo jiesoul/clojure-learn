@@ -43,6 +43,8 @@
       :externs ["externs.js"]
       :pretty-print false}}]}
   :profiles {:dev {:dependencies [[org.clojure/test.check "0.9.0"]
-                                  [midje "1.9.4"]]
+                                  [midje "1.9.4"]
+                                  [eftest "0.5.6"]]
                    :plugins [[com.jakemccrary/lein-test-refresh "0.23.0"]
-                             [lein-midje "3.2.1"]]}})
+                             [lein-midje "3.2.1"]
+                             [lein-eftest "0.5.6"]]}})
