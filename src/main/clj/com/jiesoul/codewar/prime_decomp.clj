@@ -12,7 +12,7 @@
                               (recur (conj r fv) (filter #(pos? (rem % fv)) (rest coll))))))))]
       (step (range 2 (inc n))))))
 
-(defn primes [n]
+(defn primes-1 [n]
   (let [v (Math/sqrt n)]
     (loop [c1 []
            c2 (range 2 (inc n))]
@@ -33,6 +33,22 @@
                 (iterate inc (inc x))))))))
     2))
 
+(defn prime1 [n]
+  (let [q (Math/sqrt n)]
+    (lazy-seq (loop [r []
+                     c (range 2 (inc n))]
+                (let [v (first c)
+                      coll (rest c)]
+                  (if (> v q)
+                    (concat r c)
+                    (recur (conj r v) (filter #(pos? (rem % v)) coll))))))))
+
+(defn prime [n]
+  (letfn [(step [coll]
+            (let [head (first coll)]
+              (lazy-cat (cons head (step (filter #(pos? (rem % head)) coll))))))]
+    (step (range 2 (inc n)))))
+
 (defn step [n m]
   (loop [n n
          r 0]
@@ -41,7 +57,7 @@
       [n m r])))
 
 (defn prime-factors [n]
-  (let [coll (primes n)]
+  (let [coll (prime n)]
     (loop [n n
            r []
            coll coll]
@@ -56,10 +72,25 @@
             (if (zero? (last c)) r (conj r (rest c)))
             (rest coll)))))))
 
-(primes 933555431)
-(take-while #(<= % 933555431) prime-numbers)
-(count (primes 7919))
-(step 86240 2)
-(step 2 2)
-(time (prime-factors 86240))
-(time (prime-factors 7919))
+(defn prime-factors-old [n]
+  (loop [r {}
+         n n
+         coll (range 2 (inc n))]
+    (if (= n 1)
+      r
+      (let [fv (first coll)
+            q (quot n fv)
+            rv (rem n fv)
+            v (get r fv 0)]
+        (recur (if (zero? rv) (assoc r fv (inc v)) r)
+               q
+               (if (zero? rv) coll (filter #(pos? (rem % fv)) (rest coll))))))))
+
+;(primes 9335553)
+;(take-while #(<= % 933555431) prime-numbers)
+;(count (primes 7919))
+;(step 86240 2)
+;(step 2 2)
+;(prime-factors 20)
+;(time (prime-factors 86240))
+;(time (prime-factors 7919))
