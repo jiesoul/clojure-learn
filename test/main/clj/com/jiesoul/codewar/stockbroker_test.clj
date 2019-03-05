@@ -17,3 +17,7 @@
            "Buy: 260 Sell: 11602; Badly formed 2: CLH16.NYM 50 56 S ;OWW 1000 11 S ;"))
     (is (= (balance "ZNGA 1300 2.66, CLH15.NYM 50 56.32 S, OWW 1000 11.623 S, OGG 20 580.1 S")
            "Buy: 0 Sell: 26041; Badly formed 1: ZNGA 1300 2.66 ;"))))
+
+(deftest a-test4
+  (testing "test4"
+    (is (= (balance "") "Buy: 0 Sell: 0"))))
