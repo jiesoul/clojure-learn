@@ -28,10 +28,10 @@
 
 (def url (str "http://www.ericrochester.com/clj-data-analysis/data/small-sample-table.html"))
 ;(load-data url)
-(def table (html/select (html/html-resource (URL. url)) [:table#data]))
+;(def table (html/select (html/html-resource (URL. url)) [:table#data]))
 
-(mapv to-keyword (map html/text (html/select table [:tr :th])))
-(map #(html/text %) (map #(html/select % [:td]) (html/select table [:tr])))
+;(mapv to-keyword (map html/text (html/select table [:tr :th])))
+;(map #(html/text %) (map #(html/select % [:td]) (html/select table [:tr])))
 
 (defn get-family
   ([article]

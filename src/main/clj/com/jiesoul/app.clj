@@ -1,4 +1,5 @@
-(ns com.jiesoul.app)
+(ns com.jiesoul.app
+  (:gen-class))
 
 (defn -main
   []
