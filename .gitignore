@@ -11,3 +11,5 @@ pom.xml.asc
 .hg/
 .idea/
 clojure-learn.iml
+figwheel_server.log
+node_modules/

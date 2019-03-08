@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@cljs-oss/module-deps": "^1.1.1",
+    "left-pad": "^1.1.3"
+  }
+}
