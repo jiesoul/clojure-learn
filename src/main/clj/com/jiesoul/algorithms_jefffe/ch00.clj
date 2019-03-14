@@ -6,6 +6,12 @@
        (seq)
        (map #(Integer/parseInt (str %)))))
 
+(defn step [m n k hold]
+  (for [i (range 0 m)
+        j (range 0 n)
+        :when (= k (+ i j))]
+    []))
+
 (defn fibonacci-multiply [x y]
   (let [X    (int-to-vec x)
         Y    (int-to-vec y)
@@ -19,7 +25,7 @@
         (let [hold (reduce + (for [i (range 0 m)
                                    j (range 0 n)
                                    :when (= k (+ i j))]
-                               (+ hold (* (nth X i) (nth Y j)))))
+                               (* (nth X i) (nth Y j))))
               v    (mod hold 10)
               hold (quot hold 10)]
           (recur (inc k) (conj r v)))))))

@@ -6,23 +6,30 @@
 (defn sum-of-square [x y]
   (+ (square x) (square y)))
 
+(defn f [a]
+  (sum-of-square (+ a 1) (* a 2)))
+
 (defn abs [x]
   (cond
     (pos? x) x
     (zero? x) 0
     :else (- x)))
 
-(defn abs [x]
+(defn abs-1 [x]
   (cond
     (neg? x) (- x)
     :else x))
 
-(defn abs [x]
+(defn abs-2 [x]
   (if (neg? x)
     (- x)
     x))
 
-(abs -1)
+(defn abs-3 [n]
+  (max n (- n)))
+
+(defn grow-rate [y x]
+  (abs (/ (- (* y y) x) x)))
 
 (defn average [x y]
   (/ (+ x y) 2))
@@ -30,23 +37,53 @@
 (defn improve [guess x]
   (average guess (/ x guess)))
 
-(defn abs [n]
-  (max n (- n)))
-
 (defn good-enough? [guess x]
-  (< (abs (- (square guess) x)) 0.001))
+  (< (grow-rate guess x) 0.001))
 
 (defn sqrt-iter [guess x]
   (if (good-enough? guess x)
     guess
-    (sqrt-iter (improve guess x) x)))
+    (recur (improve guess x) x)))
 
 (defn sqrt [x]
   (sqrt-iter 1.0 x))
 
-(sqrt 9)
-(sqrt (+ 100 37))
-(square (sqrt 1000))
+(defn sqrt-1 [x]
+  (let [good-enough? (fn [guess] (< grow-rate guess x) 0.0001)
+        improve      (fn [guess] (average guess (/ x guess)))
+        sqrt-iter    (fn [guess] (if (good-enough? guess) guess (recur (improve guess))))]
+    (sqrt-iter 1.0)))
+
+
+(defn new-if [predicate then-clause else-clause]
+  (cond
+    predicate then-clause
+    :else else-clause))
+
+(defn new-sqrt-iter [guess x]
+  (new-if (good-enough? guess x)
+          guess
+          (new-sqrt-iter (improve guess x) x)))
+
+(defn new-sqrt [x]
+  (new-sqrt-iter 1.0 x))
+
+(defn cube-grow-rate [y x]
+  (abs (/ (- (* y y y) x) x)))
+
+(defn cube-good-enough? [y x]
+  (< (cube-grow-rate y x) 0.000001))
+
+(defn cube-improve [y x]
+  (/ (+ (/ (x (* y y))) (* 2 y)) 3))
+
+(defn cube-root-iter [guess x]
+  (if (cube-good-enough? guess x)
+    guess
+    (recur (cube-improve guess x) x)))
+
+(defn cube-root [n]
+  (cube-root-iter 1.0 n))
 
 (defn factorial [n]
   (if (= n 1)
@@ -56,9 +93,9 @@
 (defn- fact-iter [product counter max-count]
   (if (> counter max-count)
     product
-    (fact-iter (* counter product)
-               (+ counter 1)
-               max-count)))
+    (recur (* counter product)
+           (+ counter 1)
+           max-count)))
 
 (defn factorial [n]
   (fact-iter 1N 1N n))
