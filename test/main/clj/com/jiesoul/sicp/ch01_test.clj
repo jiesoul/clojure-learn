@@ -50,3 +50,30 @@
   (testing ""
     (is (= (factorial 6) 720))
     ))
+
+(deftest fib-test
+  (testing "test fib"
+    (is (= (fib 1) 1))
+    (is (= (fib 5) 5))
+    (is (= (fib 6) 8))
+    ))
+
+(deftest fib-iter-test
+  (testing "test fib-iter"
+    (is (= (fib-iter 1) 1))
+    (is (= (fib-iter 5) 5))
+    (is (= (fib-iter 6) 8))
+    (is (= (fib-iter 60) 1548008755920))
+    ))
+
+(deftest count-change-test
+  (testing "test"
+    (is (= (count-change 100) 292))
+    ))
+
+(deftest sine-test
+  (testing "test"
+    (is (= (sine 12.15) -0.39980345741334))
+    (is (= (sine 16) -0.39980345741334))
+    (is (= (sine 160) -0.39980345741334))
+    ))

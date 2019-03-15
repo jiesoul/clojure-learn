@@ -107,7 +107,6 @@
     0 0
     1 1
     (+ (fib (dec n)) (fib (- n 2)))))
-(fib 5)
 
 (defn fib-iter [n]
   (let [step (fn [a b count]
@@ -115,7 +114,6 @@
                  b
                  (recur (+ a b) a (dec count))))]
     (step 1 0 n)))
-(fib-iter 4)
 
 (defn first-denomination [kinds-of-coins]
   (case kinds-of-coins
@@ -135,10 +133,13 @@
 
 (defn count-change [amount]
   (cc amount 5))
-(count-change 100)
 
-(defn cube [x] (* x x x))
-(defn p [x] (- (* 3 x) (* 4 (cube x))))
+(defn cube [x]
+  (* x x x))
+
+(defn p [x]
+  (- (* 3 x) (* 4 (cube x))))
+
 (defn sine [angle]
   (if (not (> (Math/abs angle) 0.1))
     angle

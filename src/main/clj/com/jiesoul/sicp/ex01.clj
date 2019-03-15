@@ -7,6 +7,19 @@
     (= y 1) 2
     :else (A (dec x) (A x (dec y)))))
 
-(A 1 10)
-(A 2 4)
-(A 3 3)
+(defn f-11 [n]
+  (if (< n 3)
+    n
+    (+ (f-11 (dec n)) (* 2 (f-11 (- n 2))) (* 3 (f-11 (- n 3))))))
+
+;; TODO
+(defn f-11-iter [n]
+  (let [step (fn [f s t n]
+               ())]
+    (step 0 0 0 n)))
+
+(defn f-12 [n]
+  (if (= n 1)
+    [1]
+    (let [new (f-12 (dec n))]
+      (mapv + (conj new 0) (cons 0 new)))))
