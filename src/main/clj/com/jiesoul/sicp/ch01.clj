@@ -1,5 +1,6 @@
 (ns com.jiesoul.sicp.ch01)
 
+;; 1.4
 (defn square [x]
   (* x x))
 
@@ -157,11 +158,24 @@
                  (recur b (dec counter) (* b product))))]
     (step b n 1)))
 
+;; 这样增长的阶就为 log(n) 了
 (defn fast-expt [b n]
   (cond
     (zero? n) 1
     (even? n) (square (fast-expt b (/ n 2)))
     :else (* b (fast-expt b (dec n)))))
+
+;; ex1.16
+(defn fast-expt-iter [b n]
+  (let [step (fn [b n]
+               (cond
+                 (zero? n) 1
+                 (= n 1) b
+                 :else
+                 (recur (* b b) (/ n 2))))]
+    (if (even? n)
+      (step b n)
+      (* b (step b (dec n))))))
 
 (defn gcd [a b]
   (if (zero? b)

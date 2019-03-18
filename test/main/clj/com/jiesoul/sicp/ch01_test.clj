@@ -77,3 +77,11 @@
     (is (= (sine 16) -0.39980345741334))
     (is (= (sine 160) -0.39980345741334))
     ))
+
+(deftest fast-expt-iter-test
+  (testing "ex1.16"
+    (is (= (fast-expt-iter 2 4) 16))
+    (is (= (fast-expt-iter 2 3) 8))
+    (is (= (fast-expt-iter 3 1) 3))
+    (is (= (fast-expt-iter 3 0) 1))
+    ))
