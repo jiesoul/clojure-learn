@@ -101,12 +101,9 @@
 (defn factorial [n]
   (fact-iter 1N 1N n))
 
-(factorial 1000)
-
 (defn fib [n]
-  (case n
-    0 0
-    1 1
+  (if (< n 2)
+    n
     (+ (fib (dec n)) (fib (- n 2)))))
 
 (defn fib-iter [n]

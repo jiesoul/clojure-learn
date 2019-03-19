@@ -34,17 +34,24 @@
     (= y 1) 2
     :else (A (dec x) (A x (dec y)))))
 
+;; 1.11
 (defn f-11 [n]
   (if (< n 3)
     n
     (+ (f-11 (dec n)) (* 2 (f-11 (- n 2))) (* 3 (f-11 (- n 3))))))
 
-;;
 (defn f-11-iter [n]
-  (let [step (fn [f s t n]
-               ())]
-    (step 0 0 0 n)))
+  (let [sum  (fn [a b c] (+ a (* 2 b) (* 3 c)))
+        step (fn [a b c counter n]
+               (println a b c)
+               (cond
+                 (< n 3) n
+                 (> counter n) c
+                 :else
+                 (recur b c (sum a b c) (inc counter) n)))]
+    (step 0 1 2 3 n)))
 
+;; 1.12
 (defn f-12 [n]
   (if (= n 1)
     [1]

@@ -17,3 +17,13 @@
     (is (= (max-three 2 1 3) 5))
     (is (= (max-three 2 3 1) 5))
     ))
+
+(deftest f-11-iter-test
+  (testing "test 1.11"
+    (is (= (f-11-iter 0) 0))
+    (is (= (f-11-iter 1) 1))
+    (is (= (f-11-iter 2) 2))
+    (is (= (f-11-iter 3) 8))
+    (is (= (f-11-iter 4) 29))
+    (is (= (f-11-iter 5) 105))
+    ))
