@@ -162,18 +162,6 @@
     (even? n) (square (fast-expt b (/ n 2)))
     :else (* b (fast-expt b (dec n)))))
 
-;; ex1.16
-(defn fast-expt-iter [b n]
-  (let [step (fn [b n]
-               (cond
-                 (zero? n) 1
-                 (= n 1) b
-                 :else
-                 (recur (* b b) (/ n 2))))]
-    (if (even? n)
-      (step b n)
-      (* b (step b (dec n))))))
-
 (defn gcd [a b]
   (if (zero? b)
     a

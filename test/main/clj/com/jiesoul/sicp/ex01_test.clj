@@ -27,3 +27,16 @@
     (is (= (f-11-iter 4) 29))
     (is (= (f-11-iter 5) 105))
     ))
+
+(deftest fast-expt-iter-test
+  (testing "test 1.16"
+    (is (fast-expt-iter 2 2) 4)
+    ))
+
+(deftest new-mul-iter-test
+  (testing "1.17"
+    (is (= (new-mul-iter 4 5) 20))
+    (is (= (new-mul-iter 0 5) 0))
+    (is (= (new-mul-iter 5 0) 0))
+    (is (= (new-mul-iter 5 5) 25))
+    ))
