@@ -29,8 +29,11 @@
     ))
 
 (deftest fast-expt-iter-test
-  (testing "test 1.16"
-    (is (fast-expt-iter 2 2) 4)
+  (testing "ex1.16"
+    (is (= (fast-expt-iter 2 4) 16))
+    (is (= (fast-expt-iter 2 3) 8))
+    (is (= (fast-expt-iter 3 1) 3))
+    (is (= (fast-expt-iter 3 0) 1))
     ))
 
 (deftest new-mul-iter-test
@@ -39,4 +42,24 @@
     (is (= (new-mul-iter 0 5) 0))
     (is (= (new-mul-iter 5 0) 0))
     (is (= (new-mul-iter 5 5) 25))
+    ))
+
+(deftest timed-prime-test-test
+  (testing "1.22"
+    (timed-prime-test 5)
+    ))
+
+(deftest search-for-primes-test
+  (testing "search-for-primes"
+    (time (search-for-primes 1000))
+    (time (search-for-primes 10000))
+    (time (search-for-primes 100000))
+    (time (search-for-primes 1000000))
+    ))
+
+(deftest sum-cubes-iter-test
+  (testing "sum-iter"
+    (is (= (sum-cubes-iter 1 10) 3025))
+    (is (= (sum-integers-iter 1 10) 55))
+    (is (= (* 8 (pi-sum-iter 1 1000)) 3.139592655589782))
     ))

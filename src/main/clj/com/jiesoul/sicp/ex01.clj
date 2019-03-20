@@ -1,4 +1,5 @@
-(ns com.jiesoul.sicp.ex01)
+(ns com.jiesoul.sicp.ex01
+  (:require [com.jiesoul.sicp.ch01 :refer [prime? cube pi-term pi-next]]))
 
 ;; 1.2
 (/ (+ 5 4 (- 2 (- 3 (+ 6 (/ 4 5)))))
@@ -115,3 +116,50 @@
 
 (defn fib [n]
   (fib-iter 1 0 0 1 n))
+
+;; 1.22
+
+(defn report-prime-test [elapsed-time]
+  (print " *** ")
+  (print elapsed-time))
+
+(defn start-prime-test [n start-time]
+  (if (prime? n)
+    (report-prime-test (- (System/currentTimeMillis) start-time))))
+
+(defn timed-prime-test [n]
+  (println)
+  (print n)
+  (start-prime-test n (System/currentTimeMillis)))
+
+(defn search-for-primes [n]
+  (loop [c 1]
+    (if (and (> c n) (prime? c))
+      c
+      (recur (+ c 2)))))
+
+
+;; 1.29
+(defn xps-integral [f a b n]
+  )
+
+;; 1.30
+(defn sum-iter [term a next-f b]
+  (let [iter (fn [a result]
+               (if (> a b)
+                 result
+                 (recur (next-f a) (+ result (term a)))))]
+    (iter a 0)))
+
+
+(defn sum-cubes-iter [a b]
+  (sum-iter cube a inc b))
+
+(defn sum-integers-iter [a b]
+  (sum-iter identity a inc b))
+
+(defn pi-sum-iter [a b]
+  (sum-iter pi-term a pi-next b))
+
+;; 1.31
+(defn product [])

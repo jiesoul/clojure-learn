@@ -74,14 +74,34 @@
 (deftest sine-test
   (testing "test"
     (is (= (sine 12.15) -0.39980345741334))
-    (is (= (sine 16) -0.39980345741334))
-    (is (= (sine 160) -0.39980345741334))
+    (is (= (sine 16) -0.29897692921835617))
+    (is (= (sine 160) -0.07807229364757007))
     ))
 
-(deftest fast-expt-iter-test
-  (testing "ex1.16"
-    (is (= (fast-expt-iter 2 4) 16))
-    (is (= (fast-expt-iter 2 3) 8))
-    (is (= (fast-expt-iter 3 1) 3))
-    (is (= (fast-expt-iter 3 0) 1))
+(deftest smallest-divisor-test
+  (testing "sss"
+    (is (= (smallest-divisor 199) 199))
+    (is (= (smallest-divisor 1999) 1999))
+    (is (= (smallest-divisor 19999) 7))
+    ))
+
+(deftest sum-cubes-test
+  (testing "ss"
+    (is (= (sum-cubes 1 10) 3025))
+    ))
+
+(deftest sum-integers-test
+  (testing "sum-integers"
+    (is (= (sum-integers 1 10) 55))
+    ))
+
+(deftest pi-sum-test
+  (testing "ssss"
+    (* 8 (pi-sum 1 10000))
+    ))
+
+(deftest integral-test
+  (testing "integral"
+    (is (= (integral cube 0 1 0.01) 0.24998750000000042))
+    (is (= (integral cube 0 1 0.001) 0.249999875000001))
     ))

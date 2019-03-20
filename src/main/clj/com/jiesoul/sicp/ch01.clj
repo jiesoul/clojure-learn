@@ -201,10 +201,15 @@
     (fermat-test n) (fast-primes? n (dec times))
     :else false))
 
-(defn sum-ints [a b]
+;; 1.3
+
+(defn cube [x]
+  (* x x x))
+
+(defn sum-integers [a b]
   (if (> a b)
     0
-    (+ a (sum-ints (inc a) b))))
+    (+ a (sum-integers (inc a) b))))
 
 (defn sum-cubes [a b]
   (if (> a b)
@@ -225,26 +230,22 @@
 (defn sum-cubes [a b]
   (sum cube a inc b))
 
-(sum-cubes 1 10)
-
-(defn sum-ints [a b]
+(defn sum-integers [a b]
   (sum identity a inc b))
-(sum-ints 1 10)
+
+
+(defn pi-term [x]
+  (/ 1.0 (* x (+ x 2))))
+
+(defn pi-next [x]
+  (+ x 4))
 
 (defn pi-sum [a b]
-  (let [pi-term (fn [x]
-                  (/ 1.0 (* x (+ x 2))))
-        pi-next (fn [x]
-                  (+ x 4))]
-    (sum pi-term a pi-next b)))
-(* 8 (pi-sum 1 10000))
+  (sum pi-term a pi-next b))
 
 (defn integral [f a b dx]
   (let [add-dx (fn [x] (+ x dx))]
     (* (sum f (+ a (/ dx 2.0)) add-dx b) dx)))
-
-(integral cube 0 1 0.01)
-(integral cube 0 1 0.001)
 
 (defn close-enough? [x y]
   (< (abs (- x y)) 0.01))
