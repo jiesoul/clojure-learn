@@ -1,4 +1,33 @@
-(ns com.jiesoul.sicp.ex02)
+(ns com.jiesoul.sicp.ex02
+  (:require [com.jiesoul.sicp.ch01 :refer [gcd]]))
+
+;; 2.1
+(defn make-rat-real [n d]
+  (let [g (Math/abs (gcd n d))]
+    (if
+      (or (and (pos? n) (pos? d))
+          (and (neg? n) (pos? d)))
+      [(/ n g) (/ d g)]
+      [(- (/ n g)) (- (/ d g))])))
+
+;; 2.2
+(defn make-point [x y]
+  [x y])
+
+(defn x-point [point]
+  (first point))
+
+(defn y-point [point]
+  (second point))
+
+(defn make-segment []
+  )
+
+(defn start-segment []
+  )
+
+(defn end-segment []
+  )
 
 (defn make-interval [a b]
   [a b])

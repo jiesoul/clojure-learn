@@ -28,10 +28,10 @@
 
 (deftest sqrt-test
   (testing "test sqrt"
-    (is (= (sqrt 9) 3.000000000000002))
-    (is (= (sqrt (+ 100 37)) 11.704699910719627))
-    (is (= (sqrt (+ (sqrt 2) (sqrt 3))) 1.7737712281890188))
-    (is (= (square (sqrt 1000)) 1000.0000000000928))
+    (is (= (sqrt 9) 3.0))
+    (is (= (sqrt (+ 100 37)) 11.704699910719626))
+    (is (= (sqrt (+ (sqrt 2) (sqrt 3))) 1.7737712281868727))
+    (is (= (square (sqrt 1000)) 1000.0000000000343))
     ))
 
 (deftest new-sqrt-test
@@ -75,7 +75,7 @@
   (testing "test"
     (is (= (sine 12.15) -0.39980345741334))
     (is (= (sine 16) -0.29897692921835617))
-    (is (= (sine 160) -0.07807229364757007))
+    (is (= (sine 160) 0.07807229364757007))
     ))
 
 (deftest smallest-divisor-test
@@ -104,4 +104,17 @@
   (testing "integral"
     (is (= (integral cube 0 1 0.01) 0.24998750000000042))
     (is (= (integral cube 0 1 0.001) 0.249999875000001))
+    ))
+
+(deftest half-interval-method-test
+  (testing "half-interval-method-test"
+    (is (= (half-interval-method sin 2.0 4.0) 3.14111328125))
+    (is (= (half-interval-method #(- (* % % %) (* 2 %) 3) 1.0 2.0) 1.89306640625))
+    ))
+
+(deftest fixed-point-test
+  (testing "fixed-point-test"
+    (is (= (fixed-point cos 1.0) 0.7390822985224024))
+    (is (= (fixed-point #(+ (sin %) (cos %)) 1.0) 1.2587315962971173))
+    (is (= (fixed-point #(/ (Math/log 1000) (Math/log %)) 10) 4.555532257016376))
     ))

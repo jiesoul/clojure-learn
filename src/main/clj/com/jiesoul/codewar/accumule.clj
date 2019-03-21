@@ -8,5 +8,3 @@
               s
               (range))]
     (clojure.string/join "-" list)))
-
-(accum "adcd")

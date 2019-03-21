@@ -17,9 +17,6 @@
 (defn print-rat [x]
   (str (numer x) "/" (denom x)))
 
-(def one-half (make-rat 1 2))
-(print-rat one-half)
-
 (defn add-rat [x y]
   (make-rat (+ (* (numer x) (denom y))
                (* (numer y) (denom x)))
@@ -41,15 +38,6 @@
 (defn equal-rat? [x y]
   (= (* (numer x) (denom y))
      (* (denom y) (numer x))))
-
-(def one-three (make-rat 1 3))
-
-(print-rat (add-rat one-half one-three))
-(print-rat (sub-rat one-half one-three))
-(print-rat (add-rat one-three one-three))
-
-(def one->four (list 1 2 3 4))
-(first one->four)
 
 (defn scale-list [items factor]
   (if (empty? items)

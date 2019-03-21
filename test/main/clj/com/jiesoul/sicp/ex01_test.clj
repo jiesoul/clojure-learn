@@ -1,6 +1,7 @@
 (ns com.jiesoul.sicp.ex01-test
   (:require [clojure.test :refer :all])
-  (:require [com.jiesoul.sicp.ex01 :refer :all]))
+  (:require [com.jiesoul.sicp.ex01 :refer :all]
+            [com.jiesoul.sicp.ch01 :refer [prime?]]))
 
 (deftest f-12-test
   (testing "test"
@@ -62,4 +63,77 @@
     (is (= (sum-cubes-iter 1 10) 3025))
     (is (= (sum-integers-iter 1 10) 55))
     (is (= (* 8 (pi-sum-iter 1 1000)) 3.139592655589782))
+    ))
+
+(deftest product-factorial-test
+  (testing "sss"
+    (is (= (product-factorial 3) 6))
+    (is (= (product-factorial 4) 24))
+    (is (= (product-factorial 5) 120))
+    ))
+
+(deftest product-pi-test
+  (testing "product-pi"
+    (let [pi (/ Math/PI 4)]
+      (is (< (- (product-pi 3) pi) 0.1))
+      (is (< (- (product-pi 30) pi) 0.1))
+      (is (< (- (product-pi 300) pi) 0.01))
+      (is (< (- (product-pi 3000) pi) 0.001)))
+    ))
+
+(deftest product-iter-factorial-test
+  (testing "product-iter-factoril"
+    (is (= (product-iter-factorial 3) 6))
+    (is (= (product-iter-factorial 4) 24))
+    (is (= (product-iter-factorial 5) 120))
+    ))
+
+(deftest product-iter-pi-test
+  (testing "product-iter-pi"
+    (let [pi (/ Math/PI 4)]
+      (is (< (- (product-iter-pi 3) pi) 0.1))
+      (is (< (- (product-iter-pi 30) pi) 0.1))
+      (is (< (- (product-iter-pi 300) pi) 0.01))
+      (is (< (- (product-iter-pi 30000) pi) 0.0001))
+      (is (< (- (product-iter-pi 3000) pi) 0.001)))
+    ))
+
+(deftest accumulate-sum-fac-test
+  (testing "accumulate-sum-fac"
+    (is (= (accumulate-sum-fac 1 3) 6))
+    ))
+
+
+(deftest accumulate-product-factorial-test
+  (testing "accumulate-product-factorial-test"
+    (is (= (accumulate-product-factorial 3) 6))
+    (is (= (accumulate-product-factorial 4) 24))
+    (is (= (accumulate-product-factorial 5) 120))
+    ))
+
+(deftest filtered-accumulate-prime-sum-test
+  (testing "filtered-accumulate-prime-sum-test"
+    (is (= (filtered-accumulate-prime-sum 2 10) 17))
+    ))
+
+(deftest filtered-accumulate-product-gcd-test
+  (testing "filtered-accumulate-product-gcd-test"
+    (is (= (filtered-accumulate-product-gcd 10) 189))
+    (is (= (filtered-accumulate-product-gcd 11) 3628800))
+    ))
+
+(deftest f-35-test
+  (testing "f-35"
+    (is (= (f-35) 1.6180327868852458))
+    ))
+
+(deftest cont-frac-test
+  (testing "cont-frac-test"
+    (let [v (/ 1 1.6180327868852458)]
+      (is (< (Math/abs (- (cont-frac (fn [_] 1.0) (fn [_] 1.0) 4) v)) 0.1))
+      (is (< (Math/abs (- (cont-frac (fn [_] 1.0) (fn [_] 1.0) 50) v)) 0.01))
+      (is (< (Math/abs (- (cont-frac (fn [_] 1.0) (fn [_] 1.0) 500) v)) 0.001))
+      (is (< (Math/abs (- (cont-frac (fn [_] 1.0) (fn [_] 1.0) 5) v)) 0.0001))
+      (is (< (Math/abs (- (cont-frac (fn [_] 1.0) (fn [_] 1.0) 5000) v)) 0.0000001))
+      )
     ))

@@ -248,7 +248,7 @@
     (* (sum f (+ a (/ dx 2.0)) add-dx b) dx)))
 
 (defn close-enough? [x y]
-  (< (abs (- x y)) 0.01))
+  (< (abs (- x y)) 0.001))
 
 (defn search [f neg-point pos-point]
   (let [midpoint (average neg-point pos-point)]
@@ -267,12 +267,9 @@
       (and (neg? a-value) (pos? b-value)) (search f a b)
       (and (neg? b-value) (pos? a-value)) (search f b a)
       :else (println "Values are not of opposite sign" a b))))
+
 (defn sin [n]
   (Math/sin n))
-
-(half-interval-method sin 2.0 4.0)
-
-(half-interval-method #(- (* % % %) (* 2 %) 3) 1.0 2.0)
 
 (def tolerance 0.00001)
 
@@ -289,10 +286,11 @@
 (defn cos [d]
   (Math/cos d))
 
-(fixed-point cos 1.0)
-(fixed-point #(+ (sin %) (cos %)) 1.0)
+;; 无限循环
+(defn sqrt-0 [x]
+  (fixed-point #(/ x %) 1.0))
 
-(defn sqrt [x]
+(defn sqrt-1 [x]
   (fixed-point #(average % (/ x %)) 1.0))
 
 (defn average-damp [f]
@@ -321,10 +319,18 @@
 (defn newtons-method [g guess]
   (fixed-point (newton-transform g) guess))
 
-(defn sqrt [x]
+(defn sqrt-newtons [x]
   (newtons-method #(- (square %) x) 1.0))
-
-(sqrt 4)
 
 (defn fixed-point-of-transform [g transform guess]
   (fixed-point (transform g) guess))
+
+(defn sqrt-fiexed-point [x]
+  (fixed-point-of-transform #(/ x %)
+                            average-damp
+                            1.0))
+
+(defn sqrt-3 [x]
+  (fixed-point-of-transform #(- (square %) x)
+                            newton-transform
+                            1.0))

@@ -1,5 +1,5 @@
 (ns com.jiesoul.sicp.ex01
-  (:require [com.jiesoul.sicp.ch01 :refer [prime? cube pi-term pi-next]]))
+  (:require [com.jiesoul.sicp.ch01 :refer [prime? cube pi-term pi-next gcd fixed-point]]))
 
 ;; 1.2
 (/ (+ 5 4 (- 2 (- 3 (+ 6 (/ 4 5)))))
@@ -162,4 +162,99 @@
   (sum-iter pi-term a pi-next b))
 
 ;; 1.31
-(defn product [])
+(defn product [t-f a next-f b]
+  (if (> a b)
+    1
+    (* (t-f a)
+       (product
+         t-f
+         (next-f a)
+         next-f
+         b))))
+
+(defn product-factorial [n]
+  (product (fn [x] x) 1 #(inc %) n))
+
+(defn pi-f [a]
+  (if
+    (odd? a)
+    (/ (inc a) (+ a 2) 1.0)
+    (/ (+ a 2) (inc a) 1.0)))
+
+(defn product-pi [n]
+  (product pi-f
+           1
+           inc
+           n))
+
+(defn product-iter [tf a nf b]
+  (let [step (fn [a result]
+               (if (> a b)
+                 result
+                 (recur (nf a) (* result (tf a)))))]
+    (step a 1)))
+
+(defn product-iter-factorial [n]
+  (product-iter identity 1 inc n))
+
+(defn product-iter-pi [n]
+  (product-iter pi-f 1 inc n))
+
+
+;; 1.32
+(defn accumulate [combiner null-value term a next b]
+  (if (> a b)
+    null-value
+    (combiner (term a)
+              (accumulate combiner null-value term (next a) next b))))
+
+(defn accumulate-sum-fac [a b]
+  (accumulate + 0 identity a inc b))
+
+(defn accumulate-product-factorial [n]
+  (accumulate * 1 identity 1 inc n))
+
+(defn accumulate-iter [combiner null-value term a next b]
+  (let [step (fn [a result]
+               (if (> a b)
+                 result
+                 (recur (next a) (combiner result (term a)))))]
+    (step a null-value)))
+
+;; 1.33
+(defn filtered-accumulate [filtered combiner null-value term a next b]
+  (let [step (fn [a result]
+               (if (> a b)
+                 result
+                 (recur (next a) (if (filtered a)
+                                   (combiner result (term a))
+                                   result))))]
+    (step a null-value)))
+
+(defn filtered-accumulate-prime-sum [a b]
+  (filtered-accumulate prime? + 0 identity a inc b))
+
+(defn filtered-accumulate-product-gcd [n]
+  (filtered-accumulate (fn [a]
+                         (= (gcd a n) 1))
+                       *
+                       1
+                       identity
+                       1
+                       inc
+                       n))
+
+;; 1.35
+(defn f-35 []
+  (fixed-point #(+ 1 (/ 1.0 %)) 1.0))
+
+;; 1.37
+(defn cont-frac [n d k]
+  (let [step (fn step [i]
+               (if (> i k)
+                 0
+                 (/ (n i) (+ (d i) (step (inc i))))))]
+    (step 1)))
+
+(defn cont-frac-iter [n d k]
+  (let [step (fn [i])]))
