@@ -45,8 +45,6 @@
     (cons (* (first items) factor)
           (scale-list (rest items) factor))))
 
-(scale-list (list 1 2 3 4 5) 6)
-
 (defn map- [proc items]
   (if (empty? items)
     nil
@@ -55,9 +53,6 @@
 
 (defn abs [n]
   (Math/abs n))
-
-(map- abs (list -10 -2 2.5))
-(map- #(* % %) (list 1 2 3 4))
 
 (defn scale-list [items factor]
   (map- #(* % factor) items))

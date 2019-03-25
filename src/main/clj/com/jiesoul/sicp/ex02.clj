@@ -54,6 +54,13 @@
 
 (defn len-rectangle [rectangle])
 
+;; 2.6
+(defn zero []
+  (fn [f] (fn [x] x)))
+
+(defn add-1 [n]
+  (fn [f] (fn [x] (f ((n f) x)))))
+
 (defn make-interval [a b]
   [a b])
 
