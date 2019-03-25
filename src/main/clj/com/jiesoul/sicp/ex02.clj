@@ -61,6 +61,7 @@
 (defn add-1 [n]
   (fn [f] (fn [x] (f ((n f) x)))))
 
+;; 2.7
 (defn make-interval [a b]
   [a b])
 
@@ -86,21 +87,50 @@
   (mul-interval x
                 (make-interval (/ 1.0 (upper-bound y))
                                (/ 1.0 (lower-bound y)))))
+;; 2.8
+(defn sub-interval [x y]
+  (make-interval (min (lower-bound x) (lower-bound y))
+    (min (upper-bound x) (upper-bound y))))
+
+;; 2.9
+(defn len-interval [x]
+  (- (upper-bound x) (lower-bound x)))
+
+(defn len-add-interval [x y]
+  )
+
+;; 2.17
+(defn list-pair [list]
+  (if (< (count list) 2)
+    (first list)
+    (recur (next list))))
+
+;; 2.18
+(defn reverse-1 [lst]
+  (loop [lst lst
+         result ()]
+    (if (empty? lst)
+      result
+      (recur (next lst) (cons (first lst) result)))))
 
 
-(defn list-ref [items n]
-  (if (zero? n)
-    (first items)
-    (recur (rest items) (dec n))))
+;; 2.18
+(def us-coins (list 50 25 0 5 1))
+(def uk-coins (list 100 50 20 10 5 2 1 0.5))
 
-(defn length [items]
-  (if (nil? items)
-    0
-    (+ 1 (length (rest items)))))
+(defn no-more? [coins]
+  (println (count coins))
+  (zero? (count coins)))
 
-(defn length-iter [items]
-  (let [step (fn [a count]
-               (if (nil? a)
-                 count
-                 (recur (rest a) (inc count))))]
-    (step items 0)))
+(defn expect-first-denomination [coins]
+  (rest coins))
+
+(defn first-denomination [coins]
+  (first coins))
+
+(defn cc [amount coins-values]
+  (cond
+    (zero? amount) 1
+    (or (neg? amount) (no-more? coins-values)) 0
+    :else (+ (cc amount (expect-first-denomination coins-values))
+              (cc (- amount (first-denomination coins-values)) coins-values))))

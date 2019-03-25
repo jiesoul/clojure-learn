@@ -57,4 +57,28 @@
 (defn scale-list [items factor]
   (map- #(* % factor) items))
 
+(defn list-ref [items n]
+  (if (zero? n)
+    (first items)
+    (recur (rest items) (dec n))))
+
+(defn len [items]
+  (if (nil? items)
+    0
+    (+ 1 (len (next items)))))
+
+(defn length-iter [items]
+  (let [step (fn [a count]
+               (if (nil? a)
+                 count
+                 (recur (next a) (inc count))))]
+    (step items 0)))
+
+(defn append [list1 list2]
+  (if (nil? list1)
+    list2
+    (cons (first list1) (append (next list1) list2))))
+
+
+
 
