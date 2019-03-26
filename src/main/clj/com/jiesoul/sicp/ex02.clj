@@ -148,7 +148,7 @@
 (defn square-list-1 [items]
   (map #(* % %) items))
 
-;; 2.28
+;; 2.22
 (defn square [n]
   (* n n))
 
@@ -176,13 +176,33 @@
       (proc (first items))
       (for-each proc (rest items)))))
 
+;; 2.27
 (defn deep-reverse [x]
-  (let [step (fn step [result x]
-               (if-not (seq? x)
-                 (cons x result)
-                 (let [v (first x)]
-                   (cond
-                     (nil? v) nil
-                     (seq? v) (cons (deep-reverse v) (cons (deep-reverse (rest x)) result))
-                     :else (cons (deep-reverse (rest x)) (cons (list v) result))))))]
-    (step '() x)))
+  (loop [result ()
+         lst x]
+    (if (empty? lst)
+      result
+      (recur
+        (cons
+          (let [v (first lst)]
+            (if (seq? v)
+              (deep-reverse v)
+              v))
+          result)
+        (next lst)))))
+
+;; 2.28
+(defn fringe [x]
+  (let [step (fn [])]
+    (loop [lst    x
+           result ()]
+      (if (empty? lst)
+        result
+        (recur (rest lst) (cons (let [v (first lst)]
+                                  (if (seq? v)
+                                    (fringe v)
+                                    v))
+                            result))))))
+
+
+;; 2.29

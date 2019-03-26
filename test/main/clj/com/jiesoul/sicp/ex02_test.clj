@@ -88,3 +88,9 @@
     (is (= (deep-reverse '(1 2)) '(2 1)))
     (is (= (deep-reverse '((1 2) (3 4 5))) '((5 4 3) (2 1))))
     ))
+
+(deftest fringe-test
+  (testing "fringe-test"
+    (let [x (list (list 1 2) (list 3 4))]
+      (is (= (fringe x) (list 1 2 3 4))))
+    ))
