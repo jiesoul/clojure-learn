@@ -5,7 +5,7 @@
 
 (deftest fibonacci-multiply-test
   (testing "testing"
-    (is (= 2 (fibonacci-multiply 2 9)))))
+    (is (= [8 0] (fibonacci-multiply 2 9)))))
 
 
 (deftest peasant-multi-test

@@ -39,23 +39,8 @@
   (= (* (numer x) (denom y))
      (* (denom y) (numer x))))
 
-(defn scale-list [items factor]
-  (if (empty? items)
-    nil
-    (cons (* (first items) factor)
-          (scale-list (rest items) factor))))
-
-(defn map- [proc items]
-  (if (empty? items)
-    nil
-    (cons (proc (first items))
-          (map- proc (rest items)))))
-
 (defn abs [n]
   (Math/abs n))
-
-(defn scale-list [items factor]
-  (map- #(* % factor) items))
 
 (defn list-ref [items n]
   (if (zero? n)
@@ -78,6 +63,33 @@
   (if (nil? list1)
     list2
     (cons (first list1) (append (next list1) list2))))
+
+(defn scale-list [items factor]
+  (if (empty? items)
+    nil
+    (cons (* (first items) factor)
+          (scale-list (rest items) factor))))
+
+(defn map-1 [proc items]
+  (if (empty? items)
+    nil
+    (cons (proc (first items))
+          (map-1 proc (rest items)))))
+
+(defn new-scale-list [items factor]
+  (map-1 #(* % factor) items))
+
+(def x (cons (list 1 2) (list 3 4)))
+
+(defn pair? [x]
+  (seq? x))
+
+(defn count-leaves [x]
+  (cond
+    (and (seq? x) (empty? x)) 0
+    (not (seq? x)) 1
+    :else (+ (count-leaves (first x))
+             (count-leaves (rest x)))))
 
 
 

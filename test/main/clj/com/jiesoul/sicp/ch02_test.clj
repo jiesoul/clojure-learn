@@ -32,3 +32,31 @@
   (testing "append-test"
     (is (= (append (list 1 2 3) (list 4 5 6)) (list 1 2 3 4 5 6)))
     ))
+
+(deftest scale-list-test
+  (testing "scale-list-test"
+    (is (= (scale-list (list 1 2 3 4 5) 10) '(10 20 30 40 50)))
+    ))
+
+(deftest map-1-test
+  (testing "map-1-test"
+    (is (= (map-1 #(Math/abs %) '(-10 2.5 -11.6 17)) '(10 2.5 11.6 17)))
+    (is (= (map-1 #(* % %) '(1 2 3 4)) '(1 4 9 16)))
+    ))
+
+(deftest new-scale-list-test
+  (testing "new-scale-list-test"
+    (is (= (new-scale-list (list 1 2 3 4 5) 10) '(10 20 30 40 50)))
+    ))
+
+(deftest x-test
+  (is (= (len x) 3))
+
+  )
+
+(deftest count-leaves-test
+  (testing "count-leaves-test"
+    (is (= (count-leaves x) 4))
+    ))
+
+

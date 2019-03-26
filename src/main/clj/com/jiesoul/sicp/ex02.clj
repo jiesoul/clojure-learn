@@ -115,12 +115,11 @@
 
 
 ;; 2.18
-(def us-coins (list 50 25 0 5 1))
+(def us-coins (list 50 25 10 5 1))
 (def uk-coins (list 100 50 20 10 5 2 1 0.5))
 
 (defn no-more? [coins]
-  (println (count coins))
-  (zero? (count coins)))
+  (empty? coins))
 
 (defn expect-first-denomination [coins]
   (rest coins))
@@ -134,3 +133,56 @@
     (or (neg? amount) (no-more? coins-values)) 0
     :else (+ (cc amount (expect-first-denomination coins-values))
               (cc (- amount (first-denomination coins-values)) coins-values))))
+
+(defn same-parity [a & c]
+  (if (odd? a)
+    (conj (filter odd? c) a)
+    (conj (filter even? c) a)))
+
+;; 2.21
+(defn square-list [items]
+  (if (empty? items)
+    nil
+    (cons (* (first items) (first items)) (square-list (rest items)))))
+
+(defn square-list-1 [items]
+  (map #(* % %) items))
+
+;; 2.28
+(defn square [n]
+  (* n n))
+
+(defn square-list-iter [itmes]
+  (let [step (fn step [things answer]
+               (if (empty? things)
+                 answer
+                 (recur (rest things) (cons (square (first things))
+                                            answer))))]
+    (step itmes nil)))
+
+; error
+;(defn square-list-iter [itmes]
+;  (let [step (fn step [things answer]
+;               (if (empty? things)
+;                 answer
+;                 (recur (rest things) (cons answer (square (first things))))))]
+;    (step itmes nil)))
+
+;; 2.23
+(defn for-each [proc items]
+  (if (empty? items)
+    nil
+    (do
+      (proc (first items))
+      (for-each proc (rest items)))))
+
+(defn deep-reverse [x]
+  (let [step (fn step [result x]
+               (if-not (seq? x)
+                 (cons x result)
+                 (let [v (first x)]
+                   (cond
+                     (nil? v) nil
+                     (seq? v) (cons (deep-reverse v) (cons (deep-reverse (rest x)) result))
+                     :else (cons (deep-reverse (rest x)) (cons (list v) result))))))]
+    (step '() x)))

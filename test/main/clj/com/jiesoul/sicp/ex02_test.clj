@@ -35,5 +35,56 @@
 
 (deftest cc-test
   (testing "cc-test"
-    ;(is (= (cc 10 us-coins) 5))
+    (is (= (cc 10 us-coins) 4))
+    (is (= (cc 100 us-coins) 292))
+    (is (= (cc 10 (reverse us-coins)) 4))
+    (is (= (cc 100 (reverse us-coins)) 292))
+    (is (= (cc 100 uk-coins) 104561))
+    (is (= (cc 100 (reverse uk-coins)) 104561))
+    ))
+
+(deftest same-parity-test
+  (testing "same-parity-test"
+    (is (= (same-parity 1 2 3 4 5 6 7) (list 1 3 5 7)))
+    ))
+
+(deftest square-list-test
+  (testing "square-list-test"
+    (is (= (square-list '(1 2 3 4)) '(1 4 9 16)))
+    (is (= (square-list-1 '(1 2 3 4)) '(1 4 9 16)))
+    ))
+
+(deftest square-list-iter-test
+  (testing "square-list-iter-test"
+    (is (not= (square-list-iter '(1 2 3 4)) '(1 4 9 16)))
+    ))
+
+(deftest for-each-test
+  (testing "for-each-test"
+    (for-each #(println (str %)) '(57 321 88))
+    ))
+
+(deftest test-2-25
+  (testing "2.25 test"
+    (is (= (first (rest (first (rest (rest '(1 3 (5 7) 9)))))) 7))
+    (is (= (first (first '((7)))) 7))
+    (is (= (first
+             (rest
+               (first
+                 (rest
+                   (first
+                     (rest
+                       (first
+                         (rest
+                           (first
+                             (rest
+                               (first
+                                 (rest
+                                   '(1 (2 (3 (4 (5 (6 7)))))))))))))))))) 7))
+    ))
+
+(deftest deep-reverse-test
+  (testing "deep-reverse-test"
+    (is (= (deep-reverse '(1 2)) '(2 1)))
+    (is (= (deep-reverse '((1 2) (3 4 5))) '((5 4 3) (2 1))))
     ))
