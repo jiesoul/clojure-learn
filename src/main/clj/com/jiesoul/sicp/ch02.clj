@@ -64,6 +64,21 @@
     list2
     (cons (first list1) (append (next list1) list2))))
 
+(defn null? [x]
+  (if (sequential? x)
+    (empty? x)
+    (nil? x)))
+
+(defn pair? [x]
+  (and (sequential? x) (not (empty? x))))
+
+(defn count-leaves [tree]
+  (cond
+    (null? tree) 0
+    (not (pair? tree)) 1
+    :else (+ (count-leaves (first tree))
+            (count-leaves (rest tree)))))
+
 (defn scale-list [items factor]
   (if (empty? items)
     nil
@@ -80,14 +95,6 @@
   (map-1 #(* % factor) items))
 
 (def x (cons (list 1 2) (list 3 4)))
-
-(defn null? [x]
-  (if (sequential? x)
-    (empty? x)
-    (nil? x)))
-
-(defn pair? [x]
-  (and (sequential? x) (not (empty? x))))
 
 (defn count-leaves [x]
   (cond

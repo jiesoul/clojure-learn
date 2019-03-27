@@ -289,7 +289,12 @@
 (defn length-1 [sequence]
   (accumulate #(+ %2 1) 0 sequence))
 
+;; 2.34
 (defn horner-eval [x coefficient-sequence]
   (accumulate #(+ %1 (* x %2))
               0
               coefficient-sequence))
+
+;; 2.35
+(defn count-leaves [t]
+  )
