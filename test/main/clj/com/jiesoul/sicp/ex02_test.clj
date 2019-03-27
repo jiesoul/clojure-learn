@@ -92,5 +92,48 @@
 (deftest fringe-test
   (testing "fringe-test"
     (let [x (list (list 1 2) (list 3 4))]
-      (is (= (fringe x) (list 1 2 3 4))))
+      (is (= (fringe x) (list 1 2 3 4)))
+      (is (= (fringe (list x x)) (list 1 2 3 4 1 2 3 4)))
+      )
+    ))
+
+(deftest square-tree-test
+  (testing "square-tree-test"
+    (is (= (square-tree '(1 (2 (3 4) 5) (6 7))) '(1 (4 (9 16) 25) (36 49))))
+    (is (= (square-tree-map '(1 (2 (3 4) 5) (6 7))) '(1 (4 (9 16) 25) (36 49))))
+    (is (= (square-tree-f '(1 (2 (3 4) 5) (6 7))) '(1 (4 (9 16) 25) (36 49))))
+    ))
+
+(deftest subsets-test
+  (testing "subsets-test"
+    (is (= (subsets '(1 2 3)) '(() (3) (2) (2 3) (1) (1 3) (1 2) (1 2 3))))
+    ))
+
+(deftest append-1-test
+  (testing "append-1"
+    (is (= (append-1 '(1 2) '(3 4)) '(1 2 3 4)))
+    ))
+
+(deftest map-p-test
+  (testing "map 1 test"
+    (is (= (map-p inc '(1 2 3)) '(2 3 4)))
+    ))
+
+(deftest length-1-test
+  (testing "length 1 test"
+    (is (= (length-1 '(1 2 3)) 3))
+    ))
+
+(deftest horner-eval-test
+  (testing "horner eval"
+    (is (= (horner-eval 2 '(1)) 1))
+    (is (= (horner-eval 2 '(1 3)) 7))
+    (is (= (horner-eval 2 '(1 3 0)) 7))
+    (is (= (horner-eval 2 '(1 3 0 5)) 47))
+    (is (= (horner-eval 2 '(1 3 0 5 0)) 47))
+    (is (= (horner-eval 2 '(1 3 0 5 0 1)) 79))
+    (is (= (horner-eval 3 '(1)) 1))
+    (is (= (horner-eval 3 '(1 3)) 10))
+    (is (= (horner-eval 3 '(1 3 0)) 10))
+    (is (= (horner-eval 3 '(1 3 0 5)) 145))
     ))

@@ -91,7 +91,7 @@
     1
     (* n (factorial (- n 1)))))
 
-(defn- fact-iter [product counter max-count]
+(defn fact-iter [product counter max-count]
   (if (> counter max-count)
     product
     (recur (* counter product)

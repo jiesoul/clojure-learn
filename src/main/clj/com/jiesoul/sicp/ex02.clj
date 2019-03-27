@@ -1,5 +1,6 @@
 (ns com.jiesoul.sicp.ex02
-  (:require [com.jiesoul.sicp.ch01 :refer [gcd]]))
+  (:require [com.jiesoul.sicp.ch01 :refer [gcd]]
+            [com.jiesoul.sicp.ch02 :refer [pair? append accumulate]]))
 
 ;; 2.1
 (defn make-rat-real [n d]
@@ -192,17 +193,103 @@
         (next lst)))))
 
 ;; 2.28
+(defn concat-1 [l1 l2]
+  (loop [l1 l1
+         l2 (reverse l2)]
+    (if (empty? l1)
+      (reverse l2)
+      (recur (rest l1) (cons (first l1) l2)))))
+
 (defn fringe [x]
-  (let [step (fn [])]
-    (loop [lst    x
-           result ()]
-      (if (empty? lst)
-        result
-        (recur (rest lst) (cons (let [v (first lst)]
-                                  (if (seq? v)
-                                    (fringe v)
-                                    v))
-                            result))))))
+  (loop [x      x
+         result '()]
+    (cond
+      (sequential? (first x)) (recur (concat-1 (first x) (rest x)) result)
+      (empty? x) (reverse result)
+      :else (recur (rest x) (cons (first x) result)))))
 
 
 ;; 2.29
+(defn make-mobile [left right]
+  (list left right))
+
+(defn make-branch [length structure]
+  (list length structure))
+
+(defn left-branch [mobile]
+  (first mobile))
+
+(defn right-branch [mobile]
+  (second mobile))
+
+(defn branch-length [branch]
+  (first branch))
+
+(defn branch-structure [branch]
+  (second branch))
+
+(defn total-weight [mobile]
+  (let [lb  (left-branch mobile)
+        rb  (right-branch mobile)
+        lbs (branch-structure lb)
+        rbs (branch-structure rb)]
+    (+ (if (number? lbs) lbs (total-weight lbs))
+       (if (number? rbs) rbs (total-weight rbs)))))
+
+(defn check-bran? [mobile]
+  (loop [l (left-branch mobile)
+         r (right-branch mobile)]
+    (let [ll (branch-length l)
+          ls (branch-structure l)
+          rl (branch-length r)
+          rs (branch-structure r)]
+      (cond
+        (and (number? ls) (number? rs)) (= (* ll ls) (* rl rs))
+        (and (not (number? ls)) (not (number? rs)) (= ll rl)) (recur ls rs)
+        :else false))))
+
+;; 2.30
+(defn square-tree [x]
+  (cond
+    (and (sequential? x) (empty? x)) nil
+    (not (pair? x)) (* x x)
+    :else (cons (square-tree (first x))
+                (square-tree (rest x)))))
+
+(defn square-tree-map [x]
+  (map #(if (pair? %)
+          (square-tree %)
+          (* % %))
+       x))
+
+;;2.31
+(defn tree-map [f tree]
+  (map #(if (pair? %)
+          (tree-map f %)
+          (f %))
+       tree))
+
+(defn square-tree-f [tree]
+  (tree-map square tree))
+
+;; 2.32
+(defn subsets [s]
+  (if (and (sequential? s) (empty? s))
+    (list '())
+    (let [rest (subsets (rest s))]
+      (append rest (map #(cons (first s) %) rest)))))
+
+;;2.33
+(defn map-p [p sequence]
+  (accumulate #(cons (p %1) %2) nil sequence))
+
+(defn append-1 [seq1 seq2]
+  (accumulate cons seq2 seq1))
+
+(defn length-1 [sequence]
+  (accumulate #(+ %2 1) 0 sequence))
+
+(defn horner-eval [x coefficient-sequence]
+  (accumulate #(+ %1 (* x %2))
+              0
+              coefficient-sequence))

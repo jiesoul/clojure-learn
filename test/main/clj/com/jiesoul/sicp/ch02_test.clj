@@ -59,4 +59,38 @@
     (is (= (count-leaves x) 4))
     ))
 
+(deftest scale-tree-test
+  (testing "scale-tree-test"
+    (is (= (scale-tree '(1 (2 (3 4) 5) (6 7)) 10) '(10 (20 (30 40) 50) (60 70))))
+    (is (= (scale-tree-map '(1 (2 (3 4) 5) (6 7)) 10) '(10 (20 (30 40) 50) (60 70))))
+    ))
 
+(deftest sum-odd-squares-test
+  (testing "sum-oddd-squares-test"
+    (is (= (sum-odd-squares '(1 (2 (3 4) 5) (6 7))) 84))
+    (is (= (sum-odd-squares-1 '(1 (2 (3 4) 5) (6 7))) 84))
+    ))
+
+(deftest filter-1-test
+  (testing "filter-1-test"
+    (is (= (filter-1 odd? '(1 2 3 4 5)) '(1 3 5)))))
+
+(deftest accumulate-test
+  (testing "accumulate-test"
+    (is (= (accumulate + 0 '(1 2 3 4 5)) 15))
+    (is (= (accumulate * 1 '(1 2 3 4 5)) 120))
+    (is (= (accumulate cons nil '(1 2 3 4 5)) '(1 2 3 4 5)))
+    ))
+
+(deftest enumerate-tree-test
+  (testing "enumerate-tree-test"
+    (is (= (enumerate-tree '(1 (2 (3 4)) 5)) '(1 2 3 4 5)))
+    ))
+
+(deftest list-fib-squares-test
+  (testing "list-fib-squares"
+    (is (= (list-fib-squares 10) '(0 1 1 4 9 25 64 169 441 1156 3025)))))
+
+(deftest product-of-squares-of-odd-elements-test
+  (testing "product-of-squares-of-odd-elements-test"
+    (is (= (product-of-squares-of-odd-elements '(1 2 3 4 5)) 225))))

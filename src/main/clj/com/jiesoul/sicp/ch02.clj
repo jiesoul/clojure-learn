@@ -1,5 +1,5 @@
 (ns com.jiesoul.sicp.ch02
-  (:require [com.jiesoul.sicp.ch01 :refer [gcd]]))
+  (:require [com.jiesoul.sicp.ch01 :refer [gcd square fib]]))
 
 (defn linear-combination [a b x y]
   (+ (* a x) (* b y)))
@@ -81,8 +81,13 @@
 
 (def x (cons (list 1 2) (list 3 4)))
 
+(defn null? [x]
+  (if (sequential? x)
+    (empty? x)
+    (nil? x)))
+
 (defn pair? [x]
-  (seq? x))
+  (and (sequential? x) (not (empty? x))))
 
 (defn count-leaves [x]
   (cond
@@ -91,6 +96,94 @@
     :else (+ (count-leaves (first x))
              (count-leaves (rest x)))))
 
+(defn scale-tree [tree factor]
+  (cond
+    (and (sequential? tree) (empty? tree)) nil
+    (not (pair? tree)) (* tree factor)
+    :else (cons (scale-tree (first tree) factor)
+                (scale-tree (rest tree) factor))))
 
+(defn scale-tree-map [tree factor]
+  (map #(if (pair? %)
+          (scale-tree-map % factor)
+          (* % factor))
+       tree))
 
+;; 2.3
+(defn sum-odd-squares [tree]
+  (cond
+    (null? tree) 0
+    (not (pair? tree)) (if (odd? tree) (square tree) 0)
+    :else (+ (sum-odd-squares (first tree))
+             (sum-odd-squares (rest tree)))))
+
+(defn even-fibs [n]
+  (letfn [(next [k]
+            (if (> k n)
+              nil
+              (let [f (fib k)]
+                (if (even? f)
+                  (cons f (next (+ k 1)))
+                  (next (+ k 1))))))]
+    (next 0)))
+
+(defn filter-1 [predicate sequence]
+  (cond
+    (null? sequence) nil
+    (predicate (first sequence)) (cons (first sequence) (filter-1 predicate (rest sequence)))
+    :else (filter-1 predicate (rest sequence))))
+
+(defn accumulate [op initial sequence]
+  (if (null? sequence)
+    initial
+    (op (first sequence) (accumulate op initial (rest sequence)))))
+
+(defn enumerate-interval [low high]
+  (if (> low high)
+    nil
+    (cons low (enumerate-interval (inc low) high))))
+
+(defn enumerate-tree [tree]
+  (cond
+    (null? tree) nil
+    (not (pair? tree)) (list tree)
+    :else (append (enumerate-tree (first tree))
+                  (enumerate-tree (rest tree)))))
+
+(defn sum-odd-squares-1 [tree]
+  (accumulate +
+              0
+              (map square (filter-1 odd? (enumerate-tree tree)))))
+
+(defn even-fibs-1 [n]
+  (accumulate cons
+              nil
+              (filter even?
+                      (map fib
+                           (enumerate-interval 0 n)))))
+
+(defn list-fib-squares [n]
+  (accumulate cons
+              nil
+              (map square
+                   (map fib
+                        (enumerate-interval 0 n)))))
+
+(defn product-of-squares-of-odd-elements [sequence]
+  (accumulate *
+              1
+              (map square
+                   (filter odd? sequence))))
+
+(defn salary [a]
+  )
+
+(defn programmers? [p]
+  true)
+
+(defn salary-of-highest-paid-programmer [records]
+  (accumulate max
+              0
+              (map salary
+                   (filter programmers? records))))
 
