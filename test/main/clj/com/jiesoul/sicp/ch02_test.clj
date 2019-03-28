@@ -105,3 +105,11 @@
   (testing "permutations"
     (is (= (permutations '(1 2 3)) '((1 2 3))))
     ))
+
+(deftest deriv-test
+  (testing "deriv test"
+    (is (= (sum? '(+ 1 0)) true))
+    (is (= (deriv '(+ x 3) 'x) 1))
+    (is (= (deriv '(* x y) 'x) 'y))
+    (is (= (deriv '(* (* x y) (+ x 3)) 'x) '(+ (* x y) (* y (+ x 3)))))
+    ))
