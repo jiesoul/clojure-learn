@@ -356,5 +356,6 @@
                 (flatmap
                   #(map (fn [new-row]
                           (adjoin-position new-row k %))
-                        (enumeration-interval 1 board-size))))))]
+                        (enumerate-interval 1 board-size))
+                  (queen-cols (- k 1))))))]
     (queen-cols board-size)))
