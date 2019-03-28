@@ -137,3 +137,47 @@
     (is (= (horner-eval 3 '(1 3 0)) 10))
     (is (= (horner-eval 3 '(1 3 0 5)) 145))
     ))
+
+(deftest count-leaves-tree-test
+  (testing "count leaves test"
+    (is (= (count-leaves-tree '(1 2 3 4)) 4))
+    (is (= (count-leaves-tree '((1 2 3 4) (1 2 3 4))) 8))
+    ))
+
+(deftest accumulate-n-test
+  (testing "accumulate n test"
+    (let [x '((1 2 3) (4 5 6) (7 8 9) (10 11 12))]
+      (is (= (accumulate-n + 0 x) '(22 26 30))))
+    ))
+
+(deftest dot-product-test
+  (testing "dot product test"
+
+    ))
+
+(deftest transpose-test
+  (testing "transpose test"
+    (let [m '((1 2 3 4) (4 5 6 6) (6 7 8 9))
+          n '((3 2 1) (1 1 0))]
+      (is (= (transpose m)
+             '((1 4 6) (2 5 7) (3 6 8) (4 6 9))))
+      (is (= (transpose n)
+             '((3 1) (2 1) (1 0)))))
+    ))
+
+;(deftest matrix-*-matrix-test
+;  (testing "matrix * matrix"
+;    (let [m '((1 0 2) (-1 3 1))
+;          n '((3 2 1) (1 1 0))]
+;      (is (= (matrix-*-matrix m (transpose n))
+;             '((5 1) (4 2))))
+;      )
+;    ))
+
+(deftest fold-test
+  (testing "fold "
+    (is (= (fold-left / 1 '(1 2 3)) 1/6))
+    (is (= (fold-right / 1 '(1 2 3)) 1/6))
+    (is (= (fold-left list nil '(1 2 3)) '(((nil 1) 2) 3)))
+    (is (= (fold-right list '() '(1 2 3)) '(((() 3) 2) 1)))
+    ))

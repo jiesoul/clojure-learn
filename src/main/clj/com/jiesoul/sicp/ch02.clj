@@ -1,5 +1,5 @@
 (ns com.jiesoul.sicp.ch02
-  (:require [com.jiesoul.sicp.ch01 :refer [gcd square fib]]))
+  (:require [com.jiesoul.sicp.ch01 :refer [gcd square fib prime?]]))
 
 (defn linear-combination [a b x y]
   (+ (* a x) (* b y)))
@@ -60,9 +60,9 @@
     (step items 0)))
 
 (defn append [list1 list2]
-  (if (nil? list1)
+  (if (empty? list1)
     list2
-    (cons (first list1) (append (next list1) list2))))
+    (cons (first list1) (append (rest list1) list2))))
 
 (defn null? [x]
   (if (sequential? x)
@@ -71,13 +71,6 @@
 
 (defn pair? [x]
   (and (sequential? x) (not (empty? x))))
-
-(defn count-leaves [tree]
-  (cond
-    (null? tree) 0
-    (not (pair? tree)) 1
-    :else (+ (count-leaves (first tree))
-            (count-leaves (rest tree)))))
 
 (defn scale-list [items factor]
   (if (empty? items)
@@ -194,3 +187,32 @@
               (map salary
                    (filter programmers? records))))
 
+
+(defn flatmap [proc seq]
+  (accumulate append nil (map proc seq)))
+
+(defn prime-sum? [pair]
+  (prime? (+ (first pair) (second pair))))
+
+(defn make-pair-sum [pair]
+  (list (first pair) (second pair) (+ (first pair) (second pair))))
+
+(defn prime-sum-pairs [n]
+  (map make-pair-sum
+       (filter prime-sum?
+               (flatmap
+                 (fn [i]
+                   (map #(list i %) (enumerate-interval 1 (- i 1))))
+                 (enumerate-interval 1 n)))))
+
+
+(defn remove-1 [item sequence]
+  (filter #(not (= % item)) sequence))
+
+(defn permutations [s]
+  (if (empty? s)
+    '()
+    (flatmap #(map (fn [p] (cons % p)) (permutations (remove-1 % s)))
+             s)))
+
+;;

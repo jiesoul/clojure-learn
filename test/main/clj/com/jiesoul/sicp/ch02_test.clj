@@ -57,6 +57,7 @@
 (deftest count-leaves-test
   (testing "count-leaves-test"
     (is (= (count-leaves x) 4))
+    (is (= (count-leaves (list x x)) 8))
     ))
 
 (deftest scale-tree-test
@@ -94,3 +95,13 @@
 (deftest product-of-squares-of-odd-elements-test
   (testing "product-of-squares-of-odd-elements-test"
     (is (= (product-of-squares-of-odd-elements '(1 2 3 4 5)) 225))))
+
+(deftest prime-sum-pairs-test
+  (testing "prime sum pairs"
+    (is (= (prime-sum-pairs 6) '((2 1 3) (3 2 5) (4 1 5) (4 3 7) (5 2 7) (6 1 7) (6 5 11))))
+    ))
+
+(deftest permutations-test
+  (testing "permutations"
+    (is (= (permutations '(1 2 3)) '((1 2 3))))
+    ))

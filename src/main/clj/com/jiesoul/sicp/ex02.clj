@@ -1,6 +1,7 @@
 (ns com.jiesoul.sicp.ex02
   (:require [com.jiesoul.sicp.ch01 :refer [gcd]]
-            [com.jiesoul.sicp.ch02 :refer [pair? append accumulate]]))
+            [com.jiesoul.sicp.ch02 :refer [pair? append accumulate null?
+                                           enumerate-interval flatmap]]))
 
 ;; 2.1
 (defn make-rat-real [n d]
@@ -296,5 +297,64 @@
               coefficient-sequence))
 
 ;; 2.35
-(defn count-leaves [t]
+(defn count-leaves-tree [t]
+  (accumulate +
+              0
+              (map #(if (seq? %)
+                      (count-leaves-tree %)
+                      1) t)))
+
+;; 2.36
+(defn accumulate-n [op init seqs]
+  (if (null? (first seqs))
+    nil
+    (cons (accumulate op init (map first seqs))
+          (accumulate-n op init (map rest seqs)))))
+
+;; 2.37
+(defn dot-product [v w]
+  (accumulate + 0 (map * v w)))
+
+(defn matrix-*-vector [m v]
+  (map #() m))
+
+(defn transpose [mat]
+  (accumulate-n cons '() mat))
+
+(defn matrix-*-matrix [m n]
+  (let [cols (transpose n)]
+    (map #(accumulate-n + 0 cols) m)))
+
+;;2.38
+(defn fold-left [op initial sequence]
+  (loop [result initial
+         col    sequence]
+    (if-not (seq col)
+      result
+      (recur (op result (first col))
+             (rest col)))))
+
+(defn fold-right [op initial sequence]
+  (fold-left op initial (reverse sequence)))
+
+;; 2.39
+
+
+;; 2.42
+(defn safe? [k x]
   )
+
+(defn adjoin-position [row k x]
+  )
+
+(defn queens [board-size]
+  (letfn [(queen-cols [k]
+            (if (zero? k)
+              (list empty)
+              (filter
+                #(safe? k %)
+                (flatmap
+                  #(map (fn [new-row]
+                          (adjoin-position new-row k %))
+                        (enumeration-interval 1 board-size))))))]
+    (queen-cols board-size)))
