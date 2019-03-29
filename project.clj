@@ -12,6 +12,7 @@
                  [incanter/incanter-core "1.9.2"]
                  [incanter/incanter-io "1.9.2"]
                  [incanter/incanter-excel "1.9.2"]
+                 [quil "2.8.0"]
                  [org.clojure/data.json "0.2.1"]
                  [org.clojure/java.jdbc "0.2.3"]
                  [org.xerial/sqlite-jdbc "3.21.0.1"]
@@ -26,7 +27,6 @@
                  [org.slf4j/slf4j-simple "1.7.25"]
                  [me.raynes/fs "1.4.6"]
                  [flames "0.4.0"]
-
                  [reagent "0.8.1" :exclusions [cljsjs/react cljsjs/react-dom cljsjs/react-dom-server]]
                  [cljsjs/react "16.6.0-0"]
                  [cljsjs/react-dom "16.6.0-0"]

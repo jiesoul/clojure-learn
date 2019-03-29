@@ -1,5 +1,9 @@
 (ns com.jiesoul.sicp.ch01)
 
+;; 1.1
+
+486
+
 ;; 1.4
 (defn square [x]
   (* x x))
