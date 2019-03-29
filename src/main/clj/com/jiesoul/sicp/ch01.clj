@@ -1,10 +1,35 @@
 (ns com.jiesoul.sicp.ch01)
 
-;; 1.1
-
+;; 1.1.1
 486
+(+ 137 349)
+(- 1000 334)
+(* 5 99)
+(/ 10 5)
+(+ 2.7 10)
+(+ 21 35 12 7)
+(* 25 4 12)
+(+ (* 3 5) (- 10 6))
+(+ (* 3 (+ (* 2 4) (+ 3 5))) (+ (- 10 7) 6))
 
-;; 1.4
+;; 1.1.2
+(def size 2)
+size
+
+(* 5 size)
+
+(def pi 3.14159)
+(def radius 10)
+(* pi (* radius radius))
+
+(def circumference (* 2 pi radius))
+circumference
+
+;; 1.1.3
+(* (+ 2 (* 4 6))
+   (+ 3 5 7))
+
+;; 1.1.4
 (defn square [x]
   (* x x))
 
@@ -14,25 +39,85 @@
 (defn f [a]
   (sum-of-square (+ a 1) (* a 2)))
 
+;; 1.1.5
+
+;; 1.1.6
 (defn abs [x]
   (cond
     (pos? x) x
     (zero? x) 0
     :else (- x)))
 
-(defn abs-1 [x]
+(defn abs [x]
   (cond
     (neg? x) (- x)
     :else x))
 
-(defn abs-2 [x]
+(defn abs [x]
   (if (neg? x)
     (- x)
     x))
 
-(defn abs-3 [n]
+(defn >=-1 [x y]
+  (or (> x y) (= x y)))
+
+(defn >=-1 [x y]
+  (not (< x y)))
+
+;; EX1.1
+10
+(+ 5 3 4)
+(- 9 1)
+(/ 6 2)
+(+ (* 2 4) (- 4 6))
+(def a 3)
+(def b (+ a 1))
+(+ a b (* a b))
+(= a b)
+(if (and (> b a) (< b (* a b)))
+  b
+  a)
+
+(cond
+  (= a 4) 6
+  (= b 4) (+ 6 7 a)
+  :else 25)
+
+(+ 2 (if (> b a) b a))
+(* (cond
+     (> a b) a
+     (< a b) b
+     :else -1)
+  (+ a 1))
+
+;; EX1.2
+(/ (+ 5 4 (- 2 (- 3 (+ 6 (/ 4 5)))))
+   (* 3 (- 6 2) (- 2 7)))
+
+;; EX1.3
+(defn max-three [a b c]
+  (cond
+    (or (> b a c) (> a b c)) (+ a b)
+    (or (> c b a) (> b c a)) (+ b c)
+    :else (+ c a)))
+
+;; EX1.4
+(defn a-plus-abs-b [a b]
+  ((if (> b 0) + 1) a b))
+
+;; EX1.5
+;(defn p []
+;  p)
+
+(defn test-1 [x y]
+  (if (zero? x)
+    0
+    y))
+
+(defn abs [n]
   (max n (- n)))
 
+;; EX1.7
 (defn grow-rate [y x]
   (abs (/ (- (* y y) x) x)))
 
@@ -59,20 +144,19 @@
         sqrt-iter    (fn [guess] (if (good-enough? guess) guess (recur (improve guess))))]
     (sqrt-iter 1.0)))
 
-
+;; EX1.6
+;; if 是一种特殊形式 会直接求值 predicate，如果采用下面的 new-if 在谓词为表达式的情况下 会无限展开
 (defn new-if [predicate then-clause else-clause]
   (cond
     predicate then-clause
     :else else-clause))
 
-(defn new-sqrt-iter [guess x]
-  (new-if (good-enough? guess x)
-          guess
-          (new-sqrt-iter (improve guess x) x)))
+;(defn sqrt-iter [guess x]
+;  (new-if (good-enough? guess x)
+;          guess
+;          (new-sqrt-iter (improve guess x) x)))
 
-(defn new-sqrt [x]
-  (new-sqrt-iter 1.0 x))
-
+;; EX1.8
 (defn cube-grow-rate [y x]
   (abs (/ (- (* y y y) x) x)))
 
@@ -90,6 +174,32 @@
 (defn cube-root [n]
   (cube-root-iter 1.0 n))
 
+;; 1.1.8
+(defn sqrt [x]
+  (letfn [(good-enough? [guess x]
+            (< (abs (- (square guess) x)) 0.001))
+          (improve [guess x]
+            (average guess (/ x guess)))
+          (sqrt-iter [guess x]
+            (if (good-enough? guess x)
+              guess
+              (sqrt-iter (improve guess x) x)))]
+    (sqrt-iter 1.0 x)))
+
+(defn sqrt [x]
+  (letfn [(good-enough? [guess]
+            (< (abs (- (square guess) x)) 0.001))
+          (improve [guess]
+            (average guess (/ x guess)))
+          (sqrt-iter [guess]
+            (if (good-enough? guess)
+              guess
+              (sqrt-iter (improve guess))))]
+    (sqrt-iter 1.0)))
+
+;; 1.2
+
+;; 1.2.1
 (defn factorial [n]
   (if (= n 1)
     1
@@ -105,10 +215,58 @@
 (defn factorial [n]
   (fact-iter 1N 1N n))
 
+(defn factorial [n]
+  (letfn [(iter [product counter]
+            (if (> counter n)
+              product
+              (iter (* counter product)
+                    (+ counter 1))))]
+    (iter 1N 1N)))
+
+;; EX1.9
+(defn plus [a b]
+  (if (zero? a)
+    b
+    (inc (plus (dec a) b))))
+
+(defn plus [a b]
+  (if (= a 0)
+    b
+    (plus (dec a) (inc b))))
+
+;; EX1.10
+(defn A [x y]
+  (cond
+    (zero? y) 0
+    (zero? x) (* 2 y)
+    (= y 1) 2
+    :else (A (dec x) (A x (dec y)))))
+
+(defn f-A [n]
+  (A 0 n))
+
+(defn g-A [n]
+  (A 1 n))
+
+(defn h-A [n]
+  (A 2 n))
+
+(defn k-A [n]
+  (* 5 n n))
+
+;; 1.2.2
+(defn fib [n]
+  (cond
+    (= n 0) 0
+    (= n 1) 1
+    :else (+ (fib (- n 1))
+             (fib (- n 2)))))
+
 (defn fib [n]
   (if (< n 2)
     n
-    (+ (fib (dec n)) (fib (- n 2)))))
+    (+ (fib (dec n))
+       (fib (- n 2)))))
 
 (defn fib-iter [n]
   (let [step (fn [a b count]
@@ -136,6 +294,39 @@
 (defn count-change [amount]
   (cc amount 5))
 
+;; EX1.11
+(defn f-11 [n]
+  (if (< n 3)
+    n
+    (+ (f-11 (dec n)) (* 2 (f-11 (- n 2))) (* 3 (f-11 (- n 3))))))
+
+(defn f-11-iter [n]
+  (let [sum  (fn [a b c] (+ a (* 2 b) (* 3 c)))
+        step (fn [a b c counter n]
+               (cond
+                 (< n 3) n
+                 (> counter n) c
+                 :else
+                 (recur b c (sum a b c) (inc counter) n)))]
+    (step 0 1 2 3 n)))
+
+;; EX1.12
+(defn f-12 [n]
+  (if (= n 1)
+    [1]
+    (let [new (f-12 (dec n))]
+      (mapv + (conj new 0) (cons 0 new)))))
+
+
+;; EX1.13
+(defn f-13 [n]
+  )
+
+;; 1.2.3
+
+;; EX1.14
+
+;; EX1.15
 (defn cube [x]
   (* x x x))
 
@@ -147,6 +338,7 @@
     angle
     (p (sine (/ angle 3.0)))))
 
+;; 1.2.4
 (defn expt [b n]
   (if (zero? n)
     1
@@ -166,11 +358,80 @@
     (even? n) (square (fast-expt b (/ n 2)))
     :else (* b (fast-expt b (dec n)))))
 
+;; EX1.16
+(defn fast-expt-iter [b n]
+  (let [step (fn [b n]
+               (cond
+                 (zero? n) 1
+                 (= n 1) b
+                 :else
+                 (recur (* b b) (/ n 2))))]
+    (if (even? n)
+      (step b n)
+      (* b (step b (dec n))))))
+
+;; EX1.17
+(defn new-mul [a b]
+  (if (zero? b)
+    0
+    (+ a (new-mul a (dec b)))))
+
+(defn new-double [a]
+  (+ a a))
+
+(defn halve [a]
+  (/ a 2))
+
+(defn new-mul-expt [a b]
+  (cond
+    (zero? a) 0
+    (= a 1) b
+    (even? a) (new-mul-expt (halve a) (new-double b))
+    :else
+    (+ b (new-mul-expt (halve (dec a)) (new-double b)))))
+
+
+;; EX1.18
+(defn new-mul-iter [a b]
+  (let [step (fn [a b counter]
+               (cond
+                 (zero? a) counter
+                 (= a 1) (+ b counter)
+                 :else
+                 (recur (halve a) (new-double b) counter)))]
+    (if (even? a)
+      (step a b 0)
+      (step (dec a) b b))))
+
+;; EX1.19
+(defn fib-iter [a b p q count]
+  (cond
+    (zero? count) b
+    (even? count) (fib-iter
+                    a
+                    b
+                    (+ (square p) (square q))
+                    (+ (square q) (* 2 p q))
+                    (/ count 2))
+    :else (fib-iter
+            (+ (* b q) (* a q) (* a p))
+            (+ (* b p) (* a q))
+            p
+            q
+            (- count 1))))
+
+(defn fib [n]
+  (fib-iter 1 0 0 1 n))
+
+;;1.2.5
 (defn gcd [a b]
   (if (zero? b)
     a
     (recur b (rem a b))))
 
+;; EX1.20
+
+;; 1.2.6
 (defn divides? [a b]
   (zero? (rem b a)))
 
@@ -205,11 +466,46 @@
     (fermat-test n) (fast-primes? n (dec times))
     :else false))
 
-;; 1.3
+;; EX1.21
 
+;; EX1.22
+(defn report-prime-test [elapsed-time]
+  (print " *** ")
+  (print elapsed-time))
+
+(defn start-prime-test [n start-time]
+  (if (prime? n)
+    (report-prime-test (- (System/currentTimeMillis) start-time))))
+
+(defn timed-prime-test [n]
+  (println)
+  (print n)
+  (start-prime-test n (System/currentTimeMillis)))
+
+(defn search-for-primes [n]
+  (loop [c 1]
+    (if (and (> c n) (prime? c))
+      c
+      (recur (+ c 2)))))
+
+;; EX1.23
+(defn smallest-divisor [n]
+  (letfn [(next-test [n]
+            (if (= n 2)
+              3
+              (+ n 2)))
+          (find-divisor [test]
+            (cond
+              (> (square test) n) n
+              (= (rem n test) 0) test
+              :else (recur (next-test test))))]
+    (find-divisor 2)))
+
+;; 1.3
 (defn cube [x]
   (* x x x))
 
+;; 1.3.1
 (defn sum-integers [a b]
   (if (> a b)
     0
@@ -237,7 +533,6 @@
 (defn sum-integers [a b]
   (sum identity a inc b))
 
-
 (defn pi-term [x]
   (/ 1.0 (* x (+ x 2))))
 
@@ -250,6 +545,66 @@
 (defn integral [f a b dx]
   (let [add-dx (fn [x] (+ x dx))]
     (* (sum f (+ a (/ dx 2.0)) add-dx b) dx)))
+
+;; EX1.29
+(defn xps-integral [f a b n]
+  )
+
+;; EX1.30
+(defn sum [term a next-f b]
+  (let [iter (fn [a result]
+               (if (> a b)
+                 result
+                 (recur (next-f a) (+ result (term a)))))]
+    (iter a 0)))
+
+(defn sum-cubes [a b]
+  (sum cube a inc b))
+
+(defn sum-integers [a b]
+  (sum identity a inc b))
+
+(defn pi-sum [a b]
+  (sum pi-term a pi-next b))
+
+;; EX1.31
+(defn product [t-f a next-f b]
+  (if (> a b)
+    1
+    (* (t-f a)
+      (product
+        t-f
+        (next-f a)
+        next-f
+        b))))
+
+(defn product-factorial [n]
+  (product (fn [x] x) 1 #(inc %) n))
+
+(defn pi-f [a]
+  (if
+    (odd? a)
+    (/ (inc a) (+ a 2) 1.0)
+    (/ (+ a 2) (inc a) 1.0)))
+
+(defn product-pi [n]
+  (product pi-f
+    1
+    inc
+    n))
+
+(defn product-iter [tf a nf b]
+  (let [step (fn [a result]
+               (if (> a b)
+                 result
+                 (recur (nf a) (* result (tf a)))))]
+    (step a 1)))
+
+(defn product-iter-factorial [n]
+  (product-iter identity 1 inc n))
+
+(defn product-iter-pi [n]
+  (product-iter pi-f 1 inc n))
 
 (defn close-enough? [x y]
   (< (abs (- x y)) 0.001))

@@ -414,7 +414,7 @@
     (eq? given-key (key (first set-of-records))) (first set-of-records)
     :else (recur given-key (rest set-of-records))))
 
-
+;; 2.3.4
 (defn make-leaf [symbol weight]
   (list 'leaf symbol weight))
 
@@ -445,3 +445,4 @@
 
 (defn left-branch-1 [tree]
   )
+
