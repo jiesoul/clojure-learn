@@ -759,15 +759,31 @@ circumference
     (step 1)))
 
 (defn cont-frac-iter [n d k]
-  (let [step (fn [k r]
-               (if (zero? k)
-                 r
-                 (recur (dec k) (+ (n k) (+ (d k) r)))))]
-    (step k (/ (n k) (d k)))))
+  (loop [k k
+         r 0]
+    (if (< k 1)
+      r
+      (recur (dec k) (/ (n k) (+ (d k) r))))))
 
 
 ;; EX1.38
-(defn ex-38 [])
+(defn step-38 [n]
+  (let [i (dec n)
+        r (rem i 3)]
+    (condp = r
+      0 1
+      2 1
+      1 (* (/ (+ i 2) 3) 2))))
+
+(defn ex-38 []
+  (+ (cont-frac (fn [_] 1.0) step-38 90) 2))
+
+
+;; 1.39
+(defn tan-cf [x k]
+  (cont-frac #(if (> % 1) (- (square x)) x)
+    #(- (* 2 %) 1)
+    k))
 
 (defn average-damp [f]
   #(average % (f %)))
@@ -810,3 +826,30 @@ circumference
   (fixed-point-of-transform #(- (square %) x)
                             newton-transform
                             1.0))
+
+;; EX1.40
+(defn cubic [a b c]
+  (fn [x]
+    (+ (* x x x)
+        (* a x x)
+        (* b x)
+      c)))
+
+;; EX1.41
+(defn double-f [f]
+  (fn [x]
+    (f (f x))))
+
+;; EX1.42
+(defn compose [f g]
+  (fn [x]
+    (f (g x))))
+
+;; EX1.43
+(defn repeated [f n]
+  (fn [x]
+    (loop [i 1
+           x x]
+      (if (> i n)
+        x
+        (recur (inc i) (f x))))))

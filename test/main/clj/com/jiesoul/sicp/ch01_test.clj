@@ -257,9 +257,44 @@
   (testing "cont-frac-test"
     (let [v (/ 1 1.6180327868852458)]
       (is (< (Math/abs (- (cont-frac (fn [_] 1.0) (fn [_] 1.0) 4) v)) 0.1))
+      (is (< (Math/abs (- (cont-frac-iter (fn [_] 1.0) (fn [_] 1.0) 4) v)) 0.1))
       (is (< (Math/abs (- (cont-frac (fn [_] 1.0) (fn [_] 1.0) 50) v)) 0.01))
+      (is (< (Math/abs (- (cont-frac-iter (fn [_] 1.0) (fn [_] 1.0) 50) v)) 0.01))
       (is (< (Math/abs (- (cont-frac (fn [_] 1.0) (fn [_] 1.0) 500) v)) 0.001))
+      (is (< (Math/abs (- (cont-frac-iter (fn [_] 1.0) (fn [_] 1.0) 500) v)) 0.001))
       (is (> (Math/abs (- (cont-frac (fn [_] 1.0) (fn [_] 1.0) 5) v)) 0.0001))
+      (is (> (Math/abs (- (cont-frac-iter (fn [_] 1.0) (fn [_] 1.0) 5) v)) 0.0001))
       (is (> (Math/abs (- (cont-frac (fn [_] 1.0) (fn [_] 1.0) 5000) v)) 0.0000001))
+      (is (> (Math/abs (- (cont-frac-iter (fn [_] 1.0) (fn [_] 1.0) 5000) v)) 0.0000001))
       )
+    ))
+
+(deftest ex-38-test
+  (testing "ex 1.38"
+    (is (= (+ (cont-frac (fn [_] 1.0) step-38 90) 2) 2.7182818284590455))
+    ))
+
+(deftest tan-cf-test
+  (testing "1.39"
+    (is (= (tan-cf 5.0 5) 29.305555555555483))
+    ))
+
+(deftest cubic-test
+  (testing "ex 1.40"
+    (is (= (newtons-method (cubic 1 2 3) 1) -1.2756822036498454))
+    ))
+
+(deftest double-f-test
+  (testing "ex 1.41"
+    (is (= (((double-f (double-f double-f)) inc) 5) 21))
+    ))
+
+(deftest compose-test
+  (testing "ex1.42"
+    (is (= ((compose square inc) 6) 49))
+    ))
+
+(deftest repeated-test
+  (testing "ex1.43"
+    (is (= ((repeated square 2) 5) 625))
     ))
