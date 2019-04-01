@@ -1,13 +1,7 @@
 (ns com.jiesoul.sicp.ch01-test
   (:use midje.sweet)
   (:require [clojure.test :refer :all])
-  (:require [com.jiesoul.sicp.ch01 :refer :all]
-            [com.jiesoul.sicp.ex01 :refer [accumulate-sum-fac
-                                           accumulate-product-factorial
-                                           filtered-accumulate-prime-sum
-                                           filtered-accumulate-product-gcd
-                                           f-35
-                                           cont-frac]]))
+  (:require [com.jiesoul.sicp.ch01 :refer :all]))
 
 (deftest square-test
   (testing "square"
@@ -106,6 +100,12 @@
     (is (= (integral cube 0 1 0.001) 0.24999987500000073))
     ))
 
+(deftest xps-integral-test
+  (testing "ex 1.29"
+    (is (= (xps-integral cube 0 1 100) 0.25))
+    (is (= (xps-integral cube 0 1 1000) 0.25))
+    ))
+
 (deftest half-interval-method-test
   (testing "half-interval-method-test"
     (is (= (half-interval-method sin 2.0 4.0) 3.14111328125))
@@ -126,8 +126,18 @@
     (is (= (A 3 3) 65536))
     ))
 
+(deftest f-11-iter-test
+  (testing "test ex1.11"
+    (is (= (f-11-iter 0) 0))
+    (is (= (f-11-iter 1) 1))
+    (is (= (f-11-iter 2) 2))
+    (is (= (f-11-iter 3) 8))
+    (is (= (f-11-iter 4) 29))
+    (is (= (f-11-iter 5) 105))
+    ))
+
 (deftest f-12-test
-  (testing "test"
+  (testing "test ex1.12"
     (is (= (f-12 1) [1]))
     (is (= (f-12 2) [1 1]))
     (is (= (f-12 3) [1 2 1]))
@@ -142,15 +152,7 @@
     (is (= (max-three 2 3 1) 5))
     ))
 
-(deftest f-11-iter-test
-  (testing "test 1.11"
-    (is (= (f-11-iter 0) 0))
-    (is (= (f-11-iter 1) 1))
-    (is (= (f-11-iter 2) 2))
-    (is (= (f-11-iter 3) 8))
-    (is (= (f-11-iter 4) 29))
-    (is (= (f-11-iter 5) 105))
-    ))
+
 
 (deftest fast-expt-iter-test
   (testing "ex1.16"
@@ -161,11 +163,12 @@
     ))
 
 (deftest new-mul-iter-test
-  (testing "1.17"
+  (testing "test ex1.17"
     (is (= (new-mul-iter 4 5) 20))
     (is (= (new-mul-iter 0 5) 0))
     (is (= (new-mul-iter 5 0) 0))
     (is (= (new-mul-iter 5 5) 25))
+    (is (= (new-mul-iter 5 6) 30))
     ))
 
 (deftest timed-prime-test-test
@@ -247,7 +250,7 @@
 
 (deftest f-35-test
   (testing "f-35"
-    (is (= (f-35) 1.6180327868852458))
+    (is (= (ex-35) 1.6180327868852458))
     ))
 
 (deftest cont-frac-test

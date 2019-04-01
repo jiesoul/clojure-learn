@@ -370,6 +370,15 @@ circumference
       (step b n)
       (* b (step b (dec n))))))
 
+(defn fast-extp-iter [b n]
+  (loop [b b
+         n n
+         r 1]
+    (cond
+      (zero? n) r
+      (even? n) (recur (* b b) (/ n 2) r)
+      :else (recur (* b b) (/ (dec n) 2) (* r b)))))
+
 ;; EX1.17
 (defn new-mul [a b]
   (if (zero? b)
@@ -423,7 +432,7 @@ circumference
 (defn fib [n]
   (fib-iter 1 0 0 1 n))
 
-;;1.2.5
+;; 1.2.5
 (defn gcd [a b]
   (if (zero? b)
     a
@@ -467,6 +476,9 @@ circumference
     :else false))
 
 ;; EX1.21
+(smallest-divisor 199)
+(smallest-divisor 1999)
+(smallest-divisor 19999)
 
 ;; EX1.22
 (defn report-prime-test [elapsed-time]
@@ -500,6 +512,9 @@ circumference
               (= (rem n test) 0) test
               :else (recur (next-test test))))]
     (find-divisor 2)))
+
+;; EX1.24
+
 
 ;; 1.3
 (defn cube [x]
@@ -548,7 +563,19 @@ circumference
 
 ;; EX1.29
 (defn xps-integral [f a b n]
-  )
+  (let [h (/ (- b a) n)]
+    (loop [k 0
+           r 0]
+      (if (> k n)
+        (* (/ h 3.0) r)
+        (let [y (f (+ a (* k h)))]
+          (recur (inc k)
+                 (+ r
+                    (* y
+                       (cond
+                         (or (zero? k) (= k n)) 1
+                         (even? k) 2
+                         :else 4)))))))))
 
 ;; EX1.30
 (defn sum [term a next-f b]
@@ -606,6 +633,71 @@ circumference
 (defn product-iter-pi [n]
   (product-iter pi-f 1 inc n))
 
+
+;; ex1.32
+(defn accumulate [combiner null-value term a next b]
+  (if (> a b)
+    null-value
+    (combiner (term a)
+              (accumulate combiner null-value term (next a) next b))))
+
+(defn accumulate-sum-fac [a b]
+  (accumulate + 0 identity a inc b))
+
+(defn accumulate-product-factorial [n]
+  (accumulate * 1 identity 1 inc n))
+
+(defn accumulate-iter [combiner null-value term a next b]
+  (let [step (fn [a result]
+               (if (> a b)
+                 result
+                 (recur (next a) (combiner result (term a)))))]
+    (step a null-value)))
+
+;; 1.33
+(defn filtered-accumulate [filtered combiner null-value term a next b]
+  (let [step (fn [a result]
+               (if (> a b)
+                 result
+                 (recur (next a) (if (filtered a)
+                                   (combiner result (term a))
+                                   result))))]
+    (step a null-value)))
+
+(defn filtered-accumulate-prime-sum [a b]
+  (filtered-accumulate prime? + 0 identity a inc b))
+
+(defn filtered-accumulate-product-gcd [n]
+  (filtered-accumulate (fn [a]
+                         (= (gcd a n) 1))
+                       *
+                       1
+                       identity
+                       1
+                       inc
+                       n))
+
+;; 1.3.2
+(defn pi-sum [a b]
+  (sum #(/ 1.0 (* % (+ % 2)))
+       a
+       #(+ % 4)
+       b))
+
+
+(defn integral [f a b dx]
+  (* (sum f
+          (+ a (/ dx 2.0))
+          #(+ % dx)
+          b)
+     dx))
+
+(defn plus [x]
+  (+ x 4))
+
+(def plus4 #(+ % 4))
+
+;; 1.3.3
 (defn close-enough? [x y]
   (< (abs (- x y)) 0.001))
 
@@ -651,6 +743,31 @@ circumference
 
 (defn sqrt-1 [x]
   (fixed-point #(average % (/ x %)) 1.0))
+
+;; EX1.35
+(defn ex-35 []
+  (fixed-point #(+ 1 (/ 1.0 %)) 1.0))
+
+;; EX1.36
+
+;; EX1.37
+(defn cont-frac [n d k]
+  (let [step (fn step [i]
+               (if (> i k)
+                 0
+                 (/ (n i) (+ (d i) (step (inc i))))))]
+    (step 1)))
+
+(defn cont-frac-iter [n d k]
+  (let [step (fn [k r]
+               (if (zero? k)
+                 r
+                 (recur (dec k) (+ (n k) (+ (d k) r)))))]
+    (step k (/ (n k) (d k)))))
+
+
+;; EX1.38
+(defn ex-38 [])
 
 (defn average-damp [f]
   #(average % (f %)))
