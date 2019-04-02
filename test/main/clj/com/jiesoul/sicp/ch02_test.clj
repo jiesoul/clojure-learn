@@ -44,9 +44,9 @@
     (is (= (map-1 #(* % %) '(1 2 3 4)) '(1 4 9 16)))
     ))
 
-(deftest new-scale-list-test
+(deftest scale-list-test
   (testing "new-scale-list-test"
-    (is (= (new-scale-list (list 1 2 3 4 5) 10) '(10 20 30 40 50)))
+    (is (= (scale-list (list 1 2 3 4 5) 10) '(10 20 30 40 50)))
     ))
 
 (deftest x-test
