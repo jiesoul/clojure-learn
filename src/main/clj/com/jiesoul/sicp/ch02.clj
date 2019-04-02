@@ -1,12 +1,15 @@
 (ns com.jiesoul.sicp.ch02
-  (:require [com.jiesoul.sicp.ch01 :refer [gcd square fib prime?]]))
+  (:require [com.jiesoul.sicp.ch01 :refer [gcd square fib prime? abs]]))
 
+;; 2
 (defn linear-combination [a b x y]
   (+ (* a x) (* b y)))
 
+;; 2.1.1
 (defn make-rat [n d]
-  (let [g (gcd n d)]
-    [(/ n g) (/ d g)]))
+  (let [g (abs (gcd n d))
+        m (if (neg? d) (* -1 g) g)]
+    [(/ n m) (/ d m)]))
 
 (defn numer [x]
   (first x))
@@ -14,6 +17,7 @@
 (defn denom [x]
   (second x))
 
+;; 2.1.1
 (defn print-rat [x]
   (str (numer x) "/" (denom x)))
 
@@ -39,8 +43,113 @@
   (= (* (numer x) (denom y))
      (* (denom y) (numer x))))
 
-(defn abs [n]
-  (Math/abs n))
+(defn make-rat [n d]
+  (let [g (gcd n d)]
+    [(/ n g) (/ d g)]))
+
+;; EX2.1
+(defn make-rat-real [n d]
+  (let [g (abs (gcd n d))]
+    (if
+      (or (and (pos? n) (pos? d))
+          (and (neg? n) (pos? d)))
+      [(/ n g) (/ d g)]
+      [(- (/ n g)) (- (/ d g))])))
+
+;; EX2.2
+(defn make-point [x y]
+  [x y])
+
+(defn x-point [point]
+  (first point))
+
+(defn y-point [point]
+  (second point))
+
+(defn make-segment [p1 p2]
+  [p1 p2])
+
+(defn start-segment [s]
+  (first s))
+
+(defn end-segment [s]
+  (second s))
+
+(defn print-point [p]
+  (str "(" (x-point p) "," (y-point p) ")"))
+
+(defn midpoint-segment [segment]
+  (make-point
+    (/ (+ (x-point (start-segment segment))
+          (x-point (end-segment segment)))
+       2)
+    (/ (+ (y-point (start-segment segment))
+          (y-point (end-segment segment)))
+       2)))
+
+;; 2.3
+(defn make-rectangle [p1 p2 p3]
+  )
+
+(defn make-rectangle [point x y]
+  (let [x1 (x-point point)
+        y1 (y-point point)]
+    [(make-segment point (make-point (+ x1 x) y1))
+     (make-segment point (make-point x1 (+ y1 y)))]))
+
+
+(defn point-rectangle [rectangle]
+  (start-segment (first rectangle)))
+
+(defn width-rectangle [rectangle]
+  ())
+
+(defn height-rectangle [rectangle]
+  (last (rest rectangle)))
+
+(defn len-rectangle [rectangle]
+  )
+
+;; EX2.5
+(defn ex-23-pair [a b]
+  )
+
+;; EX2.6
+(defn zero []
+  (fn [f] (fn [x] x)))
+
+(defn add-1 [n]
+  (fn [f] (fn [x] (f ((n f) x)))))
+
+;; EX2.7
+(defn make-interval [a b]
+  [a b])
+
+;; 2.1.4
+(defn lower-bound [x]
+  (first x))
+
+(defn upper-bound [x]
+  (second x))
+
+(defn add-interval [x y]
+  (make-interval (+ (lower-bound x) (lower-bound y))
+                 (+ (upper-bound x) (upper-bound y))))
+
+(defn mul-interval [x y]
+  (let [p1 (* (lower-bound x) (lower-bound y))
+        p2 (* (lower-bound x) (upper-bound y))
+        p3 (* (upper-bound x) (upper-bound y))
+        p4 (* (upper-bound x) (upper-bound y))]
+    (make-interval (apply min p1 p2 p3 p4)
+                   (apply max p1 p2 p3 p4))))
+
+(defn div-interval [x y]
+  (mul-interval x
+                (make-interval (/ 1.0 (upper-bound y))
+                               (/ 1.0 (lower-bound y)))))
+
+
 
 (defn list-ref [items n]
   (if (zero? n)

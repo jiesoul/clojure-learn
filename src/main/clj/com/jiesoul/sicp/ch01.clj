@@ -853,3 +853,5 @@ circumference
       (if (> i n)
         x
         (recur (inc i) (f x))))))
+;; EX1.44
+(defn smooth [])
