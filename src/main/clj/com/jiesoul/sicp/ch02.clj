@@ -989,6 +989,12 @@
 
 (defn generate-huffman-tree [pairs]
   (successive-merge (make-leaf-set pairs)))
+(defn draw []
+  (q/background 235)
+  (q/with-translation [(/ (q/width) 2) (/ (q/height) 2)]
+    (doseq [t (range 0 100 0.01)]
+      (q/point (* t (q/sin t))
+                (* t (q/cos t))))))
 
 
 ;; 2.4
@@ -1109,15 +1115,162 @@
   (attach-tag 'polar (r a)))
 
 
-(defn rectangeular? [z]
-  )
+(defn rectangular? [z]
+  (= (type-tag z) 'rectangular))
 
 (defn polar? [z]
-  )
+  (= (type-tag z) 'polar))
 
 (defn real-part [z]
   (cond
     (rectangular? z)
-    (real-part-rectangular (contents %))
-    (polar? z)
-    ))
+    (real-part-rectangular (contents z))
+    (polar? z) (real-part-polar (contents z))
+    :else (throw (IllegalArgumentException. (str "Unknown type -- REAL-PART" z)))))
+
+
+(defn imag-part [z]
+  (cond
+    (rectangular? z) (real-part-rectangular (contents z))
+    (polar? z) (real-part-polar (contents z))
+    :else (throw (IllegalArgumentException. (str "Unknown type -- IMAG-PART" z)))))
+
+(defn magnitude [z]
+  (cond
+    (rectangular? z) (magnitude-rectangular (contents z))
+    (polar? z) (magnitude-polar (contents z))
+    :else (throw (IllegalArgumentException. (str "Unknown type -- MAGNITUDE" z)))))
+
+(defn angle [z]
+  (cond
+    (rectangular? z) (angle-rectangualr (contents z))
+    (polar? z) (angle-polar (contents z))
+    :else (throw (IllegalArgumentException. (str "Unknown type -- ANGLE" z)))))
+
+(defn add-complex [z1 z2]
+  (make-from-real-image (+ (real-part z1) (real-part z2))
+                        (+ (imag-part z1) (imag-part z2))))
+
+(defn make-from-mag-ang-polar [r a]
+  )
+
+(defn make-from-mag-ang [r a]
+  (make-from-mag-ang-polar r a))
+
+(defn put [op type item]
+  )
+
+(defn get [op type]
+  )
+
+(defn install-polar-package []
+  ((letfn [(magnitude [z] (first z))
+           (angle [z] (rest z))
+           (make-from-mag-ang [r a] [r a])
+           (real-part [z]
+             (* (magnitude z) (Math/cos (angle z))))
+           (imag-part [z]
+             (* (magnitude z) (Math/sin (angle z))))
+           (make-from-real-imag [x y]
+             (cons (sqrt (+ (square x) (square y)))
+               (Math/atan2 y x)))
+
+           (tag [x] (attach-tag 'polar x))]
+     (put 'real-part '(polar) real-part)
+     (put 'imag-part '(polar) imag-part)
+     (put 'magnitude '(polar) magnitude)
+     (put 'angle '(polar) angle)
+     (put 'make-from-real-image 'polar #(tag (make-from-real-imag %1 %2)))
+     (put 'make-from-mag-ang 'polar #(tag (make-from-mag-ang %1 %2)))
+     'done)))
+
+(defn apply-generic [op & args]
+  (let [type-tags (map type-tag args)]
+    (let [proc (get op type-tags)]
+      (if proc
+        (apply proc (map contents args))
+        (throw
+          (NoSuchMethodError. (str "No method for these types -- APPLY-GENERIC" (list op type-tags))))))))
+
+
+(defn real-part [z]
+  (apply-generic 'real-part z))
+
+(defn imag-part [z]
+  (apply-generic 'imag-part z))
+
+(defn magnitude [z]
+  (apply-generic 'magnitude z))
+
+(defn angle [z]
+  (apply-generic 'angle z))
+
+(defn make-from-real-mag [x y]
+  ((get 'make-from-real-imag 'rectangular) x y))
+
+(defn make-from-mag-ang [r a]
+  ((get 'make-from-mag-ang 'polar) r a))
+
+;; EX2.73
+(defn deriv [exp var]
+  (cond
+    (number? exp) 0
+    (variable? exp) (if (same-var? exp var) 1 0)
+    (sum? exp) (make-sum
+                 (deriv (addend exp) var)
+                 (deriv (augend exp) var))
+    (product? exp) (make-sum
+                     (make-product
+                       (multiplier exp)
+                       (deriv (multiplicand  exp) var))
+                     (make-product
+                       (deriv (multiplier exp) var)
+                       (multiplicand exp)))
+
+    :else (throw (Exception. (str "unknown expression type -- DERIV" exp)))))
+
+(defn operator [exp]
+  (first exp))
+
+(defn operands [exp]
+  (rest exp))
+
+;(defn deriv [exp var]
+;  (cond
+;    (number? exp) 0
+;    (variable? exp) (if (same-var? exp var) 1 0)
+;    :else ((get 'deriv (operator exp)) (operands exp) var)))
+;
+
+(defn make-from-real-imag [x y]
+  (fn [op]
+    (cond
+      (= op 'real-part) x
+      (= op 'imag-part) y
+      (= op 'magnitude) (sqrt (+ (square x) (square y)))
+      (= op 'angle) (Math/atan2 y x)
+      :else (throw (Exception. (str "Unknown op -- MAKE-FROM-REAL-IAMG" op))))))
+
+;(defn apply-generic [op arg]
+;  (arg op))
+;
+;; EX2.75
+
+
+;; EX2.76
+
+;; 2.5
+(defn add [x y]
+  (apply-generic 'add x y))
+
+(defn sub [x y]
+  (apply-generic 'sub x y))
+
+(defn mul [x y]
+  (apply-generic 'mul x y))
+
+(defn div [x y]
+  (apply-generic 'div x y))
+
+(defn install-scheme-number-package []
+  )
