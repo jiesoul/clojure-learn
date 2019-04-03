@@ -303,3 +303,22 @@
   (testing "same-parity-test"
     (is (= (same-parity 1 2 3 4 5 6 7) (list 1 3 5 7)))
     ))
+
+(deftest memq-test
+  (testing "memq test"
+    (is (= (memq 'apple '(pear banana prune)) false))
+    (is (= (memq 'apple '(x (apple sauce) y apple pear)) '(apple pear)))
+    ))
+
+(deftest equal?-test
+  (testing "equal? test"
+    (is (= (equal? '(this is a list) '(this is a list)) true))
+    (is (= (equal? '(this is a list) '(thi (is a) list)) false))
+    ))
+
+
+(deftest ex-2-55-test
+  (testing "ex2.55"
+    (time (println (first ''abracadabra)))
+    ))
+

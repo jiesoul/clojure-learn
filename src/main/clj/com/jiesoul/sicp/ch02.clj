@@ -1,5 +1,6 @@
 (ns com.jiesoul.sicp.ch02
-  (:require [com.jiesoul.sicp.ch01 :refer [gcd square fib prime? abs]]
+  (:require [com.jiesoul.sicp.ch01 :refer [gcd square fib prime?
+                                           abs sqrt]]
             [quil.core :as q]))
 
 ;; 2
@@ -726,11 +727,22 @@
     (eq? item (first x)) x
     :else (recur item (rest x))))
 
+;; EX2.53
+(list 'a 'b 'c)
+(list (list 'george))
+
+;; EX2.54
+(defn equal? [x y]
+  (cond
+    (and (empty? x) (empty? y)) true
+    (not= (first x) (first y)) false
+    :else (recur (rest x) (rest y))))
+
 (defn variable? [x]
   (symbol? x))
 
 (defn same-var? [v1 v2]
-  (and (variable? v1) (variable? v2) (eq? v1 v2)))
+  (and (variable? v1) (variable? v2) (= v1 v2)))
 
 (defn sum? [x]
   (and (pair? x) (eq? (first x) '+)))
@@ -785,6 +797,8 @@
                               (make-product (deriv (multiplier exp) var)
                                             (multiplicand exp)))
     :else (str "unknown expression type -- DERIV")))
+
+;; EX2.56
 
 (defn element-of-set? [x set]
   (cond
@@ -847,6 +861,50 @@
     (< x (entry set)) (make-tree (entry set) (adjoin-set x (left-branch set)) (right-branch set))
     (> x (entry set)) (make-tree (entry set) (left-branch set) (adjoin-set x (right-branch set)))))
 
+;; EX2.63
+(defn tree->list-1 [tree]
+  (if (empty? tree)
+    '()
+    (append (tree->list-1 (left-branch tree))
+            (cons (entry tree)
+                  (tree->list-1 (right-branch tree))))))
+
+
+(defn tree->list-2 [tree]
+  (letfn [(copy-to-list [tree result-list]
+            (if (empty? tree)
+              result-list
+              (recur (left-branch tree)
+                     (cons (entry tree)
+                           (copy-to-list (right-branch tree)
+                                         result-list)))))]
+    (copy-to-list tree '())))
+
+;; EX2.64
+(defn quotient [m n]
+  n)
+
+(defn partial-tree [elts n]
+  (if (zero? n)
+    (cons '() elts)
+    (let [left-size (quotient (dec n) 2)]
+      (let [left-result (partial-tree elts left-size)]
+        (let [left-tree     (first left-result)
+              non-left-elts (rest left-result)
+              right-size    (- n (+ left-size 1))]
+          (let [this-entry   (first non-left-elts)
+                right-result (partial-tree (rest non-left-elts)
+                                           right-size)]
+            (let [right-tree     (first right-result)
+                  remaining-elts (rest right-result)]
+              (cons (make-tree this-entry left-tree right-tree)
+                    remaining-elts))))))))
+
+(defn list->tree [elements]
+  (first (partial-tree elements (len elements))))
+
+;;  EX
+
 (defn lookup [given-key set-of-records]
   (cond
     (null? set-of-records) false
@@ -855,33 +913,211 @@
 
 ;; 2.3.4
 (defn make-leaf [symbol weight]
-  (list 'leaf symbol weight))
+  (list :leaf symbol weight))
 
 (defn leaf? [object]
-  (eq? (first object) 'leaf))
+  (= (first object) :leaf))
 
-(defn symbol-leaf [x]
-  (second x))
+(def symbol-leaf
+  (comp first rest))
 
-(defn weight-leaf [x]
-  (second (rest x)))
-
-(defn caddr [x]
-  (second (rest x)))
+(def weight-leaf
+  (comp second rest))
 
 (defn symbols [tree]
   (if (leaf? tree)
     (list (symbol-leaf tree))
-    (caddr tree)))
+    (second (rest tree))))
 
 (defn weight [tree]
   (if (leaf? tree)
     (weight-leaf tree)
-    (second (rest tree))))
+    (second (rest (rest tree)))))
 
 (defn make-code-tree [left right]
-  (list left right (append (symbol left) (symbol right)) (+ (weight left) (weight right))))
+  (list left
+        right
+        (concat (symbols left) (symbols right))
+        (+ (weight left) (weight right))))
 
-(defn left-branch-1 [tree]
+(def left-branch first)
+(def right-branch second)
+
+(defn choose-branch [bit branch]
+  (cond
+    (= bit 0) (left-branch branch)
+    (= bit 1) (right-branch branch)
+    :else (throw (str "bad bit --CHOOSE-BRANCH" bit))))
+
+(defn decode [bits tree]
+  (loop [bits   bits
+         branch tree
+         acc    []]
+    (if (nil? bits)
+      acc
+      (let [next-branch (choose-branch (first bits) branch)]
+        (if (leaf? next-branch)
+          (recur (next bits) tree (conj acc (symbol-leaf next-branch)))
+          (recur (next bits) next-branch acc))))))
+
+;; EX2.67
+(def sample-tree
+  (make-code-tree (make-leaf 'A 4)
+                  (make-code-tree
+                    (make-leaf 'B 2)
+                    (make-code-tree (make-leaf 'D 1)
+                                    (make-leaf 'C 1)))))
+
+(def sample-message '(0 1 1 0 0 1 0 1 0 1 1 1 0))
+
+;; EX2.68
+(defn encode-symbol [m t]
   )
 
+(defn encode [message tree]
+  (if (nil? message)
+    '()
+    (concat (encode-symbol (first message) tree)
+            (encode (rest message) tree))))
+
+;; EX2.69
+(defn successive-merge [set]
+  )
+
+(defn make-leaf-set [pairs]
+  )
+
+(defn generate-huffman-tree [pairs]
+  (successive-merge (make-leaf-set pairs)))
+
+
+;; 2.4
+(defn real-part [z]
+  (first z))
+
+(defn imag-part [z]
+  (second z))
+
+(defn magnitude [z]
+  (sqrt (+ (square (real-part z)) (square (imag-part z)))))
+
+(defn angle [z]
+  (Math/atan2 (imag-part z) (real-part z)))
+
+(defn make-from-real-image [x y]
+  [x y])
+
+(defn make-from-mag-ang [r a]
+  [(* r (Math/cos a)) (* r (Math/sin a))])
+
+(defn add-complex [z1 z2]
+  (make-from-real-image (+ (real-part z1) (real-part z2))
+                        (+ (imag-part z1) (imag-part z2))))
+
+(defn sub-complex [z1 z2]
+  (make-from-real-image (- (real-part z1) (real-part z2))
+                        (- (imag-part z1) (imag-part z2))))
+
+(defn mul-complex [z1 z2]
+  (make-from-mag-ang (* (magnitude z1) (magnitude z2))
+                     (+ (angle z1) (angle z2))))
+
+(defn div-complex [z1 z2]
+  (make-from-mag-ang (/ (magnitude z1) (magnitude z2))
+                     (- (angle z1) (angle z2))))
+
+
+(defn magnitude [z]
+  (first z))
+
+(defn angle [z]
+  (rest z))
+
+(defn real-part-1 [z]
+  (* (magnitude z) (Math/cos (angle z))))
+
+(defn imag-part [z]
+  (* (magnitude z) (Math/sin (angle z))))
+
+
+(defn make-from-real-image [x y]
+  [(sqrt (+ (square x) (square y)))
+   (Math/atan2 y x)])
+
+(defn make-from-mag-ang [r a]
+  [r a])
+
+(defn attach-tag [type-tag contents]
+  [type-tag contents])
+
+(defn type-tag [datum]
+  (if (vector? datum)
+    (first datum)
+    (throw (IllegalArgumentException. (str "Bad tagged datum -- TYPE-TAG" datum)))))
+
+(defn contents [datum]
+  (if (vector? datum)
+    (first datum)
+    (throw (IllegalArgumentException. (str "Bad tagged datum -- CONTENTS" datum)))))
+
+(defn rectangular? [z]
+  (= (type-tag z) 'rectangular))
+
+(defn polar? [z]
+  (= (type-tag z) 'polar))
+
+(defn real-part-rectangular [z]
+  (first z))
+
+(defn imag-part-rectangular [z]
+  (rest z))
+
+(defn magnitude-rectangular [z]
+  (sqrt (+ (square (real-part-rectangular z))
+           (square (imag-part-rectangular z)))))
+
+(defn angle-rectangualr [z]
+  (Math/atan2 (imag-part-rectangular z)
+              (real-part-rectangular z)))
+
+(defn make-from-real-image-rectangular [x y]
+  (attach-tag 'rectangular [x y]))
+
+(defn make-from-mag-rectangular [r a]
+  (attach-tag 'rectangular [(* r (Math/cos a)) (* r (Math/sin a))]))
+
+(defn magnitude-polar [z]
+  (first z))
+
+(defn angle-polar [z]
+  (rest z))
+
+(defn real-part-polar [z]
+  (* (magnitude-polar z) (Math/cos (angle-polar z))))
+
+(defn image-part-polar [z]
+  (* (magnitude z) (Math/sin (angle-polar z))))
+
+
+(defn make-from-real-image-polar [x y]
+  (attach-tag 'polar
+              (cons (sqrt (+ (square x) (square y)))
+                    (Math/atan2 x y))))
+
+
+(defn make-from-mag-ang-r [r a]
+  (attach-tag 'polar (r a)))
+
+
+(defn rectangeular? [z]
+  )
+
+(defn polar? [z]
+  )
+
+(defn real-part [z]
+  (cond
+    (rectangular? z)
+    (real-part-rectangular (contents %))
+    (polar? z)
+    ))
