@@ -71,10 +71,10 @@
 (defn make-segment [p1 p2]
   [p1 p2])
 
-(defn start-segment [s]
+(defn start-point [s]
   (first s))
 
-(defn end-segment [s]
+(defn end-point [s]
   (second s))
 
 (defn print-point [p]
@@ -82,12 +82,29 @@
 
 (defn midpoint-segment [segment]
   (make-point
-    (/ (+ (x-point (start-segment segment))
-          (x-point (end-segment segment)))
+    (/ (+ (x-point (start-point segment))
+          (x-point (end-point segment)))
        2)
-    (/ (+ (y-point (start-segment segment))
-          (y-point (end-segment segment)))
+    (/ (+ (y-point (start-point segment))
+          (y-point (end-point segment)))
        2)))
+
+(defn stretch-point [pt scale]
+  (make-point (* scale (x-point pt))
+              (* scale (y-point pt))))
+
+(defn stretch-segment [segment scale]
+  (make-segment (stretch-point (start-point segment) scale)
+                (stretch-point (end-point segment) scale)))
+
+
+(defn length-segment [segment]
+  (sqrt (+ (square
+             (- (x-point (start-point segment))
+                (x-point (end-point segment))))
+           (square
+             (- (y-point (start-point segment))
+                (y-point (end-point segment)))))))
 
 ;; 2.3
 (defn make-rectangle [p1 p2 p3]
@@ -101,7 +118,7 @@
 
 
 (defn point-rectangle [rectangle]
-  (start-segment (first rectangle)))
+  (start-point (first rectangle)))
 
 (defn width-rectangle [rectangle]
   ())
