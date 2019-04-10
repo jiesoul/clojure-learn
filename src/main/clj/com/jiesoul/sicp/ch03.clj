@@ -1,12 +1,76 @@
 (ns com.jiesoul.sicp.ch03)
 
-(def balance 100)
+(defn make-account [start-balance]
+  (let [balance (atom start-balance)]
+    (letfn [(withdraw [amount]
+              (if (>= @balance amount)
+                (swap! balance - amount)
+                "Not enough money"))
+            (deposit [amount]
+              (swap! balance + amount))]
+      (fn [m amount]
+        (cond
+          (= m 'withdraw) (withdraw amount)
+          (= m 'deposit) (deposit amount)
+          :else (throw (Exception. (str "Unknown request -- MAKE-ACCOUNT" m))))))))
 
-(defn withdraw [amount]
-  (if (>= balance amount)
-    (do
-      (alter balance (- balance amount))
-      balance)
-    "Insufficient funds"))
 
-(withdraw 50)
+;; EX3.1
+(defn make-accumulator [n]
+  (let [sum (atom n)]
+    (fn [m]
+      (swap! sum + m))))
+
+;; EX3.2
+(defn make-monitored [f]
+  (let [c (atom 0)]
+    (fn [arg]
+      (cond
+        (= arg 'how-many-calls?) @c
+        (= arg 'reset-count) (reset! c 0)
+        :else (do
+                (swap! c inc)
+                (f arg))))))
+
+
+;; EX3.3
+(defn make-account-secret [start-balance password]
+  (let [balance (atom start-balance)
+        pass    (atom password)]
+    (letfn [(withdraw [amount]
+              (if (>= @balance amount)
+                (swap! balance - amount)
+                "Not enough money"))
+            (deposit [amount]
+              (swap! balance + amount))]
+      (fn [password m amount]
+        (if (= @pass password)
+          (condp = m
+            'withdraw (withdraw amount)
+            'deposit (deposit amount)
+            :else (str "Unknown requrest -- MAKE-ACCOUNT-SECRET"))
+          (str "Incorrect password"))))))
+
+;; EX3.4
+(defn make-account-secret-warn [start-balance password]
+  (let [balance (atom start-balance)
+        pass    (atom password)
+        warn    (atom 0)]
+    (letfn [(withdraw [amount]
+              (if (>= @balance amount)
+                (swap! balance - amount)
+                "Not enough money"))
+            (deposit [amount]
+              (swap! balance + amount))]
+      (fn [password m amount]
+        (cond
+          (>= @warn 7) (str "call-the-cops")
+          (= @pass password)
+          (condp = m
+            'withdraw (withdraw amount)
+            'deposit (deposit amount)
+            :else (str "Unknown requrest -- MAKE-ACCOUNT-SECRET"))
+          :else
+          (do
+            (swap! warn inc)
+            (str "Incorrect password")))))))
