@@ -50,3 +50,21 @@
       )))
 
 
+
+(deftest make-simplified-withdraw-test
+  (testing "test make simplified withdraw"
+    (let [w (make-simplified-withdraw 25)]
+      (is (= (w 20) 5))
+      (is (= (w 10) -5)))))
+
+(deftest make-decrementer-test
+  (testing "test make decrementer"
+    (let [D (make-decrementer 25)]
+      (is (= (D 20) 5))
+      (is (= (D 10) 15)))))
+
+;; EX3.7
+
+;; EX3.8
+
+

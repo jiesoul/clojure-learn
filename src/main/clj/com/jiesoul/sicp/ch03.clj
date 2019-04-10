@@ -1,4 +1,5 @@
-(ns com.jiesoul.sicp.ch03)
+(ns com.jiesoul.sicp.ch03
+  (:require [com.jiesoul.sicp.ch01 :refer [gcd sqrt]]))
 
 (defn make-account [start-balance]
   (let [balance (atom start-balance)]
@@ -74,3 +75,64 @@
           (do
             (swap! warn inc)
             (str "Incorrect password")))))))
+
+;; 3.1.2
+(defn rand-init []
+  (atom (rand-int 100)))
+
+(defn rand-update [x]
+  (reset! x (rand-int 100)))
+
+(defn rand []
+  (let [x (rand-init)]
+    #(swap! x rand-update x)
+    x))
+
+(defn cesaro-test []
+  (= (gcd (rand) (rand)) 1))
+
+(defn monte-carlo [trials experiment]
+  (loop [trials-remaining trials
+         trials-passed 0]
+    (cond
+      (zero? trials-remaining) (/ trials-passed trials)
+      (experiment) (recur (dec trials-remaining) (inc trials-passed))
+      :else (recur (dec trials-remaining) trials-passed))))
+
+(defn estimate-pi [trials]
+  (sqrt (/ 6 (monte-carlo trials cesaro-test))))
+
+(defn random-gcd-test [trials initial-x]
+  (loop [trials-remaining trials
+         trials-passed 0
+         x initial-x]
+    (let [x1 (rand-update x)
+          x2 (rand-update x1)]
+      (cond
+        (zero? trials-remaining) (/ trials-passed trials)
+        (= (gcd x1 x2) 1) (recur (dec trials-remaining) (inc trials-passed) x2)
+        :else (recur (dec trials-remaining) trials-passed x2)))))
+
+;; EX3.5
+(defn random-in-range [low high]
+  (let [range (- high low)]
+    (+ low (rand-int range))))
+
+;; EX3.6
+(defn rand-1 [s]
+  (let [x (rand-init)]
+    (cond
+      (= s 'generate) x
+      (= s 'reset) (rand-update x)
+      :else (str "invalid"))))
+
+;; 3.1.3
+(defn make-simplified-withdraw [balance]
+  (let [b (atom balance)]
+    (fn [amount]
+      (swap! b - amount)
+      @b)))
+
+(defn make-decrementer [balance]
+  (fn [amount]
+    (- balance amount)))
