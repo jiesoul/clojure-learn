@@ -83,13 +83,13 @@
 (defn rand-update [x]
   (reset! x (rand-int 100)))
 
-(defn rand []
+(defn rand-my []
   (let [x (rand-init)]
     #(swap! x rand-update x)
     x))
 
 (defn cesaro-test []
-  (= (gcd (rand) (rand)) 1))
+  (= (gcd (rand-my) (rand-my)) 1))
 
 (defn monte-carlo [trials experiment]
   (loop [trials-remaining trials
@@ -118,6 +118,12 @@
   (let [range (- high low)]
     (+ low (rand-int range))))
 
+(defn estimate-integral [p x1 x2 y1 y2 trials]
+  (let [area (* (- x2 x1) (- y2 y1))]
+    (* area
+       (monte-carlo trials #(p (random-in-range x1 x2)
+                               (random-in-range y1 y2))))))
+
 ;; EX3.6
 (defn rand-1 [s]
   (let [x (rand-init)]
@@ -136,3 +142,59 @@
 (defn make-decrementer [balance]
   (fn [amount]
     (- balance amount)))
+
+(defn factorial-1 [n]
+  (let [product (atom 1)
+        counter (atom 1)]
+    (loop []
+      (if (> @product n)
+        @product
+        (do
+          (swap! product * counter)
+          (swap! counter inc)
+          (recur))))))
+
+;; EX3.7
+(defn make-joint [acct password new-pass]
+  (fn [p m]
+    (if (= p new-pass)
+      (acct password m)
+      (throw (RuntimeException. "Password incorrect.")))))
+
+;; EX3.8
+(defn ex-38 [n]
+  (println n)
+  n)
+
+(+ (ex-38 0) (ex-38 1))
+
+;; 3.2
+
+;; EX3.9
+
+
+(def make-wire)
+(def or-gate)
+(def and-gate)
+(def inverter)
+
+(defn half-adder [a b s c]
+  (let [d (make-wire)
+        e (make-wire)]
+    (or-gate a b d)
+    (and-gate a b c)
+    (inverter c e)
+    (and-gate d e s)
+    'ok))
+
+(defn full-adder [a b c-in sum c-out]
+  (let [s  (make-wire)
+        c1 (make-wire)
+        c2 (make-wire)]
+    (half-adder b c-in s c1)
+    (half-adder a s sum c2)
+    (or-gate c1 c2 c-out)
+    'ok))
+
+(defn inverter [input output]
+  )
