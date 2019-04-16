@@ -198,3 +198,6 @@
 
 (defn inverter [input output]
   )
+
+(defn set-car! [p v]
+  (swap! p ))
