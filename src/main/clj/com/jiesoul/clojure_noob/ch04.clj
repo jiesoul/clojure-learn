@@ -1,4 +1,5 @@
-(ns com.jiesoul.clojure-noob.ch04)
+(ns com.jiesoul.clojure-noob.ch04
+  (:require [clojure.set :as set]))
 
 (defn titleize
   [topic]
@@ -179,3 +180,184 @@
     (not (apply fun args))))
 (def my-pos? (complement neg?))
 (my-pos? 1)
+
+(def filename "data/clojure-for-bat/suspects.csv")
+(slurp filename)
+
+(def vamp-keys [:name :glitter-index])
+(defn str->int
+  [str]
+  (Integer. str))
+(def conversions {:name          identity
+                  :glitter-index str->int})
+(defn convert
+  [vamp-key value]
+  ((get conversions vamp-key) value))
+
+(convert :glitter-index "3")
+(defn parse
+  [string]
+  (map #(clojure.string/split % #",")
+       (clojure.string/split-lines string)))
+
+(parse (slurp filename))
+
+(defn mapify
+  [rows]
+  (map (fn [unmapped-row]
+         (reduce (fn [row-map [vamp-key value]]
+                   (assoc row-map vamp-key (convert vamp-key value)))
+                 {}
+                 (map vector vamp-keys unmapped-row)))
+       rows))
+
+(first (mapify (parse (slurp filename))))
+
+(defn glitter-filter
+  [minimum-glitter records]
+  (filter #(>= (:glitter-index %) minimum-glitter) records))
+
+(glitter-filter 3 (mapify (parse (slurp filename))))
+
+(defn wisdom
+  [words]
+  (str words ", Daniel-san"))
+
+(wisdom "Always bathe on Fridays")
+
+(defn year-end-evaluation
+  []
+  (if (> (rand) 0.5)
+    "You get a raise!"
+    "Better luck next year"))
+(year-end-evaluation)
+
+(def great-bady-name "Rosanthony")
+(let [great-bady-name "Bloodthunder"]
+  great-bady-name)
+
+(defn sum
+  ([vals] (sum vals 0))
+  ([vals accumulating-total]
+   (if (empty? vals)
+     accumulating-total
+     (sum (rest vals) (+ (first vals) accumulating-total)))))
+
+(sum [39 5 1])
+(sum [39 5 1] 0)
+
+(defn clean
+  [text]
+  (clojure.string/replace (clojure.string/trim text) #"lol" "LOL"))
+
+(clean "My boa constrictor is so sassy lol!")
+
+((comp inc *) 2 3)
+
+(def character
+  {:name       "Smooches McCutes"
+   :attributes {:intelligence 10
+                :strength     4
+                :dexterity    5}})
+
+(def c-int (comp :intelligence :attributes))
+(def c-str (comp :strength :attributes))
+(def c-dex (comp :dexterity :attributes))
+(c-int character)
+(c-str character)
+(c-dex character)
+
+(defn spell-slots
+  [char]
+  (int (inc (/ (c-int char) 2))))
+
+(spell-slots character)
+
+(defn two-comp
+  [f g]
+  (fn [& args]
+    (f (apply g args))))
+
+(defn sleepy-identity
+  "Returns the given value after 1 second"
+  [x]
+  (Thread/sleep 1000)
+  x)
+
+(sleepy-identity "Mr. Fantastico")
+
+(declare successful-move prompt-move game-over query-rows)
+
+(defn tri*
+  "Generates lazy sequence of triangular numbers"
+  ([] (tri* 0 1))
+  ([sum n]
+   (let [new-sum (+ sum n)]
+     (cons new-sum (lazy-seq (tri* new-sum (inc n)))))))
+(def tri (tri*))
+(take 5 tri)
+
+(defn triangular?
+  [n]
+  (= n (last (take-while #(>= n %) tri))))
+(triangular? 5)
+(triangular? 6)
+
+(defn row-tri
+  [n]
+  (last (take n tri)))
+(row-tri 1)
+(row-tri 2)
+(row-tri 3)
+
+(defn row-num
+  [pos]
+  (inc (count (take-while #(> pos %) tri))))
+(row-num 1)
+
+(defn connect
+  [board max-pos pos neighbor destination]
+  (if (<= destination max-pos)
+    (reduce (fn [new-board [p1 p2]]
+              (assoc-in new-board [p1 :connections p2] neighbor))
+            board
+            [[pos destination] [destination pos]])
+    board))
+
+(connect {} 15 1 2 4)
+
+(defn connect-right
+  [board max-pos pos]
+  (let [neighbor    (inc pos)
+        destination (inc neighbor)]
+    (if-not (or (triangular? neighbor) (triangular? pos))
+      (connect board max-pos pos neighbor destination)
+      board)))
+
+(defn connect-down-left
+  [board max-pos pos]
+  (let [row         (row-num pos)
+        neighbor    (+ row pos)
+        destination (+ 1 row neighbor)]
+    (connect board max-pos pos neighbor destination)))
+
+(defn connect-down-right
+  [board max-pos pos]
+  (let [row         (row-num pos)
+        neighbor    (+ 1 row pos)
+        destination (+ 2 row neighbor)]
+    (connect board max-pos pos neighbor destination)))
+
+(connect-down-left {} 15 1)
+(connect-down-right {} 15 3)
+
+(defn add-pos
+  [board max-pos pos]
+  (let [pegged-board (assoc-in board [pos :pegged] true)]
+    (reduce (fn [new-board connection-creation-fn]
+              (connection-creation-fn new-board max-pos pos))
+            pegged-board
+            [connect-right connect-down-right connect-down-right])))
+
+(add-pos {} 15 1)
+
