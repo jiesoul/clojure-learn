@@ -195,4 +195,40 @@
     .start
     .join))
 
+(defn always-1
+  []
+  1)
+(take 5 (repeatedly always-1))
+(take 5 (repeatedly (partial rand-int 10)))
 
+(def alphabet-length 26)
+(def letters (mapv (comp str char (partial + 65)) (range alphabet-length)))
+(defn random-string
+  [length]
+  (apply str (take length (repeatedly #(rand-nth letters)))))
+(defn random-string-list
+  [list-length string-length]
+  (doall (take list-length (repeatedly (partial random-string string-length)))))
+(def orc-names (random-string-list 3000 7000))
+(time (dorun (map clojure.string/lower-case orc-names)))
+(time (dorun (pmap clojure.string/lower-case orc-names)))
+
+(def orc-name-abbrevs (random-string-list 20000 300))
+(time (dorun (map clojure.string/lower-case orc-name-abbrevs)))
+(time (dorun (pmap clojure.string/lower-case orc-name-abbrevs)))
+
+(def numbers (range 1 11))
+(partition-all 3 numbers)
+(time
+  (dorun
+    (apply concat
+           (pmap (fn [number-group] (doall (map inc number-group)))
+                 (partition-all 3 numbers)))))
+
+(defn ppmap
+  [grain-size f & colls]
+  (apply concat
+         (apply pmap
+                (fn [& pgroups] (doall (apply map f pgroups)))
+                (map (partial partition-all grain-size) colls))))
+(time (dorun (ppmap 1000 clojure.string/lower-case orc-name-abbrevs)))
