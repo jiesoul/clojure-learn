@@ -28,6 +28,15 @@
      (nth guys-whole-name 0) " "
      (nth guys-whole-name 1))
 
+(let [[f-name m-name l-name] guys-whole-name]
+  (str l-name ", " f-name " " m-name))
+
+(def date-regex #"(\d{1,2})\/(\d{1,2})\/(\d{4})")
+(let [rem (re-matcher date-regex "12/02/1975")]
+  (when (.find rem)
+    (let [[_ m d] rem]
+      {:month m :day d})))
+
 (let [[a b c & more] (range 10)]
   (println "a b c are: " a b c)
   (println "more are:" more))
@@ -38,17 +47,36 @@
   (println "more are:" more)
   (println "all are:" all))
 
-(def date-regex #"(\d{1,2})\/(\d{1,2})\/(\d{4})")
-(let [rem (re-matcher date-regex "12/02/1975")]
-  (when (.find rem)
-    (let [[_ m d] rem]
-      {:month m :day d})))
 
 (def guys-name-map
   {:f-name "Guy" :m-name "Lewis" :l-name "Steele"})
 
 (let [{f-name :f-name m-name :m-name l-name :l-name} guys-name-map]
   (str l-name ", " f-name " " m-name))
+
+(let [{:keys [f-name m-name l-name]} guys-whole-name]
+  (str l-name ", " f-name " " m-name))
+
+(let [{f-name :f-name, :as whole-name} guys-whole-name]
+  (println "First name is " f-name)
+  (println "Whole name is below:")
+  whole-name)
+
+(let [{:keys [title f-name m-name l-name] :or {title "Mr."}} guys-name-map]
+  (println title f-name m-name l-name))
+
+(defn whole-name [& args]
+  (let [{:keys [f-name m-name l-name]} args]
+    (str l-name ", " m-name " " l-name)))
+(whole-name :f-name "Guy" :m-name "Lewis" :l-name "Steele")
+
+(let [{first-thing 0, last-thing 3} [1 2 3 4]]
+  [first-thing last-thing])
+
+(defn print-last-name
+  [{:keys [l-name]}]
+  (println l-name))
+(print-last-name guys-name-map)
 
 (for [x (range 2) y (range 2)]
   [x y (bit-xor x y)])

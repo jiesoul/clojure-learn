@@ -55,8 +55,6 @@
 (and-chain () 42 true)
 (and-chain true false true)
 
-
-
 (defn rec-step [[x & xs]]
   (if x
     [x (rec-step xs)]

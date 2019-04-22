@@ -12,6 +12,7 @@
 (seq ds)
 
 (= [1 2 3] '(1 2 3))
+(= [1 2 3] #{1 2 3})
 
 (class (hash-map :a 1))
 (seq (hash-map :a 1))
@@ -95,8 +96,6 @@
 
 (cons 1 '(2 3))
 (conj '(2 3) 1)
-
-
 
 (defmethod print-method clojure.lang.PersistentQueue
   [q w]

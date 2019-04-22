@@ -1,7 +1,15 @@
 (ns com.jiesoul.joyofclojure.ch04)
 
+(def clueless 9)
+(class clueless)
+(class (+ clueless 900000000000000))
+(class (+ clueless 90000000000000000000000))
+(class (+ clueless 9.0))
+
 ;(+ Long/MAX_VALUE Long/MAX_VALUE)
 (unchecked-add (Long/MAX_VALUE) (Long/MAX_VALUE))
+(float 0.000000000000000000000000000000000000000000000001)
+1.0E-430
 
 (let [approx-interval (/ 209715 2097152)
       actual-interval (/ 1 10)
@@ -10,11 +18,31 @@
       approx-total (double (* hours approx-interval))]
   (- actual-total approx-total))
 
+(+ 0.1M 0.1M 0.1  0.1M 0.1M 0.1M 0.1M 0.1M 0.1M)
+
+1.0E-430000000M
+;1.0E-4300000000M
+
+
+(def a 1.0e50)
+(def b -1.0e50)
+(def c 17.0e00)
+
+(+ (+ a b) c)
+(+ a (+ b c))
+
 (def a (rationalize 1.0e50))
 (def b (rationalize -1.0e50))
 (def c (rationalize 17.0e00))
 
 (+ (+ a b) c)
+(+ a (+ b c))
+
+(numerator (/ 123 10))
+(denominator (/ 123 10))
+
+:a-keyword
+::also-a-keyword
 
 (def population {:zombies 2700 :humas 9})
 (get population :zombies)
@@ -32,6 +60,16 @@
     (= ub :toujours) (iterate inc lb)
     :else
     (range lb ub)))
+(pour 1 10)
+(take 10 (pour 1 :toujours))
+
+::not-in-ns
+
+(identical? 'goat 'goat)
+(= 'goat 'goat)
+(name 'goat)
+(let [x 'goat y x]
+  (identical? x y))
 
 (let [x (with-meta 'goat {:ornery true})
       y (with-meta 'goat {:ornery false})]
@@ -50,37 +88,10 @@
 (class #"example")
 (java.util.regex.Pattern/compile "\\d")
 
+(class #"example")
+(java.util.regex.Pattern/compile "\\d")
+
 (re-seq #"\w+" "one-two/three")
 (re-seq #"\w*(\w)" "one-two/three")
-
-(def ds (into-array [:willie :barnabas :adam]))
-(seq ds)
-(aset ds 1 :quentin)
-(seq ds)
-
-(def ds [:willie :barnabas :adam])
-(def ds1 (replace {:barnabas :quentin} ds))
-(seq ds)
-(seq ds1)
-
-(vec (range 10))
-(let [my-vector [:a :b :c]]
-  (into my-vector (range 10)))
-
-(defn do-blowfish [directive]
-  (case directive
-    :aquarium/blowfish (println "feed the fish")
-    :crypto/blowfish (println "encode the message")
-    :blowfish (println "not sure what to do")))
-
-(into (vector-of :int) [Math/PI 2 1.3])
-;; [3 2 1]
-(into (vector-of :char) [100 101 102])
-;(into (vector-of :int) [1 2 2423402384024802482034982034823048])
-
-(def a-toj (vec (map char (range 65 75))))
-(nth a-toj 4)
-(get a-toj 4)
-(a-toj 4)
 
 
