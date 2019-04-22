@@ -1,5 +1,26 @@
 (ns com.jiesoul.joyofclojure.ch03)
 
+
+(if true :truthy :falsey)
+(if [] :truthy :falsey)
+(if nil :truthy :falsey)
+(if false :truthy :falsey)
+
+(def evil-false (Boolean. "false"))                         ;; never do not
+(= false evil-false)
+(if evil-false :truthy :falsey)
+(if (Boolean/valueOf "false") :truthy :falsey)
+
+(when (nil? nil) "Actually nil, not false")
+
+(seq [1 2 3])
+(seq [])
+(defn print-seq [s]
+  (when (seq s)
+    (prn (first s))
+    (recur (rest s))))
+(print-seq [])
+
 (def guys-whole-name ["Guy" "Lewis" "Steele"])
 
 

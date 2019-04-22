@@ -1,7 +1,13 @@
 (ns com.jiesoul.joyofclojure.ch02
   (:require clojure.set))
 
-[127 0x7f 0177 32r3v 2r011111]
+[127 0x7f 0177 32r3v 2r01111111]
+(vector 1 2 3)
+
+((fn [x y]
+   (println "Making a set")
+   #{x y})
+  1 2)
 
 (def make-set
   (fn [x y]
