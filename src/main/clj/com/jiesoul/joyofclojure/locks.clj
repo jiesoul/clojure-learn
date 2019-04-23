@@ -1,20 +1,25 @@
 (ns com.jiesoul.joyofclojure.locks
-  (:refer-clojure :exclude [aget aset count seq])
-  (:require [clojure.core :as clj]
-            [com.jiesoul.joyofclojure.mutation :refer [dothreads!]]))
+  (:use [com.jiesoul.joyofclojure.mutation :refer [dothreads!]]))
 
 (defprotocol SafeArray
-  (aset [this i f])
-  (aget [this i])
-  (count [this])
-  (seq [this]))
+  (aset-1 [this i f])
+  (aget-1 [this i])
+  (count-1 [this])
+  (seq-1 [this]))
 
 (defn make-dumb-array [t sz]
   (let [a (make-array t sz)]
     (reify
       SafeArray
-      (count [_] (clj/count a))
-      (seq [_] (clj/seq a))
-      (aget [_ i] (clj/aget a i))
-      (aset [this i f]
-        (clj/aset a i (f (aget this i)))))))
+      (count-1 [_] (count a))
+      (seq-1 [_] (seq a))
+      (aget-1 [_ i] (aget a i))
+      (aset-1 [this i f]
+        (aset a i (f (aget-1 this i)))))))
+
+(defn pummel [a]
+  (dothreads! #(dotimes [i (count a)]
+                 (aset a i inc))
+    :threads 100))
+
+(def D (make-dumb-array Integer/TYPE 8))

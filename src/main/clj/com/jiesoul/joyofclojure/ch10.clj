@@ -81,6 +81,34 @@
 (board-map deref board)
 
 (dothreads! make-move :threads 100 :times 100)
+
+(io! (.println System/out "Haikeeba!"))
+;(dosync (io! (.println System/out "Haikeeba!")))
+
+(defn make-move-v2
+  []
+  (dosync
+    (let [move (choose-move @to-move)]
+      (move-piece move @to-move)
+      (update-to-move move))))
+(reset-board!)
+(make-move)
+(board-map deref board)
+;(dothreads! make-move-v2 :threads 100 :times 100)
+(board-map #(dosync (deref %)) board)
+
+(defn move-piece [[piece dest] [[_ src] _]]
+  (commute (get-in board dest) place piece)
+  (commute (get-in board src) place :-)
+  (commute num-moves inc))
+(reset-board!)
+
+(defn update-to-move [move]
+  (commute to-move #(vector (second %) move)))
+(board-map #(dosync (deref %)) board)
+
+(dosync (ref-set to-move '[[:K [2 1]] [:K [0 1]]]))
+
 (defn strees-ref [r]
   (let [slow-tries (atom 0)]
     (future
@@ -134,6 +162,11 @@
 
 (all-together-now)
 
+(do-step "important: " "this must go out")
+(await log-agent)
+(send log-agent (fn [_] 1000))
+(do-step "epsilon " "near miss")
+
 (defn exerise-agents [send-fn]
   (let [agents (map #(agent %) (range 10))]
     (doseq [a agents]
@@ -145,6 +178,7 @@
 (time (exerise-agents send))
 
 (send log-agent (fn [_] 3000))
+@log-agent
 ;@log-agent
 ;(restart-agent log-agent 2500 :clear-actions true)
 

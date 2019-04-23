@@ -1,5 +1,6 @@
 (ns com.jiesoul.joyofclojure.ch08
-  (:require [clojure.walk :as walk])
+  (:require [clojure.walk :as walk]
+            [clojure.xml :as xml])
   (:import [java.io BufferedReader InputStreamReader]
            [java.net URL]))
 
@@ -32,7 +33,7 @@
           (cons 'do-until (nnext clauses)))))
 
 (macroexpand-1 '(do-until true (prn 1) false (prn 2)))
-(walk/macroexpand-all '(do-until true (prn 1) false (prn 2)))
+;(walk/macroexpand-all '(do-until true (prn 1) false (prn 2)))
 
 
 (defn unless [condition & body]
@@ -112,9 +113,23 @@
                    (Chupacabra
                      "A fierce, yet elusive creature"
                      [eats-goats?]))))
+(:tag d)
+(:tag (first (:content d)))
+
+(xml/emit d)
+(defmacro resolution [] `x)
+(macroexpand '(resolution))
+(def x 9)
+(let [x 109] (resolution))
+
+(defmacro awhen [expr & body]
+  `(let [~'it ~expr]
+     (if ~'it
+       (do ~@body))))
+(awhen [1 2 3] (it 2))
 
 (defn joc-www []
-  (-> "Http://joyofclojure.com/hello"
+  (-> "Http://www.baidu.com"
       URL.
       .openStream
       InputStreamReader.
@@ -126,6 +141,13 @@
 ;    (println "The stream will now close... "))
 ;  (println "but let's read from it anyway.")
 ;  (.readLine stream))
+
+(defmacro with-resource [binding close-fn & body]
+  `(let ~binding
+     (try
+       (do ~@body)
+       (finally
+         (~close-fn ~(binding 0))))))
 
 (declare collect-bodies)
 (defmacro contract [name & forms]

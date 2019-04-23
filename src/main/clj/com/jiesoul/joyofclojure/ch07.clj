@@ -1,4 +1,7 @@
-(ns com.jiesoul.joyofclojure.ch07)
+(ns com.jiesoul.joyofclojure.ch07
+  (:require [com.jiesoul.joyofclojure.ch05 :refer [neighbors]]))
+
+(map [:chtton :phthor :beowulf :grendel] #{0 3})
 
 (def fifth (comp first rest rest rest rest))
 
@@ -18,6 +21,7 @@
    ((complement truthiness) 42)
    ((complement truthiness) false)
    ((complement truthiness) nil)])
+((complement even?) 2)
 
 (defn join
   {:test (fn []
@@ -76,6 +80,14 @@
             (map f (vals only)))))
 (keys-apply #(.toUpperCase %) #{:band} (plays 0))
 
+(defn manip-map [f ks m]
+  (merge m (keys-apply f ks m)))
+(manip-map #(int (/ % 2)) #{:plays :loved} (plays 0))
+
+(defn mega-love! [ks]
+  (map (partial manip-map #(int (* % 1000)) ks) plays))
+(mega-love! [:loved])
+
 (defn slope
   [& {:keys [p1 p2] :or {p1 [0 0] p2 [1 1]}}]
   (float (/ (- (p2 1) (p1 1))
@@ -129,6 +141,8 @@
   (let [ai (java.util.concurrent.atomic.AtomicInteger.)]
     (fn [y] (.addAndGet ai y))))
 
+
+(add-and-get 2)
 (add-and-get 2)
 (add-and-get 7)
 
@@ -140,6 +154,9 @@
 
 (def times-four (times-n 4))
 (times-four 10)
+
+(defn times-n [n]
+  (fn [y] (* y n)))
 
 (defn divisible [denom]
   (fn [num]
@@ -350,9 +367,6 @@
 
 (min-by :cost [{:cost 100} {:cost 36} {:cost 9}])
 
-(defn neighbors [size yx]
-  )
-
 (defn astar [start-yx step-est cell-costs]
   (let [size (count cell-costs)]
     (loop [steps 0
@@ -384,4 +398,19 @@
                            nbr-yxs)))))))))
 
 
+(neighbors 3 [0 0])
+(astar [0 0]
+  900
+  [[1 1 1 2 1]
+   [1 1 1 999 1]
+   [1 1 1 999 1]
+   [1 1 1 999 1]
+   [1 1 1 1   1]])
 
+(astar [0 0]
+  900
+  [[1 1 1 2 1]
+   [1 1 1 999 1]
+   [1 1 1 999 1]
+   [1 1 1 999 1]
+   [1 1 1 666 1]])

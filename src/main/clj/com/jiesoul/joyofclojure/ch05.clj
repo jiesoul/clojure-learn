@@ -48,8 +48,8 @@
 (update-in martix [1 2] * 100)
 
 
-(defn neighors
-  ([size yx] (neighors [[-1 0] [1 0] [0 -1] [0 1]]
+(defn neighbors
+  ([size yx] (neighbors [[-1 0] [1 0] [0 -1] [0 1]]
                        size
                        yx))
   ([deltals size yx]
@@ -57,9 +57,9 @@
              (every? #(< -1 % size) new-yx))
            (map #(vec (map + yx %)) deltals))))
 
-(neighors 3 [0 0])
-(neighors 3 [1 1])
-(map #(get-in martix %) (neighors 3 [0 0]))
+(neighbors 3 [0 0])
+(neighbors 3 [1 1])
+(map #(get-in martix %) (neighbors 3 [0 0]))
 
 (def my-stack [1 2 3])
 (peek my-stack)
