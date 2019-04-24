@@ -1,5 +1,7 @@
 (ns com.jiesoul.joyofclojure.ch10
-  (:import java.util.concurrent.Executors))
+  (:import java.util.concurrent.Executors
+           java.util.concurrent.locks.ReadWriteLock
+           (java.util.concurrent.locks ReentrantLock)))
 
 (def thread-pool
   (Executors/newFixedThreadPool
@@ -79,11 +81,13 @@
 (board-map deref board)
 (make-move)
 (board-map deref board)
+(board-map deref board)
 
 (dothreads! make-move :threads 100 :times 100)
+(board-map deref board)
 
 (io! (.println System/out "Haikeeba!"))
-;(dosync (io! (.println System/out "Haikeeba!")))
+(dosync (io! (.println System/out "Haikeeba!")))
 
 (defn make-move-v2
   []
@@ -94,18 +98,26 @@
 (reset-board!)
 (make-move)
 (board-map deref board)
-;(dothreads! make-move-v2 :threads 100 :times 100)
+@num-moves
+(dothreads! make-move-v2 :threads 100 :times 100)
 (board-map #(dosync (deref %)) board)
+@to-move
+@num-moves
 
 (defn move-piece [[piece dest] [[_ src] _]]
   (commute (get-in board dest) place piece)
   (commute (get-in board src) place :-)
   (commute num-moves inc))
 (reset-board!)
+(dothreads! make-move-v2 :threads 100 :times 100)
+(board-map deref board)
+@to-move
 
 (defn update-to-move [move]
   (commute to-move #(vector (second %) move)))
+(dothreads! make-move-v2 :threads 100 :times 100)
 (board-map #(dosync (deref %)) board)
+@to-move
 
 (dosync (ref-set to-move '[[:K [2 1]] [:K [0 1]]]))
 
@@ -127,6 +139,7 @@
 (strees-ref (ref 0 :max-history 30))
 (strees-ref (ref 0 :min-history 15 :max-history 30))
 
+;; agent
 (def joy (agent []))
 (send joy conj "first edition")
 @joy
@@ -161,6 +174,7 @@
   (dothreads! #(three-step "omega")))
 
 (all-together-now)
+@log-agent
 
 (do-step "important: " "this must go out")
 (await log-agent)
@@ -179,11 +193,12 @@
 
 (send log-agent (fn [_] 3000))
 @log-agent
+(agent-error log-agent)
 ;@log-agent
-;(restart-agent log-agent 2500 :clear-actions true)
+(restart-agent log-agent 2500 :clear-actions true)
 
 (send-off log-agent do-log "The agent, it lives!")
-;(restart-agent log-agent 2500 :clear-actions true)
+(restart-agent log-agent 2500 :clear-actions true)
 
 (defn handle-log-error [the-agent the-err]
   (println "An action sent to the log-agent throw " the-err))
@@ -227,11 +242,84 @@
 (defn print-read-only []
   (println "*read-eval* is currently" *read-eval*))
 
+(defprotocol SafeArray
+  (aset-1 [this i f])
+  (aget-1 [this i])
+  (count-1 [this])
+  (seq-1 [this]))
+
+(defn make-dumb-array [t sz]
+  (let [a (make-array t sz)]
+    (reify
+      SafeArray
+      (count-1 [_] (count a))
+      (seq-1 [_] (seq a))
+      (aget-1 [_ i] (aget a i))
+      (aset-1 [this i f]
+        (aset a i (f (aget-1 this i)))))))
+
+(defn pummel [a]
+  (dothreads! #(dotimes [i (count-1 a)] (aset-1 a i inc))
+    :threads 100))
+(def D (make-dumb-array Integer/TYPE 8))
+(pummel D)
+(seq-1 D)
+
+(defn make-safe-array [t sz]
+  (let [a (make-array t sz)]
+    (reify
+      SafeArray
+      (count-1 [_] (count a))
+      (seq-1 [_] (seq a))
+      (aget-1 [_ i]
+        (locking a (aget a i)))
+      (aset-1 [this i f]
+        (locking a
+          (aset a i (f (aget-1 this i))))))))
+
+(def D (make-safe-array Integer/TYPE 8))
+(pummel D)
+(seq-1 D)
+
+(defn lock-i [target-index num-locks]
+  (mod target-index num-locks))
+
+(defn make-smart-array [t sz]
+  (let [a (make-array t sz)
+        Lsz (/ sz 2)
+        L (into-array (take Lsz (repeatedly #(ReentrantLock.))))]
+    (reify
+      SafeArray
+      (count-1 [_] (count a))
+      (seq-1 [_] (seq a))
+      (aget-1 [_ i]
+        (let [lk (aget L (lock-i (inc i) Lsz))]
+          (.lock lk)
+          (try
+            (aget a i)
+            (finally (.unlock lk)))))
+      (aset-1 [this i f]
+        (let [lk (aget L (lock-i (inc i) Lsz))]
+          (.lock lk)
+          (try
+            (aset a i (f (aget-1 this i)))
+            (finally (.unlock lk))))))))
+
+(def S (make-smart-array Integer/TYPE 8))
+(pummel S)
+(seq-1 S)
+*read-eval*
+(var *read-eval*)
+#'*read-eval*
+
+(defn print-read-eval []
+  (println "*read-eval* is currently" *read-eval*))
+
 (defn binding-play []
-  (print-read-only)
+  (print-read-eval)
   (binding [*read-eval* false]
-    (print-read-only))
-  (print-read-only))
+    (print-read-eval))
+  (print-read-eval))
 
 (binding-play)
 
@@ -247,3 +335,10 @@ favorite-color
 
 (with-precision 4
   (/ 1M 3))
+(/ 1M 3)
+(with-precision 4
+  (map (fn [x] (/ x 3)) (range 1M 4M)))
+(with-precision 4
+  (doall (map (fn [x] (/ x 3)) (range 1M 4M))))
+(with-precision 4
+  (map (bound-fn [x] (/ x 3)) (range 1M 4M)))
