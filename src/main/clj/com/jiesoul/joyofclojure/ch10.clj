@@ -87,7 +87,7 @@
 (board-map deref board)
 
 (io! (.println System/out "Haikeeba!"))
-(dosync (io! (.println System/out "Haikeeba!")))
+;(dosync (io! (.println System/out "Haikeeba!")))
 
 (defn make-move-v2
   []
