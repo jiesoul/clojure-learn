@@ -31,7 +31,9 @@
                  [cljsjs/react "16.6.0-0"]
                  [cljsjs/react-dom "16.6.0-0"]
                  [cljsjs/react-dom-server "16.6.0-0"]
-                 [re-frame "0.10.6"]]
+                 [re-frame "0.10.6"]
+                 [clj-tagsoup "1.4.0-beta7"]
+                 [hickory "0.7.1"]]
 
   :source-paths ["src/main/clj" "env/prod/clj"]
   :java-source-paths ["src/main/java"]
