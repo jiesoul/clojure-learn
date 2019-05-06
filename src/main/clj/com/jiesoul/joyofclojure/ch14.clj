@@ -66,3 +66,4 @@
 (effect-all {} (take 50 events))
 (def fx-timeline #(reductions apply-effect %1 %2))
 (fx-timeline {} (take 3 events))
+
