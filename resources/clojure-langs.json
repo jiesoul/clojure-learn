@@ -1,0 +1,16 @@
+{
+  "languages": [
+    {
+      "name": "clojure",
+      "host-language": "java"
+    },
+    {
+      "name": "clojurescript",
+      "host-language": "javascript"
+    },
+    {
+      "name": "clojure-clr",
+      "host-language": "c#"
+    }
+  ]
+}

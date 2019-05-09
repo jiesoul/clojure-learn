@@ -2,7 +2,8 @@
   (:require [reagent.core :as r]
             [com.jiesoul.reagent.ch01 :refer [greet right-component timer-component
                                               my-component tracked-pos]]
-            [com.jiesoul.joyofclojure.ch13 :refer [woo play!]]))
+            [com.jiesoul.joyofclojure.ch13 :refer [woo play!]]
+            [com.jiesoul.tips.made-easy-remote-calls :refer [make-remote-call]]))
 
 (defn home-page []
   [:div
@@ -30,4 +31,5 @@
     (.getElementById js/document "app")))
 
 (defn init! []
-  (mount-root))
+  (mount-root)
+  (make-remote-call "/resources/clojure-langs.json"))

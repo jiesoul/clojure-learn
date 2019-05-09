@@ -32,8 +32,9 @@
                  [cljsjs/react-dom "16.6.0-0"]
                  [cljsjs/react-dom-server "16.6.0-0"]
                  [re-frame "0.10.6"]
-                 [clj-tagsoup "1.4.0-beta7"]
-                 [hickory "0.7.1"]]
+                 [clj-tagsoup "0.3.0"]
+                 [hickory "0.7.1"]
+                 [cljs-http "0.1.46"]]
 
   :source-paths ["src/main/clj" "env/prod/clj"]
   :java-source-paths ["src/main/java"]
@@ -88,6 +89,7 @@
                                   [nrepl "0.6.0"]
                                   [cider/piggieback "0.4.0"]
                                   [com.cemerick/piggieback "0.2.2"]]
-                   :plugins [[com.jakemccrary/lein-test-refresh "0.23.0"]
+                   :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
+                   :plugins      [[com.jakemccrary/lein-test-refresh "0.23.0"]
                              [lein-midje "3.2.1"]
                              [lein-eftest "0.5.6"]]}})
