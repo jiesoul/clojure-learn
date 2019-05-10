@@ -32,6 +32,7 @@
                  [cljsjs/react-dom "16.6.0-0"]
                  [cljsjs/react-dom-server "16.6.0-0"]
                  [re-frame "0.10.6"]
+                 [cljs-ajax "0.8.0"]
                  [clj-tagsoup "0.3.0"]
                  [hickory "0.7.1"]
                  [cljs-http "0.1.46"]]
